@@ -28,8 +28,8 @@ export class LoginComponent implements OnInit {
     // });
   }
 
-  async onSelectUser(user: User): Promise<void> {
-    this.authService.setUser(user);
-    await this.router.navigate([`/${ROUTES.CHAT}`]);
-  }
+  // async onSelectUser(user: User): Promise<void> {
+  //   this.authService.setUser(user);
+  //   await this.router.navigate([`/${ROUTES.CHAT}`]);
+  // }
 }

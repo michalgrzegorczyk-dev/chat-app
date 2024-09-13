@@ -15,7 +15,25 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@chat-app/account": ["libs/web/account/src/index.ts"]
+      "@chat-app/domain": ["libs/web/chat/domain/src/index.ts"],
+      "@chat-app/dtos": ["libs/shared/dtos/src/index.ts"],
+      "@chat-app/feature-account": [
+        "libs/web/account/feature-account/src/index.ts"
+      ],
+      "@chat-app/feature-conversation-list": [
+        "libs/web/chat/feature-conversation-list/src/index.ts"
+      ],
+      "@chat-app/feature-conversation-panel": [
+        "libs/web/chat/feature-conversation-panel/src/index.ts"
+      ],
+      "@chat-app/ui-button": [
+        "libs/web/shared/design-system/ui-button/src/index.ts"
+      ],
+      "@chat-app/ui-modal": [
+        "libs/web/shared/design-system/ui-modal/src/index.ts"
+      ],
+      "@chat-app/util-auth": ["libs/web/shared/auth/util-auth/src/index.ts"],
+      "@chat-app/utils": ["libs/web/chat/utils/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

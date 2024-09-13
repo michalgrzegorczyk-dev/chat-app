@@ -7,7 +7,7 @@
         Pick a character to start collaborating. Don't worry, it's just for fun!
       </p>
     </div>
-<!--    <app-users-select (selectUserEvent)="onSelectUser($event)" [users]="users()"/>-->
+    <lib-users-list (selectUserEvent)="onSelectUser($event)" [users]="users()"/>
     <p class="mt-4 text-center text-xs text-gray-500">
       Note: This is a simplified login. No real authentication required.
     </p>

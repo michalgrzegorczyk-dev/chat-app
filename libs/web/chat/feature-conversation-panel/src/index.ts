@@ -1,1 +1,1 @@
-export * from './lib/feature-conversation-panel/feature-conversation-panel.component';
+export * from './lib/components/shell/conversation-panel-shell.component';

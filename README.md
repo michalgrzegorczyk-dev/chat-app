@@ -9,13 +9,14 @@ Angular. The app is a simple chat application that allows users to create conver
 There is no authorization of the user but you can select predefined users to chat with.
 
 ## Features
-- **Select User**: Users can select a user to chat with from a list of predefined users.
-- **Create Conversations**: Users can create 1-1 or group conversations with other users.
+- **Select Predefined User**: Users can select a user to chat with from a list of predefined users.
 - **Send Messages**: Users can send messages to other users in a conversation.
 - **Receive Messages**: Users can receive messages from other users in a conversation.
 - **View Conversations**: Users can view a list of conversations they are a part of.
 - **View Messages**: Users can view messages in a conversation.
-- 
+~~- **Create Conversations**: Users can create 1-1 or group conversations with other users.~~
+~~- **Delete Conversations**: Users can delete conversations they are a part of.~~
+
 ## Technologies Used
 - **Angular**: Frontend framework for building the user interface.
 - **Nx**: Monorepo tool for managing the project.

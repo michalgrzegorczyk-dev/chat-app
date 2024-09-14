@@ -25,8 +25,8 @@ There is no authorization of the user but you can select predefined users to cha
 - **Tests**: Add tests for the frontend and backend applications.
 - **Error Handling**: Add error handling for the frontend and backend applications.
 - **Conversation Details**: Add details to conversations like the number of messages, participants, etc.
-- **Refactor**: Add some fancy liters and refactor the code to make it more readable and maintainable.
-- **Optimize**: Optimize the application for performance and user experience, virtual scrolling, lazy loading, etc.
+- **Refactor**: Add some fancy linter rules and refactor the code to make it more readable and maintainable.
+- **Optimize**: Add virtual scrolling, lazy loading, etc.
 ## Technologies Used
 - **Angular**: Frontend framework for building the user interface.
 - **Nx**: Monorepo tool for managing the project.

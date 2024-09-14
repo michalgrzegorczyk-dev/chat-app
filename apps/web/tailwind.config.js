@@ -10,6 +10,7 @@ module.exports = {
   content: [
     join(__dirname, 'src/**/!(*.stories|*.spec).{ts,html}'), //todo is it useful?
     join('web/**/!(*.stories|*.spec).{ts,html}'), //todo added this line
+    join('libs/**/!(*.stories|*.spec).{ts,html}'), //todo added this line
     ...createGlobPatternsForDependencies(__dirname),
   ],
   theme: {

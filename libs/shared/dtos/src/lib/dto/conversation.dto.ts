@@ -3,4 +3,5 @@ export interface ConversationDto {
     avatarUrl: string;
     name: string;
     chatType: string;
+    lastMessageTimestamp: string; //todo
 }

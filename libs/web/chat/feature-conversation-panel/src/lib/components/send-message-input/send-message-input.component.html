@@ -1,0 +1,23 @@
+<footer class="h-16 bg-white shadow-sm px-6 py-3">
+  <div class="flex items-center space-x-2">
+    <div class="flex-1 bg-gray-100 rounded-md px-4 py-2 focus-within:ring-2 focus-within:ring-primary-500">
+      <input
+        (keyup.enter)="sendMessage()"
+        [(ngModel)]="inputMessage"
+        [disabled]="!selectedConversation()"
+        class="w-full bg-transparent focus:outline-none text-gray-700"
+        placeholder="Type a message..."
+        type="text"
+      >
+    </div>
+    <button
+      (click)="sendMessage()"
+      [disabled]="!selectedConversation()"
+      class="bg-primary-500 text-white rounded-md p-2 hover:bg-primary-600 focus:outline-none rotate-90 focus:ring-2 focus:ring-mg-purple-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+    >
+      <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </svg>
+    </button>
+  </div>
+</footer>

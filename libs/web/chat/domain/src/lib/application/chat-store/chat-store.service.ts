@@ -5,13 +5,13 @@ import {Router} from "@angular/router";
 import {ChatInfrastructureService} from "../../infrastructure/chat-infrastructure.service";
 import {ChatState} from "../../entities/chat-state.type";
 import {rxEffects} from "@rx-angular/state/effects";
-import {ROUTES} from "../../../../app.routes";
 import {Message, ReceivedMessage} from "../../entities/message.type";
 import {Conversation} from "../../entities/conversation.type";
-import {User} from "../../entities/user.type";
 import {MessageSend} from "../../entities/message-send.type";
 import {ConversationDetails} from "../../entities/conversation-content.type";
-import {sortConversationsByLastMessageTimestamp} from "../../../utils/sort-conversation-list";
+import { ROUTES } from '../../../../../../../../apps/web/src/app/app.routes';
+import { sortConversationsByLastMessageTimestamp } from '@chat-app/utils';
+import { User } from '../../entities/user.type';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -43,6 +43,7 @@ export class ChatStoreService {
 
   private readonly rxState = rxState<ChatState>(({set, connect}) => {
     set(INITIAL_STATE);
+    connect('conversationListLoading', this.setConversationListLoading$, (state, loading) =>  loading);
     connect('conversationList', this.updateConversationList$, (state, messageSend) => {
       return sortConversationsByLastMessageTimestamp(state.conversationList.map(conv => {
         if (conv.conversationId === messageSend.conversationId) {
@@ -76,7 +77,11 @@ export class ChatStoreService {
     });
     connect('messageList', this.setMessageList$);
     connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
-    connect('conversationList', this.setConversationList$);
+    connect('conversationList', this.setConversationList$, (state, conversationList) => {
+
+      return conversationList;
+    });
+    connect('messageListLoading', this.setMessageListLoading$);
     connect('memberIdMap', this.setMemberIdMap$);
     connect(this.selectConversation$, (state, conversation) => {
       if (!conversation) {
@@ -96,10 +101,10 @@ export class ChatStoreService {
         ...state,
         conversationList: updatedConversations,
         selectedConversation: activeConversation,
-        messageListLoading: true
       };
     });
   });
+
   // READ
   readonly messageList = this.rxState.signal('messageList');
   readonly messageListLoading = this.rxState.signal('messageListLoading');
@@ -109,7 +114,6 @@ export class ChatStoreService {
   readonly selectedConversationLoading = this.rxState.signal('selectedConversationLoading');
   readonly memberList = this.rxState.signal('memberIdMap');
 
-  // HANDLERS
   loadConversationList = () => this.loadConversationList$.next();
   setMessageList = (messageList: Message[]) => this.setMessageList$.next(messageList);
   selectConversation = (conversation: Conversation) => this.selectConversation$.next(conversation);
@@ -121,7 +125,8 @@ export class ChatStoreService {
         return;
       }
 
-      return this.chatService.getConversationDetails(selectedConversation).subscribe((conversationDetails: ConversationDetails) => {
+      this.setMessageListLoading$.next(true);
+      return this.chatService.getConversationContent(selectedConversation).subscribe((conversationDetails: ConversationDetails) => {
         this.setMessageList(conversationDetails.messageList);
         this.setMemberMap(new Map(conversationDetails.memberList.map(member => [member.id, member])));
         this.setMessageListLoading$.next(false);
@@ -135,9 +140,9 @@ export class ChatStoreService {
     });
     register(this.loadConversationList$, () => {
       this.setConversationListLoading$.next(true);
-
       this.setConversationList$.next([]);
       this.chatService.fetchConversations().pipe(take(1)).subscribe((conversationList: Conversation[]) => {
+        console.log('received conversation list', conversationList);
         this.setConversationList$.next(conversationList);
         if (conversationList[0]) {
           this.selectConversation(conversationList[0]);
@@ -149,8 +154,6 @@ export class ChatStoreService {
 
   sendMessage = (msg: MessageSend) => {
     this.chatService.sendMessage(msg);
-
-    // todo: it's optimistic update, kind of
     this.updateConversationList$.next(msg);
   };
 }

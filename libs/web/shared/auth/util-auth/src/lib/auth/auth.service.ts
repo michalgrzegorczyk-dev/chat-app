@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 
 // todo: where to put it
-import { environment } from '../../../../../../../../apps/web/src/environments/environment';
+import { environment } from '../../../../../util-configuration/src/lib/configuration/environments/environment';
 import { UserDto } from '@chat-app/dtos';
 import { User } from '@chat-app/domain';
 

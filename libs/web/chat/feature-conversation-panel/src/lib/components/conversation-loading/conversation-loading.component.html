@@ -1,0 +1,24 @@
+<div class="flex flex-col h-full">
+  <header class="h-16 bg-white shadow-sm px-6 flex justify-between items-center border-b border-gray-200">
+    <div class="h-6 bg-gray-200 rounded w-48 animate-pulse"></div>
+  </header>
+
+  <div class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 border-b border-gray-200">
+    @for(i of [1,2,3,4,5]; track i) {
+      <div [ngClass]="{'justify-end': i % 2 === 0, 'justify-start': i % 2 !== 0}" class="flex">
+        <div [ngClass]="{'bg-primary-50': i % 2 === 0, 'bg-white': i % 2 !== 0}"
+             class="w-full max-w-xs h-14 p-3 rounded-lg animate-pulse shadow-sm">
+        </div>
+      </div>
+    }
+  </div>
+
+  <footer class="h-16 bg-white shadow-sm px-6 py-3">
+    <div class="flex items-center space-x-2">
+      <div class="flex-1 bg-gray-100 rounded-md px-4 py-2">
+        <div class="h-6 bg-gray-200 rounded w-full animate-pulse"></div>
+      </div>
+      <div class="w-10 h-10 bg-primary-100 rounded-md animate-pulse"></div>
+    </div>
+  </footer>
+</div>

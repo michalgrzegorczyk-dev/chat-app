@@ -1,22 +1,15 @@
-import {Injectable, inject} from "@angular/core";
-import {
-  ConversationDetailsDto,
-  MessageDto,
-  ReceiveMessageDto
-} from "../../../../../../shared/dto/converstaion-details.dto";
-import {environment} from "../../../../environments/environment";
-import {CHAT_ROUTES, ROUTES_PARAMS} from "../../../app.routes";
-import {map, Subject} from "rxjs";
-import {HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
-import {AuthService} from "../../../shared/auth/utils-auth/auth.service";
-import {ConversationDto} from "../../../../../../shared/dto/conversation.dto";
-import {SOCKET_COMMANDS} from "../../../../../../shared/websocket/websocket.commands";
+import { Injectable, inject } from '@angular/core';
+import { Subject, map, Observable } from 'rxjs';
+import { ReceivedMessage } from '../entities/message.type';
+import { Conversation } from '../entities/conversation.type';
+import { MessageSend } from '../entities/message-send.type';
+import { environment } from '@chat-app/util-configuration';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
+import { AuthService } from '@chat-app/util-auth';
 import {io} from "socket.io-client";
-import {Conversation} from "../entities/conversation.type";
-import {MessageSend} from "../entities/message-send.type";
-import {Message, ReceivedMessage} from "../entities/message.type";
+import { ConversationDetailsDto, ConversationDto, SOCKET_COMMANDS, ReceiveMessageDto } from '@chat-app/dtos';
+import { ROUTES_PARAMS, CHAT_ROUTES } from '../../../../../../../apps/web/src/app/app.routes';
 
-// component store, nie powinien wyjsc poza libke, lub mocno przemyles
 
 @Injectable({
   providedIn: 'root'
@@ -34,8 +27,7 @@ export class ChatInfrastructureService {
     this.setupSocketListeners();
   }
 
-  getConversationDetails(sc: Conversation) {
-
+  getConversationContent(sc: Conversation) {
     const headers = new HttpHeaders().set('X-User-Id', this.authService.user().id);
     const params = new HttpParams().set(ROUTES_PARAMS.USER_ID, this.authService.user().id).set(ROUTES_PARAMS.CONVERSATION_ID, sc.conversationId);
 
@@ -62,13 +54,14 @@ export class ChatInfrastructureService {
     }))
   }
 
-  fetchConversations() {
+  fetchConversations(): Observable<Conversation[]> {
     const headers = new HttpHeaders().set('X-User-Id', this.authService.user().id);
     return this.http.get<ConversationDto[]>(`${environment.apiUrl}/chat/conversations`, {headers}).pipe(
-      map((conversations: ConversationDto[]) => {
-        return conversations.map((conversation: ConversationDto) => {
+      map((conversationDtoList: ConversationDto[]) => {
+        return conversationDtoList.map((conversationDto: ConversationDto) => {
+          console.log(conversationDto);
           return {
-            ...conversation,
+            ...conversationDto,
             active: false,
           };
         });

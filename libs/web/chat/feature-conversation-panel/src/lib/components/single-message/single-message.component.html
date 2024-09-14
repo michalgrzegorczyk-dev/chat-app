@@ -1,0 +1,24 @@
+<div
+  [ngClass]="{'justify-end': message.senderId === currentUserId, 'justify-start': message.senderId !== currentUserId}"
+  class="flex items-end space-x-2">
+  @if (message.senderId !== currentUserId) {
+    <img [src]="message.senderId | userDetail : 'avatarUrl'"
+         [alt]="'Avatar of user with id: ' + (message.senderId | userDetail : 'name' )"
+         class="w-8 h-8 rounded-full object-cover">
+  }
+  <div [ngClass]="{
+             'bg-primary-50 text-gray-800': message.senderId === currentUserId,
+             'bg-white text-gray-800': message.senderId !== currentUserId,
+             'order-1': message.senderId === currentUserId
+           }"
+       class="max-w-xs p-3 rounded-lg shadow-sm">
+    <p>{{ message.content }}</p>
+    <p class="text-xs mt-1 text-gray-500">
+      {{ message.createdAt | date:'short' }}
+    </p>
+  </div>
+
+  @if (message.senderId === currentUserId) {
+    <div class="w-8"></div>
+  }
+</div>

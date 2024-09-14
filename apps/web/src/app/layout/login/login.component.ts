@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, OnInit, signal, inject, DestroyRef } from '@angular/core';
 import { NgFor, NgIf, JsonPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AccountComponent, AccountListComponent } from '@chat-app/feature-account';
+import { AccountWidgetComponent, AccountListComponent } from '@chat-app/feature-account';
 import { User } from '@chat-app/domain';
 import { Router } from '@angular/router';
 import { AuthService } from '@chat-app/util-auth';
@@ -13,7 +13,7 @@ import { ROUTES } from '../../app.routes';
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
-  imports: [NgFor, NgIf, FormsModule, JsonPipe, AccountComponent, AccountListComponent],
+  imports: [NgFor, NgIf, FormsModule, JsonPipe, AccountWidgetComponent, AccountListComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent implements OnInit {

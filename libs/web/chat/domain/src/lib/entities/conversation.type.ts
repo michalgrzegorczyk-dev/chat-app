@@ -5,6 +5,6 @@ export interface Conversation {
   chatType: string;
   active: boolean;
   lastMessageContent?: string;
-  lastMessageTimestamp?: string;
+  lastMessageTimestamp: string;
   lastMessageSenderId?: string;
 }

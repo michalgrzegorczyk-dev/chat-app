@@ -19,6 +19,13 @@ There is no authorization of the user but you can select predefined users to cha
 ~~- **Create Conversations**: Users can create 1-1 or group conversations with other users.~~ <br>
 ~~- **Delete Conversations**: Users can delete conversations they are a part of.~~
 
+## Todo
+- **Message Drafts**: Users can save drafts of messages they are composing.
+- **Dockerize**: Dockerize the application for easy running and deployment.
+- **Tests**: Add tests for the frontend and backend applications.
+- **Error Handling**: Add error handling for the frontend and backend applications.
+- **Conversation Details**: Add details to conversations like the number of messages, participants, etc.
+
 ## Technologies Used
 - **Angular**: Frontend framework for building the user interface.
 - **Nx**: Monorepo tool for managing the project.

@@ -64,7 +64,13 @@ npm start
 ## Project Structure
 
 - **apps**: Contains the frontend and backend applications.
+- **apps/web**: Contains the Angular frontend application.
 - **libs**: Contains shared code and utilities.
+- **libs/shared/dtos**: Contains data transfer objects used by the frontend and backend.
+- **libs/web/chat**: Contains the core Angular chat feature.
+- **libs/web/account**: Contains the Angular account feature that contains info about users.
+- **libs/web/shared**: Contains shared code and utilities like auth, design-system or configurations used by the Angular frontend.
+
 
 ## License
 

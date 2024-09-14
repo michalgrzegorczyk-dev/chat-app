@@ -59,12 +59,12 @@ There is no authorization of the user but you can select predefined users to cha
 To start the development server:
 ```bash
 npm start
+```
 
 ## Project Structure
 
 - **apps**: Contains the frontend and backend applications.
 - **libs**: Contains shared code and utilities.
-```
 
 ## License
 

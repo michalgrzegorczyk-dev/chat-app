@@ -64,6 +64,7 @@ npm start
 
 - **apps**: Contains the frontend and backend applications.
 - **libs**: Contains shared code and utilities.
+```
 
 ## License
 

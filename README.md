@@ -25,6 +25,7 @@ There is no authorization of the user but you can select predefined users to cha
 - **Tests**: Add tests for the frontend and backend applications.
 - **Error Handling**: Add error handling for the frontend and backend applications.
 - **Conversation Details**: Add details to conversations like the number of messages, participants, etc.
+- **Refactor**: Add some fancy liters and refactor the code to make it more readable and maintainable.
 
 ## Technologies Used
 - **Angular**: Frontend framework for building the user interface.
@@ -68,7 +69,7 @@ There is no authorization of the user but you can select predefined users to cha
 ### Running the Application
 To start the development server:
 ```bash
-npm start
+todo
 ```
 
 ## Project Structure

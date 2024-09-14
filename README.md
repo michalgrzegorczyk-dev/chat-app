@@ -12,8 +12,8 @@ There is no authorization of the user but you can select predefined users to cha
 - **Select Predefined User**: Users can select a user to chat with from a list of predefined users.
 - **Send Messages**: Users can send messages to other users in a conversation.
 - **Receive Messages**: Users can receive messages from other users in a conversation.
-- **View Messages**: Users can view messages in a conversation.<br>
-- **View Conversations**: Users can view a list of conversations they are a part of.
+- **View Messages**: Users can view messages in a conversation.
+- **View Conversations**: Users can view a list of conversations they are a part of.<br>
 ~~- **Create Conversations**: Users can create 1-1 or group conversations with other users.~~ <br>
 ~~- **Delete Conversations**: Users can delete conversations they are a part of.~~
 

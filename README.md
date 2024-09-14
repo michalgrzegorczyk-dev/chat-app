@@ -1,43 +1,70 @@
-# Project Name
+# Chat App
 
-## Overview
-This project is built using TypeScript and Angular, with Tailwind CSS for styling. It includes shared DTOs for user and conversation management.
+<images????>
 
-## Project Structure
-- `libs/shared/dtos/src/lib/dto/`
-  - `user.dto.ts`: Contains the `UserDto` type.
-  - `conversation-details.dto.ts`: Contains interfaces for `ConversationDetailsDto`, `MemberDto`, `MessageDto`, and `ReceiveMessageDto`.
-  - `conversation.dto.ts`: Contains the `ConversationDto` interface.
-- `apps/web/src/styles.scss`: Contains Tailwind CSS imports.
+## Description
 
+This is a test app to explore and play with web sockets, Nx, Tailwind, RxAngular and zoneless change detection in 
+Angular. The app is a simple chat application that allows users to create conversations and send messages to each other.
+There is no authorization of the user but you can select predefined users to chat with.
+
+## Features
+- **Select User**: Users can select a user to chat with from a list of predefined users.
+- **Create Conversations**: Users can create 1-1 or group conversations with other users.
+- **Send Messages**: Users can send messages to other users in a conversation.
+- **Receive Messages**: Users can receive messages from other users in a conversation.
+- **View Conversations**: Users can view a list of conversations they are a part of.
+- **View Messages**: Users can view messages in a conversation.
+- 
 ## Technologies Used
-- **TypeScript**
-- **JavaScript**
-- **Angular**
-- **Tailwind CSS**
-- **npm**
+- **Angular**: Frontend framework for building the user interface.
+- **Nx**: Monorepo tool for managing the project.
+- **Tailwind CSS**: Utility-first CSS framework for styling the user interface.
+- **RxAngular**: Reactive programming library for managing state and side effects.
+- **Socket.IO**: Library for real-time web applications using WebSockets.
+- **NestJS**: Backend framework for building the server.
+- **Supabase**: Backend-as-a-Service for managing the database.
 
 ## Getting Started
 
 ### Prerequisites
-- Node.js
-- npm
+- pnpm
+- Nx CLI
+- Supabase account
 
 ### Installation
 1. Clone the repository:
     ```bash
-    git clone https://github.com/your-repo/project-name.git
+    git clone https://github.com/michalgrzegorczyk-dev/chat-app.git
     ```
 2. Navigate to the project directory:
     ```bash
-    cd project-name
+    cd chat-app
     ```
 3. Install dependencies:
     ```bash
-    npm install
+    pnpm install
+    ```
+4. Create a `.env` file in the root of the project and add the following environment variables:
+    ```bash
+    SUPABASE_URL=<supabase-url>
+    SUPABASE_KEY=<supabase-key>
+    ```
+5. Start both apps:
+    ```bash
+    pnpm start
     ```
 
 ### Running the Application
 To start the development server:
 ```bash
 npm start
+
+## Project Structure
+
+- **apps**: Contains the frontend and backend applications.
+- **libs**: Contains shared code and utilities.
+
+## License
+
+This project is licensed under the MIT License. See the `LICENSE` file for details.

@@ -1,6 +1,8 @@
 # Chat App
 
-<images????>
+![Chat App - Login Page](./apps/web/public/image1.png)
+![Chat App - Core](./apps/web/public/image2.png)
+
 
 ## Description
 

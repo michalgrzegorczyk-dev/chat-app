@@ -9,6 +9,12 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
+// nie powinienes robic importow relatywnych
+// to jest import na tym samym poziomie (ui)
+// design system powinien byc jedna duza libka (ewentualnie w przypadku duzych design systemow mozna to podzielic dodatkowo na core)
+// zobacz sobie jak to robi angular material czy mui
+// jezeli design system bedzie jedna libka to bedziesz mogl robic importy relatywne
+// dodatkowo unikniesz posiadania pieryliona libek (dla kazdego komponentu) co powoduje problemy w wiekszych projektach (eslint dlugo sie wykonuje)
 import { ButtonComponent } from '../../../../ui-button/src/lib/button/button.component';
 
 @Component({
@@ -23,6 +29,7 @@ export class ModalComponent implements AfterViewInit {
   readonly isOpen = signal(false);
   readonly title = signal('title');
 
+  // nie uzywaj any
   private contentComponentRef: ComponentRef<any> | null = null;
   private pendingContentComponent: Type<any> | null = null;
 

@@ -23,6 +23,8 @@ const INITIAL_STATE: ChatState = {
   memberIdMap: new Map()
 };
 
+// strasznie duzo tutaj kodu. zastanowilbym sie nad rozbiciem tego na kilka storow: ConversationStore, MessageStore, User/MemberStore
+// zastanowilbym sie nad rozbiciem na read-write (tutaj jest definicja api store + pobranie danych (efekty). rozbilbym to na osobne pliki, bedzie latwiej sie czytalo kod
 @Injectable({
   providedIn: 'root'
 })

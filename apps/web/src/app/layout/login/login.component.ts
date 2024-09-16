@@ -6,7 +6,7 @@ import { User } from '@chat-app/domain';
 import { Router } from '@angular/router';
 import { AuthService } from '@chat-app/util-auth';
 import { first } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ROUTES } from '../../app.routes';
 
 @Component({
@@ -16,23 +16,18 @@ import { ROUTES } from '../../app.routes';
   imports: [NgFor, NgIf, FormsModule, JsonPipe, AccountWidgetComponent, AccountListComponent],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class LoginComponent implements OnInit {
-  readonly users = signal<User[]>([]);
-  private readonly router = inject(Router);
+export class LoginComponent {
   private readonly authService = inject(AuthService);
+  // to samo, a szybciej
+  users = toSignal(this.authService.getAllUsers());
+  // readonly users = signal<User[]>([]);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
-
-  ngOnInit(): void {
-    this.authService.getAllUsers().pipe(
-      first(),
-      takeUntilDestroyed(this.destroyRef)
-    ).subscribe((response: User[]) => {
-      this.users.set(response);
-    });
-  }
 
   async onSelectUser(user: User): Promise<void> {
     this.authService.setUser(user);
+    // uzywajac routes nie powinienes wiedziec czy musisz dodac / na poczatku/koncu
+    // lepszym rozwiazaneim jest uzycie obiektu, ktory zwraca funkcje, np routes.chat.url() -> taka funkcja zwroci route z /
     await this.router.navigate([`/${ROUTES.CHAT}`]);
   }
 }

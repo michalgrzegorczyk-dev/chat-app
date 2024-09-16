@@ -4,6 +4,14 @@ export const environment = {
   websocketUrl: 'http://localhost:3000'
 };
 
+// 1. konfiguracja powinna byc zrobiona per apke (powinna znalezc sie w aplikacji)
+// minusem stosowania envow per srodowisko jest to, ze musisz generowac osobny build (zbudowac apke per srodowisko)
+// z punktu widzenia testera testujesz inna aplikacje (inny build)
+// zamiast tego mozna to ograc zmiennymi konfiguracyjnymi (replace token na ci/cd, albo plikiem config.js zaciaganym w html)
+
+
+
+
 // todo maybe
 // export interface EnvironmentConfig {
 //   apiUrl: string;

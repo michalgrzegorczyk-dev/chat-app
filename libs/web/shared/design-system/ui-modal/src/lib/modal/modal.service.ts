@@ -5,7 +5,11 @@ import {ModalComponent} from './modal.component';
   providedIn: 'root'
 })
 export class ModalService {
+  // uzywaj ! kiedy tylko musisz, inaczej ts nie bedzie dobrze podpowiadal.
+  // w linijce 35 i tak sprawdzasz czy modalComponentRef istnieje. jak usuniesz ! to ts podpowie takie rzeczy
   private modalComponentRef!: ComponentRef<ModalComponent>;
+  // uzywaj ! kiedy tylko musisz, inaczej ts nie bedzie dobrze podpowiadal.
+  // w linijce 22 i tak sprawdzasz czy rootViewContainer istnieje. jak usuniesz ! to ts podpowie takie rzeczy
   private rootViewContainer!: ViewContainerRef;
 
   setRootViewContainerRef(viewContainerRef: ViewContainerRef): void {

@@ -1,5 +1,7 @@
 import {Component, ChangeDetectionStrategy, input, output} from "@angular/core";
 import {JsonPipe, NgClass} from "@angular/common";
+// to jest inna domena niz chat-app, tak?
+// jak tak to te typy powinny byc osobne, tj domeny powinny byc niezalezne. User w chat-app moze byc czyms innym niz user w Account
 import { User } from '@chat-app/domain';
 
 @Component({

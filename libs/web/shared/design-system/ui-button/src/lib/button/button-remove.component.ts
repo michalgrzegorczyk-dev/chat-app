@@ -1,5 +1,8 @@
 import {Component, output, ChangeDetectionStrategy} from "@angular/core";
 
+// w ten sposob bedziesz mial pierdyliard roznych buttonow
+// lepiej podzielic to tak, ze masz baseButton i na nim robisz inne buttony
+// jak chcesz miec remove to robisz IconButton do ktorego mozesz przekazac ikone (mozesz to zrobic jako typ icon='remove')
 @Component({
   selector: 'app-button-remove',
   standalone: true,

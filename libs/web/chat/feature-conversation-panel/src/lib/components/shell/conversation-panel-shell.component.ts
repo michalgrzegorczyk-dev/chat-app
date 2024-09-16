@@ -3,6 +3,7 @@ import {ConversationLoadingComponent} from "../conversation-loading/conversation
 import {ConversationDetailsComponent} from "../conversation/conversation.component";
 import { ChatStoreService } from '@chat-app/domain';
 
+// nazwalbym to jakos inaczej niz shell. moze po prostu conversation-panel? shell raczej stosuje sie do wiekszych rzeczy (w momencie gdy renderujesz cale funkcjonalnosci, a nie robisz prosty switch isloading)
 @Component({
   selector: 'lib-conversation-panel-shell',
   standalone: true,

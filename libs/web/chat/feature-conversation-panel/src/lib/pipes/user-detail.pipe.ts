@@ -1,6 +1,7 @@
 import {Pipe, inject, PipeTransform} from "@angular/core";
 import { ChatStoreService, UserKeys } from '@chat-app/domain';
 
+// masz tylko jeden pipe, nie ma sensu tworzenia osobnego katalogu
 @Pipe({
   name: 'userDetail',
   standalone: true

@@ -40,6 +40,7 @@ export const appRoutes: Routes = [
     component: ChatComponent,
     children: [
       {
+        // nie powinienes wiedziec ze musisz dodac :. lepiej uzyc funkcji, np routes.chat.conversation.path() -> taka funkcja zwroci url z parametrem
         path: `:${ROUTES_PARAMS.CONVERSATION_ID}`,
         component: ConversationPanelShellComponent
       }

@@ -1,5 +1,6 @@
 import {Directive, ElementRef, AfterViewInit, NgZone, inject, OnInit} from '@angular/core';
 
+// masz tylko jedna dyrektywe, nie ma sensu tworzenia osobnego katalogu
 @Directive({
   selector: '[libScrollToBottom]',
   standalone: true,

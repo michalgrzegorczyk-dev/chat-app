@@ -1,5 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
+// wczesniej masz komponenty na tym samym poziomie nazwane conversation-add, conversation-list itd
+// tutaj jest wyjatek - jest dodatkowy katalog z jednym plikiem, nie ma to sensu
+// wynioslbym pipes na ten sam poziom co lib
 @Pipe({
   name: 'relativeTime',
   standalone: true

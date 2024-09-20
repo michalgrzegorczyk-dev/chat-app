@@ -1,7 +1,7 @@
 import {Component, inject} from "@angular/core";
-import {ConversationLoadingComponent} from "../conversation-loading/conversation-loading.component";
-import {ConversationDetailsComponent} from "../conversation/conversation.component";
+import {ConversationLoadingComponent} from "../conversation/loading/conversation-loading.component";
 import { ChatStoreService } from '@chat-app/domain';
+import { ConversationDetailsComponent } from '../conversation/conversation.component';
 
 @Component({
   selector: 'lib-conversation-panel-shell',

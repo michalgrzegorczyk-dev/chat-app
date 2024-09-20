@@ -1,13 +1,13 @@
 import { Component, ChangeDetectionStrategy, input, output, inject } from '@angular/core';
 import { NgClass, JsonPipe, AsyncPipe, DatePipe } from '@angular/common';
-import { RelativeTimePipe } from '../pipes/relative-time.pipe';
+import { RelativeTimePipe } from '../../relative-time.pipe';
 import { ButtonComponent, ButtonRemoveComponent } from '@chat-app/ui-button';
 // import { Conversation } from '@chat-app/domain';
 import { AuthService } from '@chat-app/util-auth';
 import { ModalService } from '@chat-app/ui-modal';
 import { Conversation } from '@chat-app/domain';
-import { ConversationAddComponent } from '../conversation-add/conversation-add.component';
-import { ConversationRemoveComponent } from '../conversation-remove/conversation-remove.component';
+import { ConversationAddComponent } from '../add/conversation-add.component';
+import { ConversationRemoveComponent } from '../remove/conversation-remove.component';
 
 @Component({
   selector: 'lib-conversation-list',

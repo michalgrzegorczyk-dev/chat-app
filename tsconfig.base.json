@@ -35,8 +35,7 @@
       "@chat-app/util-auth": ["libs/web/shared/auth/util-auth/src/index.ts"],
       "@chat-app/util-configuration": [
         "libs/web/shared/util-configuration/src/index.ts"
-      ],
-      "@chat-app/utils": ["libs/web/chat/utils/src/index.ts"]
+      ]
     }
   },
   "exclude": ["node_modules", "tmp"]

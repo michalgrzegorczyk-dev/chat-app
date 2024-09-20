@@ -1,8 +1,8 @@
 import {Component, ChangeDetectionStrategy, inject, ViewChild, ElementRef} from "@angular/core";
 import {NgForOf, NgClass, NgIf, DatePipe} from "@angular/common";
-import {UserDetailPipe} from "../../pipes/user-detail.pipe";
-import {SingleMessageComponent} from "../single-message/single-message.component";
-import {ScrollToBottomDirective} from "../../directives/scroll-bottom.directive";
+import {UserDetailPipe} from "../../user-detail.pipe";
+import {SingleMessageComponent} from "../single/single-message.component";
+import {ScrollToBottomDirective} from "../../scroll-bottom.directive";
 import { AuthService } from '@chat-app/util-auth';
 import { ChatStoreService } from '@chat-app/domain';
 

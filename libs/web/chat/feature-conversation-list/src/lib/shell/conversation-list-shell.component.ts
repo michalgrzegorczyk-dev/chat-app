@@ -1,9 +1,9 @@
 import {Component, inject, OnInit, ChangeDetectionStrategy} from "@angular/core";
-import {ConversationListLoadingComponent} from "../conversation-list-loading/conversation-list-loading.component";
-import {ConversationsComponent} from "../conversation-list/converstaion-list.component";
+import {ConversationListLoadingComponent} from "../conversation/list-loading/conversation-list-loading.component";
+import {ConversationsComponent} from "../conversation/list/converstaion-list.component";
 import {JsonPipe} from "@angular/common";
 import { ChatStoreService, Conversation } from '@chat-app/domain';
-import { RelativeTimePipe } from '../pipes/relative-time.pipe';
+import { RelativeTimePipe } from '../relative-time.pipe';
 
 @Component({
   selector: 'lib-conversation-list-shell',

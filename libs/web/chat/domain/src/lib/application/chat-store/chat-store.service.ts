@@ -10,8 +10,8 @@ import {Conversation} from "../../entities/conversation.type";
 import {MessageSend} from "../../entities/message-send.type";
 import {ConversationDetails} from "../../entities/conversation-content.type";
 import { ROUTES } from '../../../../../../../../apps/web/src/app/app.routes';
-import { sortConversationsByLastMessageTimestamp } from '@chat-app/utils';
 import { User } from '../../entities/user.type';
+import { sortConversationsByLastMessageTimestamp } from '../utils';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],

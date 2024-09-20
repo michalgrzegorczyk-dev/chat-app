@@ -5,7 +5,7 @@ import { AccountWidgetComponent, AccountListComponent } from '@chat-app/feature-
 import { User } from '@chat-app/domain';
 import { Router } from '@angular/router';
 import { AuthService } from '@chat-app/util-auth';
-import { ROUTES, routing } from '../../app.routes';
+import { routing } from '../../app.routes';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({

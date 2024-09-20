@@ -1,9 +1,9 @@
 import {Component, ChangeDetectionStrategy} from "@angular/core";
 import {DatePipe, NgForOf, NgClass, NgIf, JsonPipe} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {ConversationHeaderComponent} from "../conversation-header/conversation-header.component";
-import {MessageListComponent} from "../message-list/message-list.component";
-import {SendMessageInputComponent} from "../send-message-input/send-message-input.component";
+import { ConversationHeaderComponent } from './header/conversation-header.component';
+import { MessageListComponent } from '../message/list/message-list.component';
+import { SendMessageInputComponent } from '../message/send/send-message-input.component';
 
 @Component({
   selector: 'lib-conversation',

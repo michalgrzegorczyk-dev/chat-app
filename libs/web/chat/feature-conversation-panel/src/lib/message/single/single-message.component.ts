@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {UserDetailPipe} from "../../pipes/user-detail.pipe";
+import {UserDetailPipe} from "../../user-detail.pipe";
 import { Message } from '@chat-app/domain';
 
 @Component({

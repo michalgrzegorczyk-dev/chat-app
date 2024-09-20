@@ -4,7 +4,7 @@ import { ChatStoreService, MessageSend } from '@chat-app/domain';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 
 @Component({
-  selector: 'lib-send-message-input',
+  selector: 'mg-send-message-input',
   standalone: true,
   templateUrl: './send-message-input.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

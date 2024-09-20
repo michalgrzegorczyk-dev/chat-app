@@ -1,7 +1,7 @@
 import {Component} from "@angular/core";
 
 @Component({
-  selector: 'lib-conversation-list-loading',
+  selector: 'mg-conversation-list-loading',
   standalone: true,
   template:
     `

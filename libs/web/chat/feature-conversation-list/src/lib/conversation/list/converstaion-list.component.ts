@@ -16,7 +16,7 @@ import { ConversationAddComponent } from '../add/conversation-add.component';
 import { ConversationRemoveComponent } from '../remove/conversation-remove.component';
 
 @Component({
-  selector: 'lib-conversation-list',
+  selector: 'mg-conversation-list',
   templateUrl: './conversation-list.component.html',
   standalone: true,
   imports: [

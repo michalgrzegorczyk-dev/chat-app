@@ -4,7 +4,7 @@ import { ChatStoreService } from '@chat-app/domain';
 import { ConversationDetailsComponent } from '../conversation/conversation.component';
 
 @Component({
-  selector: 'lib-conversation-panel-shell',
+  selector: 'mg-conversation-panel-shell',
   standalone: true,
   imports: [ConversationLoadingComponent, ConversationDetailsComponent],
   templateUrl: './conversation-panel-shell.component.html',

@@ -1,5 +1,5 @@
 @if (conversationListLoading()) {
-  <lib-conversation-list-loading/>
+  <mg-conversation-list-loading/>
 } @else {
-  <lib-conversation-list [conversationList]="conversationList()" (selectConversation)="selectedConversation($event)"/>
+  <mg-conversation-list [conversationList]="conversationList()" (selectConversation)="selectedConversation($event)"/>
 }

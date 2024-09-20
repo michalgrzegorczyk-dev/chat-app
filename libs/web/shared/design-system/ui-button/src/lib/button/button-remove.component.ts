@@ -1,7 +1,7 @@
 import {Component, output, ChangeDetectionStrategy} from "@angular/core";
 
 @Component({
-  selector: 'app-button-remove',
+  selector: 'mg-button-remove',
   standalone: true,
   template: `
     <button (click)="this.click.emit(); $event.stopPropagation()"

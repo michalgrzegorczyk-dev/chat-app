@@ -3,7 +3,7 @@ import {JsonPipe, NgClass} from "@angular/common";
 import { User } from '@chat-app/domain';
 
 @Component({
-  selector: 'lib-account-list',
+  selector: 'mg-account-list',
   templateUrl: './account-list.component.html',
   standalone: true,
   imports: [JsonPipe, NgClass],

@@ -1,4 +1,3 @@
-test commit
 # Chat App (Work In Progress)
 
 ![Chat App - Login Page](./apps/web/public/image1.png)
@@ -9,7 +8,9 @@ test commit
 
 This is a test app to explore and play with web sockets, Nx, Tailwind, RxAngular and zoneless change detection in 
 Angular. The app is a simple chat application that allows users to create conversations and send messages to each other.
-There is no authorization of the user but you can select predefined users to chat with.
+There is no authorization of the user, but you can select predefined users to chat with.
+
+❌ Authorization is not implemented yet because I'm focusing on the core features of the chat app.
 
 ## Features
 - **Select Predefined User**: Users can select a user to chat with from a list of predefined users.

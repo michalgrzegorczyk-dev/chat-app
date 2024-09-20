@@ -1,7 +1,7 @@
 import {Directive, ElementRef, AfterViewInit, NgZone, inject, OnInit} from '@angular/core';
 
 @Directive({
-  selector: '[libScrollToBottom]',
+  selector: '[mgScrollToBottom]',
   standalone: true,
 })
 export class ScrollToBottomDirective implements OnInit, AfterViewInit {

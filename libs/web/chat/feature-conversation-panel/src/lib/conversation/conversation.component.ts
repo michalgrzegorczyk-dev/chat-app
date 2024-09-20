@@ -6,7 +6,7 @@ import { MessageListComponent } from '../message/list/message-list.component';
 import { SendMessageInputComponent } from '../message/send/send-message-input.component';
 
 @Component({
-  selector: 'lib-conversation',
+  selector: 'mg-conversation',
   standalone: true,
   templateUrl: './conversation.component.html',
   imports: [

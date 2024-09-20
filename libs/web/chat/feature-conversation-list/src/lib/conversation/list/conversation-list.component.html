@@ -26,16 +26,16 @@
           </span>
         </div>
       </div>
-      <app-button-remove (click)="removedConversation(conversation)" class="ml-2"/>
+      <mg-button-remove (click)="removedConversation(conversation)" class="ml-2"/>
     </li>
   }
 </ul>
 
 <div class="px-2 mt-2">
-  <app-button (click)="addNewConversation()" buttonText="Add New Conversation">
+  <mg-button (click)="addNewConversation()" buttonText="Add New Conversation">
     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
          xmlns="http://www.w3.org/2000/svg">
       <path d="M12 4v16m8-8H4" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
     </svg>
-  </app-button>
+  </mg-button>
 </div>

@@ -3,7 +3,7 @@ import { NgClass } from '@angular/common';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 
 @Component({
-  selector: 'lib-account-widget',
+  selector: 'mg-account-widget',
   templateUrl: './account-widget.component.html',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

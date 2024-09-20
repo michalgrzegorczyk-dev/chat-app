@@ -11,7 +11,7 @@ import { ConversationListShellComponent } from '@chat-app/feature-conversation-l
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-chat',
+  selector: 'mg-chat',
   standalone: true,
   imports: [
     AccountWidgetComponent,

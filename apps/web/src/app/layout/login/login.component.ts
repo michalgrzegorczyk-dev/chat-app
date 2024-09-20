@@ -12,7 +12,7 @@ import { routing } from '../../app.routes';
 import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
-  selector: 'app-login',
+  selector: 'mg-login',
   standalone: true,
   templateUrl: './login.component.html',
   imports: [

@@ -4,7 +4,7 @@ import {UserDetailPipe} from "../../user-detail.pipe";
 import { Message } from '@chat-app/domain';
 
 @Component({
-  selector: 'lib-message',
+  selector: 'mg-message',
   standalone: true,
   imports: [CommonModule, UserDetailPipe],
   templateUrl: './single-message.component.html',

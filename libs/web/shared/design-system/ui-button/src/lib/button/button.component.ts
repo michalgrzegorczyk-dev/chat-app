@@ -1,7 +1,7 @@
 import {Component, input, output, ChangeDetectionStrategy} from "@angular/core";
 
 @Component({
-  selector: 'app-button',
+  selector: 'mg-button',
   standalone: true,
   template: `
     <button (click)="this.click.emit()"

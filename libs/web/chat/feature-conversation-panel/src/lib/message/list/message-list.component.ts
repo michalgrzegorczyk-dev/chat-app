@@ -13,7 +13,7 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
 import { ChatStoreService } from '@chat-app/domain';
 
 @Component({
-  selector: 'lib-message-list',
+  selector: 'mg-message-list',
   templateUrl: './message-list.component.html',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,

@@ -6,7 +6,7 @@ import { ChatStoreService, Conversation } from '@chat-app/domain';
 import { RelativeTimePipe } from '../relative-time.pipe';
 
 @Component({
-  selector: 'lib-conversation-list-shell',
+  selector: 'mg-conversation-list-shell',
   standalone: true,
   imports: [ConversationListLoadingComponent, ConversationsComponent, JsonPipe, RelativeTimePipe],
   templateUrl: './conversation-list-shell.component.html',

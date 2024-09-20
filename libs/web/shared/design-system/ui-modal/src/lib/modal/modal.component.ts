@@ -9,10 +9,10 @@ import {
   ChangeDetectionStrategy
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
-import { ButtonComponent } from '../../../../ui-button/src/lib/button/button.component';
+import { ButtonComponent } from '@chat-app/ui-button';
 
 @Component({
-  selector: 'lib-modal',
+  selector: 'mg-modal',
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   templateUrl: './modal.component.html',

@@ -12,6 +12,7 @@ There is no authorization of the user, but you can select predefined users to ch
 
 ❌ Authorization is not implemented yet because I'm focusing on the core features of the chat app.
 ❌ System design is implemented partially, but I'm focusing on the core features of the chat app.
+🎯 https://rxdb.info/
 
 ## Features
 - **Select Predefined User**: Users can select a user to chat with from a list of predefined users.

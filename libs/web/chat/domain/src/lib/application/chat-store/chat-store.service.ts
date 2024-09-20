@@ -11,7 +11,7 @@ import {MessageSend} from "../../entities/message-send.type";
 import {ConversationDetails} from "../../entities/conversation-content.type";
 import { ROUTES } from '../../../../../../../../apps/web/src/app/app.routes';
 import { User } from '../../entities/user.type';
-import { sortConversationsByLastMessageTimestamp } from '../utils';
+import { sortConversationsByLastMessageTimestamp } from '../sort-conversations';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],

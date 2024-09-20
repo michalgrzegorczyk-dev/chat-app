@@ -32,24 +32,20 @@ import { ConversationRemoveComponent } from '../remove/conversation-remove.compo
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationsComponent {
-  conversationList = input.required<Conversation[]>();
-
-  selectConversation = output<Conversation>();
+  readonly conversationList = input.required<Conversation[]>();
+  readonly selectConversation = output<Conversation>();
   readonly user = inject(AuthService).user;
   private readonly modalService = inject(ModalService);
 
-  selectedConversation(conversation: Conversation) {
+  selectedConversation(conversation: Conversation): void {
     this.selectConversation.emit(conversation);
   }
 
-  removedConversation(conversation: Conversation) {
-    this.modalService.open(
-      ConversationRemoveComponent,
-      `Remove Conversation: ${conversation.name}`
-    );
+  removedConversation(conversation: Conversation): void {
+    this.modalService.open(ConversationRemoveComponent, `Remove Conversation: ${conversation.name}`);
   }
 
-  addNewConversation() {
+  addNewConversation(): void {
     this.modalService.open(ConversationAddComponent, 'Add New Conversation');
   }
 }

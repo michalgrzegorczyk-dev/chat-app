@@ -10,8 +10,8 @@ This is a test app to explore and play with web sockets, Nx, Tailwind, RxAngular
 Angular. The app is a simple chat application that allows users to create conversations and send messages to each other.
 There is no authorization of the user, but you can select predefined users to chat with.
 
-❌ Authorization is not implemented yet because I'm focusing on the core features of the chat app.
-❌ System design is implemented partially, but I'm focusing on the core features of the chat app.
+❌ Authorization is not implemented yet because I'm focusing on the core features of the chat app. <br>
+❌ System design is implemented partially, but I'm focusing on the core features of the chat app. <br>
 🎯 https://rxdb.info/
 
 ## Features

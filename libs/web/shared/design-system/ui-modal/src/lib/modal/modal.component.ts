@@ -8,8 +8,12 @@ import {
   signal,
   ChangeDetectionStrategy
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '@chat-app/ui-button';
+
+export interface ModalContentComponent {
+  // Add any common properties or methods that all modal content components should have
+}
 
 @Component({
   selector: 'mg-modal',
@@ -19,12 +23,12 @@ import { ButtonComponent } from '@chat-app/ui-button';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalComponent implements AfterViewInit {
-  @ViewChild('contentContainer', {read: ViewContainerRef, static: false}) contentViewContainer!: ViewContainerRef;
+  @ViewChild('contentContainer', { read: ViewContainerRef, static: false }) contentViewContainer!: ViewContainerRef;
   readonly isOpen = signal(false);
   readonly title = signal('title');
 
-  private contentComponentRef: ComponentRef<any> | null = null;
-  private pendingContentComponent: Type<any> | null = null;
+  private contentComponentRef: ComponentRef<ModalContentComponent> | null = null;
+  private pendingContentComponent: Type<ModalContentComponent> | null = null;
 
   ngAfterViewInit(): void {
     if (this.pendingContentComponent) {
@@ -33,7 +37,7 @@ export class ModalComponent implements AfterViewInit {
     }
   }
 
-  createContent<T>(contentComponent: Type<T>): ComponentRef<T> | null {
+  createContent<T extends ModalContentComponent>(contentComponent: Type<ModalContentComponent>): ComponentRef<ModalContentComponent> | null {
     if (!this.contentViewContainer) {
       this.pendingContentComponent = contentComponent;
       return null;

@@ -1,9 +1,15 @@
-import {Component, ChangeDetectionStrategy, inject, ViewChild, ElementRef} from "@angular/core";
-import {NgForOf, NgClass, NgIf, DatePipe} from "@angular/common";
-import {UserDetailPipe} from "../../user-detail.pipe";
-import {SingleMessageComponent} from "../single/single-message.component";
-import {ScrollToBottomDirective} from "../../scroll-bottom.directive";
-import { AuthService } from '@chat-app/util-auth';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  inject,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
+import { NgForOf, NgClass, NgIf, DatePipe } from '@angular/common';
+import { UserDetailPipe } from '../../user-detail.pipe';
+import { SingleMessageComponent } from '../single/single-message.component';
+import { ScrollToBottomDirective } from '../../scroll-bottom.directive';
+import { AuthService } from '@chat-app/web/shared/util/auth';
 import { ChatStoreService } from '@chat-app/domain';
 
 @Component({
@@ -18,7 +24,7 @@ import { ChatStoreService } from '@chat-app/domain';
     UserDetailPipe,
     DatePipe,
     SingleMessageComponent,
-    ScrollToBottomDirective
+    ScrollToBottomDirective,
   ],
   styles: [
     `
@@ -28,8 +34,8 @@ import { ChatStoreService } from '@chat-app/domain';
         flex-grow: 1;
         overflow-y: auto;
       }
-    `
-  ]
+    `,
+  ],
 })
 export class MessageListComponent {
   readonly user = inject(AuthService).user;

@@ -1,10 +1,13 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NgFor, NgIf, JsonPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AccountWidgetComponent, AccountListComponent } from '@chat-app/feature-account';
+import {
+  AccountWidgetComponent,
+  AccountListComponent,
+} from '@chat-app/feature-account';
 import { User } from '@chat-app/domain';
 import { Router } from '@angular/router';
-import { AuthService } from '@chat-app/util-auth';
+import { AuthService } from '@chat-app/web/shared/util/auth';
 import { routing } from '../../app.routes';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -12,13 +15,22 @@ import { toSignal } from '@angular/core/rxjs-interop';
   selector: 'app-login',
   standalone: true,
   templateUrl: './login.component.html',
-  imports: [NgFor, NgIf, FormsModule, JsonPipe, AccountWidgetComponent, AccountListComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  imports: [
+    NgFor,
+    NgIf,
+    FormsModule,
+    JsonPipe,
+    AccountWidgetComponent,
+    AccountListComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
   private readonly authService = inject(AuthService);
   //todo
-  readonly users = toSignal(this.authService.getAllUsers(), { initialValue: []})
+  readonly users = toSignal(this.authService.getAllUsers(), {
+    initialValue: [],
+  });
   private readonly router = inject(Router);
 
   async onSelectUser(user: User): Promise<void> {

@@ -11,11 +11,11 @@ import { User } from '@chat-app/domain';
 const USER_PLACEHOLDER = {
   id: '',
   avatarUrl: '',
-  name: ''
+  name: '',
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   //TODO MOVE USER TO ACCOUNT?
@@ -28,9 +28,11 @@ export class AuthService {
   }
 
   isUserLoggedIn() {
-    return this.user().id !== USER_PLACEHOLDER.id &&
+    return (
+      this.user().id !== USER_PLACEHOLDER.id &&
       this.user().avatarUrl !== USER_PLACEHOLDER.avatarUrl &&
-      this.user().name !== USER_PLACEHOLDER.name;
+      this.user().name !== USER_PLACEHOLDER.name
+    );
   }
 
   async logOut(): Promise<void> {
@@ -39,13 +41,15 @@ export class AuthService {
   }
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get<UserDto[]>(`${environment.apiUrl}/chat/users`).pipe(map((response: UserDto[]) => {
-      return response.map((userDto: UserDto) => {
-        return {
-          ...userDto,
-          avatarUrl: userDto.profile_photo_url
-        };
-      });
-    }));
+    return this.http.get<UserDto[]>(`${environment.apiUrl}/chat/users`).pipe(
+      map((response: UserDto[]) => {
+        return response.map((userDto: UserDto) => {
+          return {
+            ...userDto,
+            avatarUrl: userDto.profile_photo_url,
+          };
+        });
+      })
+    );
   }
 }

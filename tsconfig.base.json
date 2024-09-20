@@ -32,9 +32,11 @@
       "@chat-app/ui-modal": [
         "libs/web/shared/design-system/ui-modal/src/index.ts"
       ],
-      "@chat-app/util-auth": ["libs/web/shared/auth/util-auth/src/index.ts"],
       "@chat-app/util-configuration": [
         "libs/web/shared/util-configuration/src/index.ts"
+      ],
+      "@chat-app/web/shared/util/auth": [
+        "libs/web/shared/util/auth/src/index.ts"
       ]
     }
   },

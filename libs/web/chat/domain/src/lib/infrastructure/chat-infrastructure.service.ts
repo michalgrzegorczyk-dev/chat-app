@@ -1,8 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Subject, map, Observable } from 'rxjs';
-import { ReceivedMessage } from '../entities/message.type';
-import { Conversation } from '../entities/conversation.type';
-import { MessageSend } from '../entities/message-send.type';
+import { ReceivedMessage } from '../models/message.type';
+import { Conversation } from '../models/conversation.type';
+import { MessageSend } from '../models/message-send.type';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { io } from 'socket.io-client';

@@ -3,14 +3,14 @@ import {rxState} from '@rx-angular/state';
 import {take, Subject} from "rxjs";
 import {Router} from "@angular/router";
 import {ChatInfrastructureService} from "../../infrastructure/chat-infrastructure.service";
-import {ChatState} from "../../entities/chat-state.type";
+import {ChatState} from "../../models/chat-state.type";
 import {rxEffects} from "@rx-angular/state/effects";
-import {Message, ReceivedMessage} from "../../entities/message.type";
-import {Conversation} from "../../entities/conversation.type";
-import {MessageSend} from "../../entities/message-send.type";
-import {ConversationDetails} from "../../entities/conversation-content.type";
+import {Message, ReceivedMessage} from "../../models/message.type";
+import {Conversation} from "../../models/conversation.type";
+import {MessageSend} from "../../models/message-send.type";
+import {ConversationDetails} from "../../models/conversation-content.type";
 import { ROUTES } from '../../../../../../../../apps/web/src/app/app.routes';
-import { User } from '../../entities/user.type';
+import { User } from '../../models/user.type';
 import { sortConversationsByLastMessageTimestamp } from '../sort-conversations';
 
 const INITIAL_STATE: ChatState = {

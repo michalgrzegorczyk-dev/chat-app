@@ -1,4 +1,4 @@
-import { Conversation } from '../entities/conversation.type';
+import { Conversation } from '../models/conversation.type';
 
 export function sortConversationsByLastMessageTimestamp(conversations: Conversation[]): Conversation[] {
   return conversations.sort((a, b) => {

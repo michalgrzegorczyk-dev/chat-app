@@ -24,6 +24,15 @@ export const CHAT_ROUTES = {
   }
 };
 
+export const routing = {
+  chat: {
+    url: () => `/${ROUTES.CHAT}`,
+    conversation: {
+      path: () => `:${ROUTES_PARAMS.CONVERSATION_ID}`
+    }
+  }
+}
+
 export const appRoutes: Routes = [
   {
     path: '',
@@ -40,7 +49,7 @@ export const appRoutes: Routes = [
     component: ChatComponent,
     children: [
       {
-        path: `:${ROUTES_PARAMS.CONVERSATION_ID}`,
+        path: `${routing.chat.conversation.path()}`,
         component: ConversationPanelShellComponent
       }
     ]

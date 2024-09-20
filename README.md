@@ -11,6 +11,7 @@ Angular. The app is a simple chat application that allows users to create conver
 There is no authorization of the user, but you can select predefined users to chat with.
 
 ❌ Authorization is not implemented yet because I'm focusing on the core features of the chat app.
+❌ System design is implemented partially, but I'm focusing on the core features of the chat app.
 
 ## Features
 - **Select Predefined User**: Users can select a user to chat with from a list of predefined users.

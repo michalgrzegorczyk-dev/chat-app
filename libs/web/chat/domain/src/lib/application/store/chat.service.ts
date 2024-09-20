@@ -1,17 +1,15 @@
 import {Injectable, inject} from '@angular/core';
 import {rxState} from '@rx-angular/state';
-import {take, Subject} from "rxjs";
+import {Subject} from "rxjs";
 import {Router} from "@angular/router";
 import {ChatInfrastructureService} from "../../infrastructure/chat-infrastructure.service";
 import {ChatState} from "../../models/chat-state.type";
-import {rxEffects} from "@rx-angular/state/effects";
 import {Message, ReceivedMessage} from "../../models/message.type";
 import {Conversation} from "../../models/conversation.type";
 import {MessageSend} from "../../models/message-send.type";
-import {ConversationDetails} from "../../models/conversation-content.type";
-import { ROUTES } from '../../../../../../../../apps/web/src/app/app.routes';
 import { User } from '../../models/user.type';
-import { sortConversationsByLastMessageTimestamp } from '../sort-conversations';
+import { sortConversationListByLastMessageTimestamp } from './sort-conversations';
+import { setupChatEffects } from './effects';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -38,14 +36,14 @@ export class ChatStoreService {
   readonly loadConversationList$ = new Subject<void>();
   readonly updateConversationList$ = new Subject<MessageSend>();
 
-  private readonly router = inject(Router);
-  private readonly chatService = inject(ChatInfrastructureService);
+  readonly router = inject(Router);
+  readonly chatService = inject(ChatInfrastructureService);
 
   private readonly rxState = rxState<ChatState>(({set, connect}) => {
     set(INITIAL_STATE);
     connect('conversationListLoading', this.setConversationListLoading$, (state, loading) =>  loading);
     connect('conversationList', this.updateConversationList$, (state, messageSend) => {
-      return sortConversationsByLastMessageTimestamp(state.conversationList.map(conv => {
+      return sortConversationListByLastMessageTimestamp(state.conversationList.map(conv => {
         if (conv.conversationId === messageSend.conversationId) {
           conv.lastMessageContent = messageSend.content;
           conv.lastMessageTimestamp = messageSend.timestamp;
@@ -72,15 +70,12 @@ export class ChatStoreService {
         messageList: state.selectedConversation?.conversationId === message.conversationId
           ? [...state.messageList, message]
           : state.messageList,
-        conversationList: sortConversationsByLastMessageTimestamp(updatedConversations)
+        conversationList: sortConversationListByLastMessageTimestamp(updatedConversations)
       };
     });
     connect('messageList', this.setMessageList$);
     connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
-    connect('conversationList', this.setConversationList$, (state, conversationList) => {
-
-      return conversationList;
-    });
+    connect('conversationList', this.setConversationList$, (state, conversationList) => conversationList);
     connect('messageListLoading', this.setMessageListLoading$);
     connect('memberIdMap', this.setMemberIdMap$);
     connect(this.selectConversation$, (state, conversation) => {
@@ -105,6 +100,8 @@ export class ChatStoreService {
     });
   });
 
+  private readonly effects = setupChatEffects(this);
+
   // READ
   readonly messageList = this.rxState.signal('messageList');
   readonly messageListLoading = this.rxState.signal('messageListLoading');
@@ -114,45 +111,12 @@ export class ChatStoreService {
   readonly selectedConversationLoading = this.rxState.signal('selectedConversationLoading');
   readonly memberList = this.rxState.signal('memberIdMap');
 
-  loadConversationList = () => this.loadConversationList$.next();
-  setMessageList = (messageList: Message[]) => this.setMessageList$.next(messageList);
-  selectConversation = (conversation: Conversation) => this.selectConversation$.next(conversation);
-  setMemberMap = (memberMap: Map<string, User>) => this.setMemberIdMap$.next(memberMap);
+  loadConversationList = (): void => this.loadConversationList$.next();
+  setMessageList = (messageList: Message[]): void => this.setMessageList$.next(messageList);
+  selectConversation = (conversation: Conversation): void => this.selectConversation$.next(conversation);
+  setMemberMap = (memberMap: Map<string, User>): void => this.setMemberIdMap$.next(memberMap);
 
-  private readonly effects = rxEffects(({register}) => {
-    register(this.selectConversation$, (selectedConversation: Conversation | null) => {
-      if (!selectedConversation) {
-        return;
-      }
-
-      this.setMessageListLoading$.next(true);
-      return this.chatService.getConversationContent(selectedConversation).subscribe((conversationDetails: ConversationDetails) => {
-        this.setMessageList(conversationDetails.messageList);
-        this.setMemberMap(new Map(conversationDetails.memberList.map(member => [member.id, member])));
-        this.setMessageListLoading$.next(false);
-      });
-    });
-    register(this.selectConversation$, (conversation: Conversation | null) => {
-      if (!conversation) {
-        return;
-      }
-      this.router.navigate([`/${ROUTES.CHAT}`, conversation.conversationId]);
-    });
-    register(this.loadConversationList$, () => {
-      this.setConversationListLoading$.next(true);
-      this.setConversationList$.next([]);
-      this.chatService.fetchConversations().pipe(take(1)).subscribe((conversationList: Conversation[]) => {
-        console.log('received conversation list', conversationList);
-        this.setConversationList$.next(conversationList);
-        if (conversationList[0]) {
-          this.selectConversation(conversationList[0]);
-        }
-        this.setConversationListLoading$.next(false);
-      });
-    });
-  });
-
-  sendMessage = (msg: MessageSend) => {
+  sendMessage(msg: MessageSend): void {
     this.chatService.sendMessage(msg);
     this.updateConversationList$.next(msg);
   };

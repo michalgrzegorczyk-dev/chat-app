@@ -3,7 +3,6 @@ import { Subject, map, Observable } from 'rxjs';
 import { ReceivedMessage } from '../entities/message.type';
 import { Conversation } from '../entities/conversation.type';
 import { MessageSend } from '../entities/message-send.type';
-import { environment } from '@chat-app/util-configuration';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { io } from 'socket.io-client';
@@ -13,17 +12,16 @@ import {
   SOCKET_COMMANDS,
   ReceiveMessageDto,
 } from '@chat-app/dtos';
-import {
-  ROUTES_PARAMS,
-  CHAT_ROUTES,
-} from '../../../../../../../apps/web/src/app/app.routes';
+import { ROUTES_PARAMS, CHAT_ROUTES } from '../../../../../../../apps/web/src/app/app.routes';
+import { ENVIRONMENT } from '../../../../../../../apps/web/src/environments/environment.token';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ChatInfrastructureService {
   readonly receiveMessage$ = new Subject<ReceivedMessage>();
-  private readonly socket = io(environment.apiUrl, {
+  private readonly environment = inject(ENVIRONMENT);
+  private readonly socket = io(this.environment.apiUrl, {
     transports: ['websocket'],
     withCredentials: true,
   });
@@ -45,7 +43,7 @@ export class ChatInfrastructureService {
 
     return this.http
       .get<ConversationDetailsDto>(
-        `${environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}/${sc.conversationId}`,
+        `${this.environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}/${sc.conversationId}`,
         { params, headers }
       )
       .pipe(
@@ -78,7 +76,7 @@ export class ChatInfrastructureService {
       this.authService.user().id
     );
     return this.http
-      .get<ConversationDto[]>(`${environment.apiUrl}/chat/conversations`, {
+      .get<ConversationDto[]>(`${this.environment.apiUrl}/chat/conversations`, {
         headers,
       })
       .pipe(

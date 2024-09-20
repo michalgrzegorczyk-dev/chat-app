@@ -3,10 +3,9 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
 
-// todo: where to put it
-import { environment } from '../../../../../util-configuration/src/lib/configuration/environments/environment';
 import { UserDto } from '@chat-app/dtos';
 import { User } from '@chat-app/domain';
+import { ENVIRONMENT } from '../../../../../../../../apps/web/src/environments/environment.token';
 
 const USER_PLACEHOLDER = {
   id: '',
@@ -22,6 +21,7 @@ export class AuthService {
   readonly user = signal<User>(USER_PLACEHOLDER);
   private readonly router = inject(Router);
   private readonly http = inject(HttpClient);
+  private readonly environment = inject(ENVIRONMENT);
 
   setUser(user: User) {
     this.user.update(() => user);
@@ -41,7 +41,7 @@ export class AuthService {
   }
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get<UserDto[]>(`${environment.apiUrl}/chat/users`).pipe(
+    return this.http.get<UserDto[]>(`${this.environment.apiUrl}/chat/users`).pipe(
       map((response: UserDto[]) => {
         return response.map((userDto: UserDto) => {
           return {

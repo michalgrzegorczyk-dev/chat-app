@@ -4,6 +4,7 @@ export const environment = {
   websocketUrl: 'http://localhost:3000'
 };
 
+
 // todo maybe
 // export interface EnvironmentConfig {
 //   apiUrl: string;

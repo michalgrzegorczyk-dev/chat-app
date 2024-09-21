@@ -17,8 +17,8 @@ There is no authorization of the user, but you can select predefined users to ch
 ✅ Learn, first time using Supabase (Postgres)<br>
 ✅ Learn, first time using WebSockets (Socket.IO)<br>
 
-❌ Authorization is not implemented yet because I'm focusing on the core features of the chat app. <br>
-❌ System design is implemented partially, but I'm focusing on the core features of the chat app. <br>
+❌ Authorization is not implemented, because I'm focusing on the core features of the chat app. <br>
+❌ System design is implemented partially, because I'm focusing on the core features of the chat app. <br>
 
 🎯 https://rxdb.info/ <br>
 🎯 Maximum strictness in TypeScript <br>

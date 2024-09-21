@@ -16,12 +16,14 @@ There is no authorization of the user, but you can select predefined users to ch
 ✅ Learn, first time using Nx Boundaries<br>
 ✅ Learn, first time using Supabase (Postgres)<br>
 ✅ Learn, first time using WebSockets (Socket.IO)<br>
+
 ❌ Authorization is not implemented yet because I'm focusing on the core features of the chat app. <br>
 ❌ System design is implemented partially, but I'm focusing on the core features of the chat app. <br>
-🎯 https://rxdb.info/
-🎯 Maximum strictness in TypeScript
-🎯 Maximum strictness in ESLint
-🎯 Maximum strictness in NX boundaries
+
+🎯 https://rxdb.info/ <br>
+🎯 Maximum strictness in TypeScript <br>
+🎯 Maximum strictness in ESLint <br>
+🎯 Maximum strictness in NX boundaries <br>
 
 ## Features
 - **Select Predefined User**: Users can select a user to chat with from a list of predefined users.

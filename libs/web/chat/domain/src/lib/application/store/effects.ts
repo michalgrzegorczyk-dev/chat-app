@@ -2,8 +2,7 @@ import { rxEffects } from '@rx-angular/state/effects';
 import { take } from 'rxjs/operators';
 import { ConversationDetails } from '../../models/conversation-content.type';
 import { ChatStoreService } from './chat.service';
-import { ROUTES, routing } from '../../../../../../../../apps/web/src/app/app.routes';
-
+import { routing } from '@chat-app/util-routing';
 
 export function setupChatEffects(store: ChatStoreService) {
   return rxEffects(({ register }) => {

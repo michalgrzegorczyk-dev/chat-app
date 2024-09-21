@@ -1,5 +1,5 @@
 {
-  "extends": ["../../.eslintrc.json"],
+  "extends": ["../../../../../.eslintrc.json"],
   "ignorePatterns": ["!**/*"],
   "overrides": [
     {
@@ -13,7 +13,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "mg",
+            "prefix": "lib",
             "style": "camelCase"
           }
         ],
@@ -21,7 +21,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "mg",
+            "prefix": "lib",
             "style": "kebab-case"
           }
         ]

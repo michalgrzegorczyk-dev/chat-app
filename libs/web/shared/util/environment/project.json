@@ -1,8 +1,8 @@
 {
-  "name": "ui-modal",
+  "name": "environment",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/web/shared/design-system/ui-modal/src",
-  "prefix": "mg",
+  "sourceRoot": "libs/web/shared/util/environment/src",
+  "prefix": "lib",
   "projectType": "library",
   "tags": [],
   "targets": {
@@ -10,7 +10,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/web/shared/design-system/ui-modal/jest.config.ts"
+        "jestConfig": "libs/web/shared/util/environment/jest.config.ts"
       }
     },
     "lint": {

@@ -5,7 +5,8 @@ import { map, Observable } from 'rxjs';
 
 import { UserDto } from '@chat-app/dtos';
 import { User } from '@chat-app/domain';
-import { ENVIRONMENT } from '../../../../../../../../apps/web/src/environments/environment.token';
+import { routing } from '@chat-app/util-routing';
+import { ENVIRONMENT } from '@chat-app/environment';
 
 const USER_PLACEHOLDER = {
   id: '',
@@ -17,7 +18,6 @@ const USER_PLACEHOLDER = {
   providedIn: 'root',
 })
 export class AuthService {
-  //TODO MOVE USER TO ACCOUNT?
   readonly user = signal<User>(USER_PLACEHOLDER);
   private readonly router = inject(Router);
   private readonly http = inject(HttpClient);
@@ -37,7 +37,7 @@ export class AuthService {
 
   async logOut(): Promise<void> {
     this.setUser(USER_PLACEHOLDER);
-    await this.router.navigate(['/auth']);
+    await this.router.navigate([routing.auth.url()]);
   }
 
   getAllUsers(): Observable<User[]> {

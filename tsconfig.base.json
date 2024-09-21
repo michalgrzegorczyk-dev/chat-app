@@ -17,6 +17,9 @@
     "paths": {
       "@chat-app/domain": ["libs/web/chat/domain/src/index.ts"],
       "@chat-app/dtos": ["libs/shared/dtos/src/index.ts"],
+      "@chat-app/environment": [
+        "libs/web/shared/util/environment/src/index.ts"
+      ],
       "@chat-app/feature-account": [
         "libs/web/account/feature-account/src/index.ts"
       ],
@@ -32,6 +35,7 @@
       "@chat-app/ui-modal": [
         "libs/web/shared/design-system/ui-modal/src/index.ts"
       ],
+      "@chat-app/util-routing": ["libs/web/shared/util/routing/src/index.ts"],
       "@chat-app/web/shared/util/auth": [
         "libs/web/shared/util/auth/src/index.ts"
       ]

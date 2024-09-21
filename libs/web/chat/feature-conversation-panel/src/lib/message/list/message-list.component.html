@@ -1,4 +1,4 @@
-<div #messageContainer libScrollToBottom
+<div #messageContainer mgScrollToBottom
      class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50 border-b border-gray-200">
   @for (message of messages(); track message.messageId) {
     <mg-message [message]="message" [currentUserId]="user().id"/>

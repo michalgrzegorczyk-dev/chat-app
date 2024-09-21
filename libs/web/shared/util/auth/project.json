@@ -2,7 +2,7 @@
   "name": "util-auth",
   "$schema": "../../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/web/shared/util/auth/src",
-  "prefix": "lib",
+  "prefix": "mg",
   "projectType": "library",
   "tags": [],
   "targets": {

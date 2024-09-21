@@ -1,6 +1,8 @@
 import {Pipe, inject, PipeTransform} from "@angular/core";
 import { ChatStoreService, UserKeys } from '@chat-app/domain';
 
+
+//todo prefix
 @Pipe({
   name: 'userDetail',
   standalone: true

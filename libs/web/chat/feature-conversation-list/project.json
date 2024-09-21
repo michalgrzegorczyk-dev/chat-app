@@ -2,7 +2,7 @@
   "name": "feature-conversation-list",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/web/chat/feature-conversation-list/src",
-  "prefix": "lib",
+  "prefix": "mg",
   "projectType": "library",
   "tags": [],
   "targets": {

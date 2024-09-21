@@ -2,7 +2,7 @@
   "name": "feature-account",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/web/account/feature-account/src",
-  "prefix": "lib",
+  "prefix": "mg",
   "projectType": "library",
   "tags": [],
   "targets": {

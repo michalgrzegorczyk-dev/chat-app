@@ -4,6 +4,10 @@ export const environment = {
   websocketUrl: 'http://localhost:3000'
 };
 
+// modul
+// forroot
+// inicjalizacja tokena
+//
 
 // todo maybe
 // export interface EnvironmentConfig {

@@ -12,8 +12,8 @@ import {
   SOCKET_COMMANDS,
   ReceiveMessageDto,
 } from '@chat-app/dtos';
-import { ROUTES_PARAMS, CHAT_ROUTES } from '../../../../../../../apps/web/src/app/app.routes';
-import { ENVIRONMENT } from '../../../../../../../apps/web/src/environments/environment.token';
+import { ENVIRONMENT } from '@chat-app/environment';
+import { ROUTES_PARAMS, CHAT_ROUTES } from '@chat-app/util-routing';
 
 @Injectable({
   providedIn: 'root',

@@ -1,10 +1,10 @@
 import { rxEffects } from '@rx-angular/state/effects';
 import { take } from 'rxjs/operators';
 import { ConversationDetails } from '../../models/conversation-content.type';
-import { ChatStoreService } from './chat.service';
+import { ChatStore } from '../chat.store';
 import { routing } from '@chat-app/util-routing';
 
-export function setupChatEffects(store: ChatStoreService) {
+export function setupChatEffects(store: ChatStore) {
   return rxEffects(({ register }) => {
     register(store.selectConversation$, (selectedConversation) => {
       if (!selectedConversation) {
@@ -12,7 +12,7 @@ export function setupChatEffects(store: ChatStoreService) {
       }
 
       store.setMessageListLoading$.next(true);
-      return store.chatService
+      return store.chatInfrastructureService
         .getConversationContent(selectedConversation)
         .subscribe((conversationDetails: ConversationDetails) => {
           store.setMessageList(conversationDetails.messageList);
@@ -41,7 +41,7 @@ export function setupChatEffects(store: ChatStoreService) {
     register(store.loadConversationList$, () => {
       store.setConversationListLoading$.next(true);
       store.setConversationList$.next([]);
-      store.chatService
+      store.chatInfrastructureService
         .fetchConversations()
         .pipe(take(1))
         .subscribe((conversationList) => {

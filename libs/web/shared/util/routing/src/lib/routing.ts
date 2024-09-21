@@ -1,7 +1,8 @@
 export const ROUTES = {
   AUTH: 'auth',
   CHAT: 'chat',
-  USERS: 'users'
+  USERS: 'users',
+  ACCOUNT: 'account'
 };
 
 export const ROUTES_PARAMS = {
@@ -18,21 +19,6 @@ export const CHAT_ROUTES = {
   }
 };
 
-// export const appRoutes: Routes = [
-//   {
-//     path: '',
-//     redirectTo: ROUTES.AUTH,
-//     pathMatch: 'full',
-//   },
-//   {
-//     path: ROUTES.AUTH,
-//     component: LoginComponent,
-//   },
-//   {
-//     path: ROUTES.CHAT,
-//     canActivate: [AuthGuard],
-//     component: ChatC
-
 export const routing = {
   chat: {
     path: () => ROUTES.CHAT,
@@ -44,5 +30,9 @@ export const routing = {
   auth: {
     path: () => ROUTES.AUTH,
     url: () => `/${ROUTES.AUTH}`
+  },
+  account: {
+    path: () => ROUTES.ACCOUNT,
+    url: () => `/${ROUTES.ACCOUNT}`,
   }
 };

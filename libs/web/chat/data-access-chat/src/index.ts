@@ -6,4 +6,4 @@ export * from './lib/models/message.type';
 export * from './lib/models/message-send.type';
 export * from './lib/models/user.type';
 
-export * from './lib/application/store/chat.service';
+export * from './lib/application/chat.store';

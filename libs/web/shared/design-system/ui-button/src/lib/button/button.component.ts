@@ -4,7 +4,7 @@ import {Component, input, output, ChangeDetectionStrategy} from "@angular/core";
   selector: 'mg-button',
   standalone: true,
   template: `
-    <button (click)="this.click.emit()"
+    <button (click)="this.click.emit(); $event.stopPropagation()"
             class="w-full p-2 bg-primary-500 text-white text-sm font-medium rounded-md hover:bg-primary-600
             focus:outline-none focus:ring-2 focus:ring-primary-200 focus:ring-opacity-50 flex items-center
             justify-center transition duration-300 shadow-sm">

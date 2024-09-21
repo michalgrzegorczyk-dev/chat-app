@@ -1,5 +1,5 @@
 import {Component, ChangeDetectionStrategy, inject} from "@angular/core";
-import { ChatStoreService } from '@chat-app/domain';
+import { ChatStore } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-conversation-header',
@@ -8,5 +8,5 @@ import { ChatStoreService } from '@chat-app/domain';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationHeaderComponent {
-  readonly selectedConversation = inject(ChatStoreService).selectedConversation;
+  readonly selectedConversation = inject(ChatStore).selectedConversation;
 }

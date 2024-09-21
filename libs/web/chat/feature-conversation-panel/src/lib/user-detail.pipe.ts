@@ -6,7 +6,7 @@ import { ChatStoreService, UserKeys } from '@chat-app/domain';
   standalone: true
 })
 export class UserDetailPipe implements PipeTransform {
-  private readonly members = inject(ChatStoreService).memberList;
+  private readonly members = inject(ChatStoreService).memberIdMap;
 
   transform(userId: string, detailKey: UserKeys): string {
     if (this.members() && userId) {

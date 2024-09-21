@@ -1,5 +1,10 @@
 @if (messageListLoading()) {
-  <mg-conversation-loading/>
+  <mg-conversation-loading />
 } @else {
-  <mg-conversation/>
+  <div class="flex">
+    <mg-conversation />
+<!--    @defer {-->
+    <mg-conversation-details />
+<!--    }-->
+  </div>
 }

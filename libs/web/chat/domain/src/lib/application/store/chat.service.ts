@@ -109,7 +109,7 @@ export class ChatStoreService {
   readonly conversationListLoading = this.rxState.signal('conversationListLoading');
   readonly selectedConversation = this.rxState.signal('selectedConversation');
   readonly selectedConversationLoading = this.rxState.signal('selectedConversationLoading');
-  readonly memberList = this.rxState.signal('memberIdMap');
+  readonly memberIdMap = this.rxState.signal('memberIdMap');
 
   loadConversationList = (): void => this.loadConversationList$.next();
   setMessageList = (messageList: Message[]): void => this.setMessageList$.next(messageList);

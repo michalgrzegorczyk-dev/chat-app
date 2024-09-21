@@ -4,6 +4,8 @@ import {FormsModule} from "@angular/forms";
 import { ConversationHeaderComponent } from './header/conversation-header.component';
 import { MessageListComponent } from '../message/list/message-list.component';
 import { SendMessageInputComponent } from '../message/send/send-message-input.component';
+import { ButtonRemoveComponent } from '@chat-app/ui-button';
+import { ConversationDetailsComponent } from './details/conversation-details.component';
 
 @Component({
   selector: 'mg-conversation',
@@ -17,7 +19,9 @@ import { SendMessageInputComponent } from '../message/send/send-message-input.co
     NgIf,
     ConversationHeaderComponent,
     MessageListComponent,
-    SendMessageInputComponent
+    SendMessageInputComponent,
+    ButtonRemoveComponent,
+    ConversationDetailsComponent
   ],
   styles: [
     `
@@ -25,11 +29,12 @@ import { SendMessageInputComponent } from '../message/send/send-message-input.co
         display: flex;
         flex-direction: column;
         height: 100vh;
+        flex-grow: 1;
       }
     `
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ConversationDetailsComponent {
+export class ConversationComponent {
 
 }

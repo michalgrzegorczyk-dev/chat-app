@@ -3,7 +3,7 @@ export default {
   displayName: 'domain',
   preset: '../../../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
-  coverageDirectory: '../../../../coverage/libs/web/chat/data-access',
+  coverageDirectory: '../../../../coverage/libs/web/chat/data-access-chat',
   transform: {
     '^.+\\.(ts|mjs|js|html)$': [
       'jest-preset-angular',

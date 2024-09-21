@@ -15,7 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@chat-app/domain": ["libs/web/chat/domain/src/index.ts"],
+      "@chat-app/domain": ["libs/web/chat/data-access/src/index.ts"],
       "@chat-app/dtos": ["libs/shared/dtos/src/index.ts"],
       "@chat-app/environment": [
         "libs/web/shared/util/environment/src/index.ts"

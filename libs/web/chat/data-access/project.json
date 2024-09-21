@@ -1,7 +1,7 @@
 {
   "name": "domain",
   "$schema": "../../../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/web/chat/domain/src",
+  "sourceRoot": "libs/web/chat/data-access/src",
   "prefix": "mg",
   "projectType": "library",
   "tags": [],
@@ -10,7 +10,7 @@
       "executor": "@nx/jest:jest",
       "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
       "options": {
-        "jestConfig": "libs/web/chat/domain/jest.config.ts"
+        "jestConfig": "libs/web/chat/data-access/jest.config.ts"
       }
     },
     "lint": {

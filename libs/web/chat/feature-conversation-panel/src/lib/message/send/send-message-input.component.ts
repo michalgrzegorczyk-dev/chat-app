@@ -25,6 +25,7 @@ export class SendMessageInputComponent {
         userId: this.user().id,
         content: this.inputMessage.trim(),
         timestamp: new Date().toISOString(),
+        status: 'sending'
       };
       this.chatStore.sendMessage(messageToSend);
       this.inputMessage = '';

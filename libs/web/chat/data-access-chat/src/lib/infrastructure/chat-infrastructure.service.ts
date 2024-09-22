@@ -93,7 +93,6 @@ export class ChatInfrastructureService {
   }
 
 sendMessage(messageSend: MessageSend): void {
-  console.log('halo');
     this.socket.emit('sendMessage', messageSend);
   }
 
@@ -105,7 +104,8 @@ sendMessage(messageSend: MessageSend): void {
           content: message.content,
           createdAt: message.created_at,
           messageId: message.message_id,
-          senderId: message.sender_id
+          senderId: message.sender_id,
+          status: 'sending'
         });
       }
     );

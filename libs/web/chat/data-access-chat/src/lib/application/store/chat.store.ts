@@ -2,14 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { rxState } from '@rx-angular/state';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import { ChatInfrastructureService } from '../infrastructure/chat-infrastructure.service';
-import { ChatState } from '../models/chat-state.type';
-import { Message } from '../models/message.type';
-import { Conversation } from '../models/conversation.type';
-import { MessageSend } from '../models/message-send.type';
-import { User } from '../models/user.type';
-import { setupChatEffects } from './store/chat.effects';
-import { sendMessageSuccess, selectConversation } from './store/helper';
+import { ChatInfrastructureService } from '../../infrastructure/chat-infrastructure.service';
+import { ChatState } from '../../models/chat-state.type';
+import { Message } from '../../models/message.type';
+import { Conversation } from '../../models/conversation.type';
+import { MessageSend } from '../../models/message-send.type';
+import { User } from '../../models/user.type';
+import { setupChatEffects } from './chat.effects';
+import { sendMessageSuccess, selectConversation } from './helper';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -64,9 +64,9 @@ export class ChatStore {
   readonly selectedConversationLoading = this.rxState.signal('selectedConversationLoading');
   readonly memberIdMap = this.rxState.signal('memberIdMap');
 
+  sendMessage = (messageSend: MessageSend): void => this.chatInfrastructureService.sendMessage(messageSend);
   loadConversationList = (): void => this.loadConversationList$.next();
   setMessageList = (messageList: Message[]): void => this.setMessageList$.next(messageList);
   selectConversation = (conversation: Conversation): void => this.selectConversation$.next(conversation);
   setMemberMap = (memberMap: Map<string, User>): void => this.setMemberIdMap$.next(memberMap);
-  sendMessage = (messageSend: MessageSend): void => this.chatInfrastructureService.sendMessage(messageSend);
 }

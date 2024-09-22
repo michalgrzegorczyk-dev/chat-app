@@ -1,3 +1,5 @@
+import { MessageStatus } from '../types-make-separate-lib/shared-types';
+
 export interface ConversationDetailsDto {
     conversationId: string;
     messageList: MessageDto[];
@@ -17,6 +19,7 @@ export interface MessageDto {
     content: string;
     sender_id: string;
     created_at: string;
+    status: MessageStatus;
 }
 
 export interface ReceiveMessageDto extends MessageDto {

@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { SendMessageDto, ConversationDetailsDto, MemberDto } from '@chat-app/dtos';
-import { MessageDbModel } from './db-model/conversation.model';
+import {
+  SendMessageDto,
+  ConversationDetailsDto,
+  MemberDto,
+  MessageDto,
+  ConversationListElementDto
+} from '@chat-app/dtos';
+import { MessageDbModel } from './model/conversation.model';
 
 @Injectable()
 export class SupabaseService {
@@ -11,7 +17,7 @@ export class SupabaseService {
     this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
   }
 
-  async getConversationsByUserId(userId: string): Promise<any> {
+  async getConversationsByUserId(userId: string): Promise<ConversationListElementDto[]> {
     const { data } = await this.supabase
       .from('conversationuser')
       .select(`
@@ -22,7 +28,7 @@ export class SupabaseService {
       .eq('user_id', userId)
       .neq('other_user.users.id', userId);
 
-    const x = data.map((item: any) => {
+    return data.map((item: any) => {
       const isOneOnOne = item.conversation.chat_type === 'single';
 
       return {
@@ -34,14 +40,11 @@ export class SupabaseService {
         lastMessageTimestamp: item.conversation.last_message_timestamp,
         lastMessageSenderId: item.conversation.last_message_sender_id
       };
-    });
-
-    return x;
+    }).sort((a, b) => b.lastMessageTimestamp.localeCompare(a.lastMessageTimestamp));
   }
 
-  async saveMessage(message: any): Promise<any> {
-    try {
-      const { data, error } = await this.supabase
+  async saveMessage(message: SendMessageDto): Promise<MessageDto> {
+      const { data } = await this.supabase
         .from('message')
         .insert({
           conversation_id: message.conversationId,
@@ -53,15 +56,7 @@ export class SupabaseService {
         .select()
         .single();
 
-      if (error) {
-        throw new Error(`Error saving message: ${error.message}`);
-      }
-
       return data;
-    } catch (error) {
-      console.error('Error in saveMessage:', error);
-      throw error;
-    }
   }
 
   async getConversation(userId: string, conversationId: string): Promise<ConversationDetailsDto> {
@@ -101,15 +96,12 @@ export class SupabaseService {
     ) as MemberDto[];
   }
 
+  //todo remove after auth implementation
   async getAllUsers() {
-    try {
-      const {data, error} = await this.supabase
+      const {data} = await this.supabase
         .from('users')
         .select('*');
       return data;
-    } catch (error) {
-
-    }
   }
 
   async updateConversationList(sendMessageDto: SendMessageDto): Promise<void> {
@@ -123,15 +115,11 @@ export class SupabaseService {
       .eq('id', sendMessageDto.conversationId);
   }
 
-  async getUsersInConversation(conversationId: string): Promise<string[]> {
-    const { data, error } = await this.supabase
+  async getUserIdListFromConversation(conversationId: string): Promise<string[]> {
+    const { data } = await this.supabase
       .from('conversationuser')
       .select('user_id')
       .eq('conversation_id', conversationId);
-
-    console.log(data);
-    console.log(conversationId);
-
     return data.map(item => item.user_id);
   }
 }

@@ -16,12 +16,13 @@ export class ConversationListLayoutComponent implements OnInit {
   private readonly chatStore = inject(ChatStore);
   readonly conversationListLoading = this.chatStore.conversationListLoading;
   readonly conversationList = this.chatStore.conversationList;
+  readonly selectedConversation = this.chatStore.selectedConversation;
 
   ngOnInit(): void {
     this.chatStore.loadConversationList();
   }
 
-  selectedConversation(conversation: Conversation): void {
+  clickedConversation(conversation: Conversation): void {
     this.chatStore.selectConversation(conversation);
   }
 

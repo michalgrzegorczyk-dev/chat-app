@@ -86,7 +86,6 @@ export class ChatInfrastructureService {
             console.log(conversationDto);
             return {
               ...conversationDto,
-              active: true
             };
           });
         })

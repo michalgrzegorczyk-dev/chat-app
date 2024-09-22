@@ -20,7 +20,9 @@ export class ChatController {
   }
 
   @Get('conversations/:conversationId')
-  async getConversation(@Headers('X-User-Id') userId: string, @Param('conversationId') conversationId: string) {
+  async getConversation(
+    @Headers('X-User-Id') userId: string,
+    @Param('conversationId') conversationId: string): Promise<any> {
     return await this.chatGateway.getConversation(userId, conversationId);
   }
 }

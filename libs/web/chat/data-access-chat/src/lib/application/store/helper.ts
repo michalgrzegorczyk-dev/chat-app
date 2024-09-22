@@ -20,23 +20,8 @@ export function updateConversationList() {
 
 export function sendMessageSuccess() {
   return (state: ChatState, message: ReceivedMessage) => {
-    // const updatedConversations = state.conversationList.map((conv: Conversation) => {
-    //   if (conv.conversationId === message.conversationId) {
-    //     return {
-    //       ...conv,
-    //       lastMessageContent: message.content,
-    //       lastMessageTimestamp: message.createdAt,
-    //       lastMessageSenderId: message.senderId
-    //     };
-    //   }
-    //   return conv;
-    // });
-
-    return state.selectedConversation?.conversationId === message.conversationId ? [...state.messageList, message] : state.messageList;
-    // return {
-      // ...state,
-      // conversationList: sortConversationListByLastMessageTimestamp(updatedConversations)
-    // };
+    return state.selectedConversation?.conversationId === message.conversationId ?
+      [...state.messageList, message] : state.messageList;
   };
 }
 
@@ -49,24 +34,18 @@ export function selectConversation(): any {
     }
 
     const updatedConversations = state.conversationList.map((conv: Conversation) => ({
-      ...conv,
-      active: conv.conversationId === conversation.conversationId
+      ...conv
     }));
-
-    const activeConversation =
-      updatedConversations.find((conv: Conversation) => conv.active) || null;
 
     return {
       ...state,
       conversationList: updatedConversations,
-      selectedConversation: activeConversation
+      selectedConversation: conversation
     };
   };
 }
 
-export function sortConversationListByLastMessageTimestamp(
-  conversations: Conversation[]
-): Conversation[] {
+export function sortConversationListByLastMessageTimestamp(conversations: Conversation[]): Conversation[] {
   return conversations.sort((a, b) => {
     if (a.lastMessageTimestamp && b.lastMessageTimestamp) {
       return b.lastMessageTimestamp.localeCompare(a.lastMessageTimestamp);

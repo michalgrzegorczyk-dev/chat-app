@@ -9,7 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { SupabaseService } from './supabase.service';
 import { Logger } from '@nestjs/common';
-import { SendMessageDto, ConversationDetailsDto } from '@chat-app/dtos';
+import { SendMessageDto, ConversationDetailsDto, ConversationListElementDto } from '@chat-app/dtos';
 
 // TODO: implement disconnect
 // TODO: implement error handling
@@ -46,7 +46,7 @@ export class ChatGateway implements OnGatewayConnection {
   async handleSendMessage(@MessageBody() sendMessageDto: SendMessageDto, @ConnectedSocket() client: Socket): Promise<void> {
     await this.supabaseService.updateConversationList(sendMessageDto);
     const savedMessage = await this.supabaseService.saveMessage(sendMessageDto);
-    const conversationUsers = await this.supabaseService.getUsersInConversation(sendMessageDto.conversationId);
+    const conversationUsers = await this.supabaseService.getUserIdListFromConversation(sendMessageDto.conversationId);
 
     for (const userId of conversationUsers) {
       const userSocketId = this.globalUsersSocketMap.get(userId);
@@ -66,7 +66,7 @@ export class ChatGateway implements OnGatewayConnection {
     return await this.supabaseService.getConversation(userId, conversationId);
   }
 
-  async getConversations(userId: string): Promise<any> {
+  async getConversations(userId: string): Promise<ConversationListElementDto[]> {
     return await this.supabaseService.getConversationsByUserId(userId);
   }
 

@@ -32,6 +32,9 @@
       "@chat-app/ui-button": [
         "libs/web/shared/design-system/ui-button/src/index.ts"
       ],
+      "@chat-app/ui-dropdown": [
+        "libs/web/shared/design-system/ui-dropdown/src/index.ts"
+      ],
       "@chat-app/ui-modal": [
         "libs/web/shared/design-system/ui-modal/src/index.ts"
       ],

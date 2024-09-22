@@ -4,7 +4,7 @@ export interface Conversation {
   name: string;
   chatType: string;
   active: boolean;
-  lastMessageContent?: string;
+  lastMessageContent: string;
   lastMessageTimestamp: string;
   lastMessageSenderId?: string;
 }

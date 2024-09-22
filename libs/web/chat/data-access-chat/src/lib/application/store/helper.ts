@@ -1,8 +1,7 @@
 import { ChatState } from '../../models/chat-state.type';
 import { MessageSend } from '../../models/message-send.type';
 import { Conversation } from '../../models/conversation.type';
-import { sortConversationListByLastMessageTimestamp } from './sort-conversation-list';
-import { ReceivedMessage } from '@chat-app/domain';
+import { ReceivedMessage } from '../../models/message.type';
 
 export function updateConversationList() {
   return (state: ChatState, messageSend: MessageSend) => {
@@ -19,30 +18,25 @@ export function updateConversationList() {
   };
 }
 
-export function receiveMessage() {
+export function sendMessageSuccess() {
   return (state: ChatState, message: ReceivedMessage) => {
-    const updatedConversations = state.conversationList.map((conv: Conversation) => {
-      if (conv.conversationId === message.conversationId) {
-        return {
-          ...conv,
-          lastMessageContent: message.content,
-          lastMessageTimestamp: message.createdAt,
-          lastMessageSenderId: message.senderId
-        };
-      }
-      return conv;
-    });
+    // const updatedConversations = state.conversationList.map((conv: Conversation) => {
+    //   if (conv.conversationId === message.conversationId) {
+    //     return {
+    //       ...conv,
+    //       lastMessageContent: message.content,
+    //       lastMessageTimestamp: message.createdAt,
+    //       lastMessageSenderId: message.senderId
+    //     };
+    //   }
+    //   return conv;
+    // });
 
-    return {
-      ...state,
-      messageList:
-        state.selectedConversation?.conversationId ===
-        message.conversationId
-          ? [...state.messageList, message]
-          : state.messageList,
-      conversationList:
-        sortConversationListByLastMessageTimestamp(updatedConversations)
-    };
+    return state.selectedConversation?.conversationId === message.conversationId ? [...state.messageList, message] : state.messageList;
+    // return {
+      // ...state,
+      // conversationList: sortConversationListByLastMessageTimestamp(updatedConversations)
+    // };
   };
 }
 
@@ -68,4 +62,15 @@ export function selectConversation(): any {
       selectedConversation: activeConversation
     };
   };
+}
+
+export function sortConversationListByLastMessageTimestamp(
+  conversations: Conversation[]
+): Conversation[] {
+  return conversations.sort((a, b) => {
+    if (a.lastMessageTimestamp && b.lastMessageTimestamp) {
+      return b.lastMessageTimestamp.localeCompare(a.lastMessageTimestamp);
+    }
+    return 0;
+  });
 }

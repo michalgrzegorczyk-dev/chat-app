@@ -12,19 +12,19 @@ export class ChatController {
 
     @Get('users')
     async getUsers(): Promise<any> {
-        await delay(1000); // 2 second delay
+        await delay(0); // 2 second delay
         return await this.chatGateway.getAllUsers();
     }
 
     @Get('conversations')
     async getConversations(@Headers('X-User-Id') userId: string): Promise<ConversationDto[]> {
-        await delay(1000); // 2 second delay
+        await delay(0); // 2 second delay
         return await this.chatGateway.getConversations(userId);
     }
 
     @Get('conversations/:conversationId')
     async getConversationDetails(@Headers('X-User-Id') userId: string, @Param('conversationId') conversationId: string) {
-        await delay(1000); // 2 second delay
-        return await this.chatGateway.getConversationDetails(userId, conversationId);
+        await delay(0); // 2 second delay
+        return await this.chatGateway.getRecentMessages(userId, conversationId);
     }
 }

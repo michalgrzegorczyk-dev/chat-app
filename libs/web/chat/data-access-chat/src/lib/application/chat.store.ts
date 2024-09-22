@@ -8,8 +8,8 @@ import { Message } from '../models/message.type';
 import { Conversation } from '../models/conversation.type';
 import { MessageSend } from '../models/message-send.type';
 import { User } from '../models/user.type';
-import { setupChatEffects } from './store/effects';
-import { updateConversationList, receiveMessage, selectConversation } from './store/helper';
+import { setupChatEffects } from './store/chat.effects';
+import { updateConversationList, sendMessageSuccess, selectConversation } from './store/helper';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -43,12 +43,13 @@ export class ChatStore {
 
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
-    connect('conversationListLoading', this.setConversationListLoading$, (state, conversationListLoading) => conversationListLoading);
-    connect('conversationList', this.updateConversationList$, updateConversationList());
-    connect(this.chatInfrastructureService.receiveMessage$, receiveMessage());
+    connect('conversationListLoading', this.setConversationListLoading$);
+    // connect('conversationList', this.updateConversationList$, updateConversationList());
+    connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, sendMessageSuccess());
     connect('messageList', this.setMessageList$);
     connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
-    connect('conversationList', this.setConversationList$, (state, conversationList) => conversationList);
+    connect('conversationList', this.setConversationList$);
+    connect('conversationList', this.chatInfrastructureService.loadConversationListSuccess$);
     connect('messageListLoading', this.setMessageListLoading$);
     connect('memberIdMap', this.setMemberIdMap$);
     connect(this.selectConversation$, selectConversation());
@@ -70,6 +71,6 @@ export class ChatStore {
 
   sendMessage(messageSend: MessageSend): void {
     this.chatInfrastructureService.sendMessage(messageSend);
-    this.updateConversationList$.next(messageSend);
+    // this.updateConversationList$.next(messageSend);
   }
 }

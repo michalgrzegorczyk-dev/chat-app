@@ -20,7 +20,7 @@ export function setupChatEffects(store: ChatStore) {
             new Map(
               conversationDetails.memberList.map((member) => [
                 member.id,
-                member,
+                member
               ])
             )
           );
@@ -32,10 +32,17 @@ export function setupChatEffects(store: ChatStore) {
       if (!conversation) {
         return;
       }
-      await store.router.navigate([
-        `${routing.chat.url()}`,
-        conversation.conversationId,
-      ]);
+      await store.router.navigate([`${routing.chat.url()}`, conversation.conversationId]);
+    });
+
+    register(store.chatInfrastructureService.loadConversationListPing$, () => {
+      store.setConversationList$.next([]);
+      store.chatInfrastructureService
+        .fetchConversations()
+        .pipe(take(1))
+        .subscribe((conversationList) => {
+          store.setConversationList$.next(conversationList);
+        });
     });
 
     register(store.loadConversationList$, () => {
@@ -45,7 +52,6 @@ export function setupChatEffects(store: ChatStore) {
         .fetchConversations()
         .pipe(take(1))
         .subscribe((conversationList) => {
-          console.log('received conversation list', conversationList);
           store.setConversationList$.next(conversationList);
           if (conversationList[0]) {
             store.selectConversation(conversationList[0]);

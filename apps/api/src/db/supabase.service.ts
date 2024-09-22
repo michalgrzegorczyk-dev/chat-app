@@ -1,5 +1,6 @@
 import {Injectable} from '@nestjs/common';
 import {createClient, SupabaseClient} from '@supabase/supabase-js';
+import { SendMessageDto } from '@chat-app/dtos';
 
 @Injectable()
 export class SupabaseService {
@@ -28,7 +29,7 @@ export class SupabaseService {
                 avatarUrl: isOneOnOne ? item.other_user.users[0].profile_photo_url : item.conversation.avatar_url,
                 name: isOneOnOne ? item.other_user.users[0].name : item.conversation.name,
                 chatType: item.conversation.chat_type,
-                lastMessage: item.conversation.last_message,
+                lastMessageContent: item.conversation.last_message,
                 lastMessageTimestamp: item.conversation.last_message_timestamp,
                 lastMessageSenderId: item.conversation.last_message_sender_id,
             };
@@ -60,17 +61,6 @@ export class SupabaseService {
             console.error('Error in saveMessage:', error);
             throw error;
         }
-    }
-
-    async ddd(message: any) {
-        // await this.supabase
-        //     .from('conversation')
-        //     .update({
-        //         last_message: message.content,
-        //         last_message_timestamp: message.timestamp,
-        //         last_message_sender_id: message.userId
-        //     })
-        //     .eq('id', message.conversationId);
     }
 
     async getRecentMessages(userId: string, conversationId: string): Promise<any> {
@@ -118,4 +108,29 @@ export class SupabaseService {
 
         }
     }
+
+
+
+  async updateConversationList(sendMessageDto: SendMessageDto): Promise<void> {
+    await this.supabase
+      .from('conversation')
+      .update({
+        last_message: sendMessageDto.content,
+        last_message_timestamp: sendMessageDto.timestamp,
+        last_message_sender_id: sendMessageDto.userId
+      })
+      .eq('id', sendMessageDto.conversationId)
+  }
+
+  async getUsersInConversation(conversationId: string): Promise<string[]> {
+      const { data, error } = await this.supabase
+        .from('conversationuser')
+        .select('user_id')
+        .eq('conversation_id', conversationId);
+
+    console.log(data);
+    console.log(conversationId);
+
+      return data.map(item => item.user_id);
+  }
 }

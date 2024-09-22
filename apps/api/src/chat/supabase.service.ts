@@ -82,7 +82,8 @@ export class SupabaseService {
         message_id: String(msg.id),
         content: msg.content,
         created_at: msg.created_at,
-        sender_id: String(msg.sender.id)
+        sender_id: String(msg.sender.id),
+        status: 'sent', //todo
       })),
       memberList: this.getUniqueSenders(messageListDb)
     };

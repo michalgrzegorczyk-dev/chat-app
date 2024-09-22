@@ -29,6 +29,7 @@ export class ChatStore {
   readonly chatInfrastructureService = inject(ChatInfrastructureService);
 
   // EVENTS
+  readonly sendMessage$ = new Subject<MessageSend>();
   readonly setMessageList$ = new Subject<Message[]>();
   readonly setMessageListLoading$ = new Subject<boolean>();
   readonly setConversationList$ = new Subject<Conversation[]>();
@@ -64,9 +65,9 @@ export class ChatStore {
   readonly selectedConversationLoading = this.rxState.signal('selectedConversationLoading');
   readonly memberIdMap = this.rxState.signal('memberIdMap');
 
-  sendMessage = (messageSend: MessageSend): void => this.chatInfrastructureService.sendMessage(messageSend);
-  loadConversationList = (): void => this.loadConversationList$.next();
-  setMessageList = (messageList: Message[]): void => this.setMessageList$.next(messageList);
-  selectConversation = (conversation: Conversation): void => this.selectConversation$.next(conversation);
-  setMemberMap = (memberMap: Map<string, User>): void => this.setMemberIdMap$.next(memberMap);
+  // sendMessage = (messageSend: MessageSend): void => this.sendMessage$.next(messageSend);
+  // loadConversationList = (): void => this.loadConversationList$.next();
+  // setMessageList = (messageList: Message[]): void => this.setMessageList$.next(messageList);
+  // selectConversation = (conversation: Conversation): void => this.selectConversation$.next(conversation);
+  // setMemberMap = (memberMap: Map<string, User>): void => this.setMemberIdMap$.next(memberMap);
 }

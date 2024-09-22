@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ChatStore, MessageSend } from '@chat-app/domain';
+import { ChatStore, MessageSend, ChatFacade } from '@chat-app/domain';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 
 @Component({
@@ -13,7 +13,7 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
 export class SendMessageInputComponent {
   readonly user = inject(AuthService).user;
   protected inputMessage = '';
-  private readonly chatStore = inject(ChatStore);
+  private readonly chatStore = inject(ChatFacade);
   readonly selectedConversation = this.chatStore.selectedConversation;
 
   sendMessage(): void {

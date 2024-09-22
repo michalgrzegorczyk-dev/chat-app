@@ -1,5 +1,5 @@
 import {Pipe, inject, PipeTransform} from "@angular/core";
-import { ChatStore, UserKeys } from '@chat-app/domain';
+import { ChatStore, UserKeys, ChatFacade } from '@chat-app/domain';
 
 
 //todo prefix
@@ -8,7 +8,7 @@ import { ChatStore, UserKeys } from '@chat-app/domain';
   standalone: true
 })
 export class UserDetailPipe implements PipeTransform {
-  private readonly members = inject(ChatStore).memberIdMap;
+  private readonly members = inject(ChatFacade).memberIdMap;
 
   transform(userId: string, detailKey: UserKeys): string {
     if (this.members() && userId) {

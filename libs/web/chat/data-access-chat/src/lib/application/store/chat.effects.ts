@@ -6,6 +6,11 @@ import { routing } from '@chat-app/util-routing';
 
 export function setupChatEffects(store: ChatStore) {
   return rxEffects(({ register }) => {
+
+    register(store.sendMessage$, (messageSend) => {
+      store.chatInfrastructureService.sendMessage(messageSend);
+    });
+
     register(store.selectConversation$, (selectedConversation) => {
       if (!selectedConversation) {
         return;
@@ -15,8 +20,8 @@ export function setupChatEffects(store: ChatStore) {
       return store.chatInfrastructureService
         .getConversationContent(selectedConversation)
         .subscribe((conversationDetails: ConversationDetails) => {
-          store.setMessageList(conversationDetails.messageList);
-          store.setMemberMap(
+          store.setMessageList$.next(conversationDetails.messageList);
+          store.setMemberIdMap$.next(
             new Map(
               conversationDetails.memberList.map((member) => [
                 member.id,
@@ -54,7 +59,7 @@ export function setupChatEffects(store: ChatStore) {
         .subscribe((conversationList) => {
           store.setConversationList$.next(conversationList);
           if (conversationList[0]) {
-            store.selectConversation(conversationList[0]);
+            store.selectConversation$.next(conversationList[0]);
           }
           store.setConversationListLoading$.next(false);
         });

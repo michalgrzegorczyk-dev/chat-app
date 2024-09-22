@@ -2,7 +2,7 @@ import {Component, inject, OnInit, ChangeDetectionStrategy} from "@angular/core"
 import {ConversationListLoadingComponent} from "./conversation-list-loading/conversation-list-loading.component";
 import {ConversationsComponent} from "./conversation-list/converstaion-list.component";
 import {JsonPipe} from "@angular/common";
-import { ChatStore, Conversation } from '@chat-app/domain';
+import { ChatStore, Conversation, ChatFacade } from '@chat-app/domain';
 import { RelativeTimePipe } from './relative-time.pipe';
 
 @Component({
@@ -13,7 +13,7 @@ import { RelativeTimePipe } from './relative-time.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationListLayoutComponent implements OnInit {
-  private readonly chatStore = inject(ChatStore);
+  private readonly chatStore = inject(ChatFacade);
   readonly conversationListLoading = this.chatStore.conversationListLoading;
   readonly conversationList = this.chatStore.conversationList;
   readonly selectedConversation = this.chatStore.selectedConversation;

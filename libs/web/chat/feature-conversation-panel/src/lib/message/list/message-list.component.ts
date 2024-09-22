@@ -10,7 +10,7 @@ import { UserDetailPipe } from '../../user-detail.pipe';
 import { SingleMessageComponent } from '../single/single-message.component';
 import { ScrollToBottomDirective } from '../../scroll-bottom.directive';
 import { AuthService } from '@chat-app/web/shared/util/auth';
-import { ChatStore } from '@chat-app/domain';
+import { ChatStore, ChatFacade } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-message-list',
@@ -40,6 +40,6 @@ import { ChatStore } from '@chat-app/domain';
 export class MessageListComponent {
   readonly user = inject(AuthService).user;
   @ViewChild('messageContainer') private messageContainer!: ElementRef;
-  private readonly chatStore = inject(ChatStore);
+  private readonly chatStore = inject(ChatFacade);
   readonly messages = this.chatStore.messageList;
 }

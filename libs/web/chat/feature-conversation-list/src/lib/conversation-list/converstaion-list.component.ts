@@ -4,7 +4,7 @@ import { RelativeTimePipe } from '../relative-time.pipe';
 import { ButtonComponent, ButtonRemoveComponent } from '@chat-app/ui-button';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { ModalService } from '@chat-app/ui-modal';
-import { Conversation, ChatStore } from '@chat-app/domain';
+import { Conversation, ChatStore, ChatFacade } from '@chat-app/domain';
 import { ConversationAddComponent } from '../conversation-add/conversation-add.component';
 import { ConversationRemoveComponent } from '../conversation-remove/conversation-remove.component';
 
@@ -15,7 +15,7 @@ import { ConversationRemoveComponent } from '../conversation-remove/conversation
 })
 export class IsActivePipe implements PipeTransform {
 
-  private readonly selectedConversation = inject(ChatStore).selectedConversation;
+  private readonly selectedConversation = inject(ChatFacade).selectedConversation;
 
   transform(conversation: Conversation): boolean {
     return conversation.conversationId === this.selectedConversation()?.conversationId;

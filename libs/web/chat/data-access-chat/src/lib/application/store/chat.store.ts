@@ -38,14 +38,12 @@ export class ChatStore {
   readonly addMessage$ = new Subject<Message>();
   readonly setMemberIdMap$ = new Subject<Map<string, User>>();
   readonly loadConversationList$ = new Subject<void>();
-  readonly updateConversationList$ = new Subject<MessageSend>();
 
   private readonly effects = setupChatEffects(this);
 
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
     connect('conversationListLoading', this.setConversationListLoading$);
-    // connect('conversationList', this.updateConversationList$, updateConversationList());
     connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, sendMessageSuccess());
     connect('messageList', this.setMessageList$);
     connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
@@ -64,10 +62,4 @@ export class ChatStore {
   readonly selectedConversation = this.rxState.signal('selectedConversation');
   readonly selectedConversationLoading = this.rxState.signal('selectedConversationLoading');
   readonly memberIdMap = this.rxState.signal('memberIdMap');
-
-  // sendMessage = (messageSend: MessageSend): void => this.sendMessage$.next(messageSend);
-  // loadConversationList = (): void => this.loadConversationList$.next();
-  // setMessageList = (messageList: Message[]): void => this.setMessageList$.next(messageList);
-  // selectConversation = (conversation: Conversation): void => this.selectConversation$.next(conversation);
-  // setMemberMap = (memberMap: Map<string, User>): void => this.setMemberIdMap$.next(memberMap);
 }

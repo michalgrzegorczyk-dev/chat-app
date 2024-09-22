@@ -9,7 +9,7 @@ import { Conversation } from '../models/conversation.type';
 import { MessageSend } from '../models/message-send.type';
 import { User } from '../models/user.type';
 import { setupChatEffects } from './store/chat.effects';
-import { updateConversationList, sendMessageSuccess, selectConversation } from './store/helper';
+import { sendMessageSuccess, selectConversation } from './store/helper';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -68,9 +68,5 @@ export class ChatStore {
   setMessageList = (messageList: Message[]): void => this.setMessageList$.next(messageList);
   selectConversation = (conversation: Conversation): void => this.selectConversation$.next(conversation);
   setMemberMap = (memberMap: Map<string, User>): void => this.setMemberIdMap$.next(memberMap);
-
-  sendMessage(messageSend: MessageSend): void {
-    this.chatInfrastructureService.sendMessage(messageSend);
-    // this.updateConversationList$.next(messageSend);
-  }
+  sendMessage = (messageSend: MessageSend): void => this.chatInfrastructureService.sendMessage(messageSend);
 }

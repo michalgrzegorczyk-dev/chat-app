@@ -1,6 +1,6 @@
 import { Controller, Get, Headers, Param } from '@nestjs/common';
 import { ChatGateway } from './chat.gateway';
-import { ConversationDto } from '@chat-app/dtos';
+import { ConversationListElementDto } from '@chat-app/dtos';
 
 // TODO: implement routes object
 @Controller('chat')
@@ -15,7 +15,7 @@ export class ChatController {
   }
 
   @Get('conversations')
-  async getConversations(@Headers('X-User-Id') userId: string): Promise<ConversationDto[]> {
+  async getConversations(@Headers('X-User-Id') userId: string): Promise<ConversationListElementDto[]> {
     return await this.chatGateway.getConversations(userId);
   }
 

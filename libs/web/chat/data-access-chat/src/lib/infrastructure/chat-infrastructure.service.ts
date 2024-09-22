@@ -6,7 +6,7 @@ import { MessageSend } from '../models/message-send.type';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { io } from 'socket.io-client';
-import { ConversationDetailsDto, ConversationDto, ReceiveMessageDto } from '@chat-app/dtos';
+import { ConversationDetailsDto, ConversationListElementDto, ReceiveMessageDto } from '@chat-app/dtos';
 import { ENVIRONMENT } from '@chat-app/environment';
 import { ROUTES_PARAMS, CHAT_ROUTES } from '@chat-app/util-routing';
 
@@ -59,7 +59,7 @@ export class ChatInfrastructureService {
                 createdAt: message.created_at
               };
             }),
-            memberList: convDetailsDto.memberList.map((member) => {
+            memberList: convDetailsDto.memberList.map((member:any) => {
               return {
                 id: member.id,
                 name: member.name,
@@ -77,12 +77,12 @@ export class ChatInfrastructureService {
       this.authService.user().id
     );
     return this.http
-      .get<ConversationDto[]>(`${this.environment.apiUrl}/chat/conversations`, {
+      .get<ConversationListElementDto[]>(`${this.environment.apiUrl}/chat/conversations`, {
         headers
       })
       .pipe(
-        map((conversationDtoList: ConversationDto[]) => {
-          return conversationDtoList.map((conversationDto: ConversationDto) => {
+        map((conversationDtoList: ConversationListElementDto[]) => {
+          return conversationDtoList.map((conversationDto: ConversationListElementDto) => {
             console.log(conversationDto);
             return {
               ...conversationDto,

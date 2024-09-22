@@ -1,8 +1,10 @@
 export interface ConversationDetailsDto {
     conversationId: string;
     messageList: MessageDto[];
-    memberList: MemberDto[];
+    memberList: any;
 }
+
+
 
 export interface MemberDto {
     id: string;

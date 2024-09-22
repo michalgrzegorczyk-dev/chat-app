@@ -1,4 +1,4 @@
-export interface ConversationDto {
+export interface ConversationListElementDto { //todo conversationListElementDto
   conversationId: string;
   avatarUrl: string;
   name: string;

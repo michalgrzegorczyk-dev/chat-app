@@ -9,7 +9,7 @@ import {
 import { Server, Socket } from 'socket.io';
 import { SupabaseService } from './supabase.service';
 import { Logger } from '@nestjs/common';
-import { SendMessageDto } from '@chat-app/dtos';
+import { SendMessageDto, ConversationDetailsDto } from '@chat-app/dtos';
 
 // TODO: implement disconnect
 // TODO: implement error handling
@@ -62,7 +62,7 @@ export class ChatGateway implements OnGatewayConnection {
     }
   }
 
-  async getConversation(userId: string, conversationId: string): Promise<any> {
+  async getConversation(userId: string, conversationId: string): Promise<ConversationDetailsDto> {
     return await this.supabaseService.getConversation(userId, conversationId);
   }
 

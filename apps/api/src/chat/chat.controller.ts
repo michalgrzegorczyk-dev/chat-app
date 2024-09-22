@@ -1,30 +1,26 @@
-import { Controller, Get, Headers, Query, Param } from "@nestjs/common";
+import { Controller, Get, Headers, Param } from '@nestjs/common';
 import { ChatGateway } from './chat.gateway';
-import { ConversationDto } from "../serverDtos/conversation.dto";
+import { ConversationDto } from '@chat-app/dtos';
 
-function delay(ms: number) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
+// TODO: implement routes object
 @Controller('chat')
 export class ChatController {
-    constructor(private chatGateway: ChatGateway) {}
+  constructor(private chatGateway: ChatGateway) {
+  }
 
-    @Get('users')
-    async getUsers(): Promise<any> {
-        await delay(0); // 2 second delay
-        return await this.chatGateway.getAllUsers();
-    }
+  // TODO: remove when auth is implemented
+  @Get('users')
+  async getUsers(): Promise<any> {
+    return await this.chatGateway.getAllUsers();
+  }
 
-    @Get('conversations')
-    async getConversations(@Headers('X-User-Id') userId: string): Promise<ConversationDto[]> {
-        await delay(0); // 2 second delay
-        return await this.chatGateway.getConversations(userId);
-    }
+  @Get('conversations')
+  async getConversations(@Headers('X-User-Id') userId: string): Promise<ConversationDto[]> {
+    return await this.chatGateway.getConversations(userId);
+  }
 
-    @Get('conversations/:conversationId')
-    async getConversationDetails(@Headers('X-User-Id') userId: string, @Param('conversationId') conversationId: string) {
-        await delay(0); // 2 second delay
-        return await this.chatGateway.getRecentMessages(userId, conversationId);
-    }
+  @Get('conversations/:conversationId')
+  async getConversation(@Headers('X-User-Id') userId: string, @Param('conversationId') conversationId: string) {
+    return await this.chatGateway.getConversation(userId, conversationId);
+  }
 }

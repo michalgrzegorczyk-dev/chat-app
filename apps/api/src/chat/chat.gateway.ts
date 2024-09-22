@@ -7,7 +7,7 @@ import {
   ConnectedSocket
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { SupabaseService } from '../db/supabase.service';
+import { SupabaseService } from './supabase.service';
 import { Logger } from '@nestjs/common';
 import { SendMessageDto } from '@chat-app/dtos';
 
@@ -43,7 +43,7 @@ export class ChatGateway implements OnGatewayConnection {
 
   // TODO: client never used but can be used to notify the sender that the message was sent
   @SubscribeMessage('sendMessage')
-  async handleSendMessage(@MessageBody() sendMessageDto: SendMessageDto, @ConnectedSocket() client: Socket) {
+  async handleSendMessage(@MessageBody() sendMessageDto: SendMessageDto, @ConnectedSocket() client: Socket): Promise<void> {
     await this.supabaseService.updateConversationList(sendMessageDto);
     const savedMessage = await this.supabaseService.saveMessage(sendMessageDto);
     const conversationUsers = await this.supabaseService.getUsersInConversation(sendMessageDto.conversationId);
@@ -62,8 +62,8 @@ export class ChatGateway implements OnGatewayConnection {
     }
   }
 
-  async getRecentMessages(userId: string, conversationId: string): Promise<any> {
-    return await this.supabaseService.getRecentMessages(userId, conversationId);
+  async getConversation(userId: string, conversationId: string): Promise<any> {
+    return await this.supabaseService.getConversation(userId, conversationId);
   }
 
   async getConversations(userId: string): Promise<any> {
@@ -71,7 +71,7 @@ export class ChatGateway implements OnGatewayConnection {
   }
 
   // TODO: remove after auth is implemented
-  async getAllUsers() {
-    return this.supabaseService.getAllUsers();
+  async getAllUsers(): Promise<any> {
+    return await this.supabaseService.getAllUsers();
   }
 }

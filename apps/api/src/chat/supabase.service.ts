@@ -63,7 +63,7 @@ export class SupabaseService {
         }
     }
 
-    async getRecentMessages(userId: string, conversationId: string): Promise<any> {
+    async getConversation(userId: string, conversationId: string): Promise<any> {
         const {data, error} = await this.supabase
             .from('message')
             .select(`

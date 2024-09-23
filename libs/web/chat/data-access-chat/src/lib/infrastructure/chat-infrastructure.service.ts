@@ -92,7 +92,7 @@ export class ChatInfrastructureService {
       );
   }
 
-sendMessage(messageSend: MessageSend): void {
+  sendMessage(messageSend: MessageSend): void {
     this.socket.emit('sendMessage', messageSend);
   }
 

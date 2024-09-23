@@ -12,7 +12,7 @@
              'order-1': message.senderId === currentUserId
            }"
        class="max-w-xs p-3 rounded-lg shadow-sm">
-    <p>{{ message.content }}</p>
+    <p>{{ message.content }} ({{message.status}})</p>
     <p class="text-xs mt-1 text-gray-500">
       {{ message.createdAt | date:'short' }}
     </p>

@@ -7,8 +7,19 @@ import { routing } from '@chat-app/util-routing';
 export function setupChatEffects(store: ChatStore) {
   return rxEffects(({ register }) => {
 
+    register(store.messageTrigger$, (messageSend) => {
+      store.sendMessage$.next(messageSend);
+      store.addMessage$.next({
+        messageId: '',
+        senderId: messageSend.userId,
+        content: messageSend.content,
+        createdAt: new Date().toISOString(),
+        status: 'sending'
+      });
+    });
+
     register(store.sendMessage$, (messageSend) => {
-      store.chatInfrastructureService.sendMessage(messageSend);
+      store.messageSync.scheduleMessage(messageSend);
     });
 
     register(store.selectConversation$, (selectedConversation) => {

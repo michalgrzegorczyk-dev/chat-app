@@ -10,6 +10,7 @@ import { MessageSend } from '../../models/message-send.type';
 import { User } from '../../models/user.type';
 import { setupChatEffects } from './chat.effects';
 import { sendMessageSuccess, selectConversation } from './helper';
+import { MessageSyncService } from './message-sync.service';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -27,6 +28,9 @@ const INITIAL_STATE: ChatState = {
 export class ChatStore {
   readonly router = inject(Router);
   readonly chatInfrastructureService = inject(ChatInfrastructureService);
+  readonly messageSync = inject(MessageSyncService);
+
+  readonly messageTrigger$ = this.messageSync.messageTrigger$;
 
   // EVENTS
   readonly sendMessage$ = new Subject<MessageSend>();
@@ -47,6 +51,13 @@ export class ChatStore {
     connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, sendMessageSuccess());
     connect('messageList', this.setMessageList$);
     connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
+    connect('messageList', this.sendMessage$, (state, message) => [...state.messageList, {
+      messageId: '',
+      senderId: message.userId,
+      content: message.content,
+      createdAt: new Date().toISOString(),
+      status: 'sending'
+    }]);
     connect('conversationList', this.setConversationList$);
     connect('conversationList', this.chatInfrastructureService.loadConversationListSuccess$);
     connect('messageListLoading', this.setMessageListLoading$);
@@ -54,12 +65,17 @@ export class ChatStore {
     connect(this.selectConversation$, selectConversation());
   });
 
+  // conversationId: string;
+  // userId: string;
+  // content: string;
+  // timestamp: string;
+  // status: MessageStatus;
+
   // READ
   readonly messageList = this.rxState.signal('messageList');
   readonly messageListLoading = this.rxState.signal('messageListLoading');
   readonly conversationList = this.rxState.signal('conversationList');
   readonly conversationListLoading = this.rxState.signal('conversationListLoading');
   readonly selectedConversation = this.rxState.signal('selectedConversation');
-  readonly selectedConversationLoading = this.rxState.signal('selectedConversationLoading');
   readonly memberIdMap = this.rxState.signal('memberIdMap');
 }

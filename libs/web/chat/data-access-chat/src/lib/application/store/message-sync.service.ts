@@ -1,16 +1,16 @@
-import { Injectable, inject } from '@angular/core';
-import { ChatStore, MessageSend } from '@chat-app/domain';
+import { Injectable } from '@angular/core';
+import { MessageSend } from '@chat-app/domain';
 import { Observable, fromEvent, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class MessageSyncService {
-  // private readonly chatStore = inject(ChatStore);
 
   private queue: MessageSend[] = [];
   private isOnline$: Observable<Event>;
   messageTrigger$ = new Subject<MessageSend>();
+  messageTriggerSuccess$ = new Subject<MessageSend>();
 
   constructor() {
     this.isOnline$ = fromEvent(window, 'online');
@@ -23,8 +23,7 @@ export class MessageSyncService {
 
   scheduleMessage(message: MessageSend): void {
     if (navigator.onLine) {
-      // this.messageTrigger$.next(message);
-      // this.sendMessage(message);
+      this.messageTriggerSuccess$.next(message);
     } else {
       this.queue.push(message);
       this.saveToLocalStorage();

@@ -9,17 +9,21 @@ export function setupChatEffects(store: ChatStore) {
 
     register(store.messageTrigger$, (messageSend) => {
       store.sendMessage$.next(messageSend);
-      store.addMessage$.next({
-        messageId: '',
-        senderId: messageSend.userId,
-        content: messageSend.content,
-        createdAt: new Date().toISOString(),
-        status: 'sending'
-      });
+      // store.addMessage$.next({
+      //   messageId: '',
+      //   senderId: messageSend.userId,
+      //   content: messageSend.content,
+      //   createdAt: new Date().toISOString(),
+      //   status: 'sending'
+      // });
     });
 
     register(store.sendMessage$, (messageSend) => {
       store.messageSync.scheduleMessage(messageSend);
+    });
+
+    register(store.messageTriggerSuccess$, (messageSend) => {
+      store.chatInfrastructureService.sendMessage(messageSend);
     });
 
     register(store.selectConversation$, (selectedConversation) => {

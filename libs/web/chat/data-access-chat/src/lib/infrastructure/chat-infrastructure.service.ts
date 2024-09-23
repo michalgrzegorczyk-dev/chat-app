@@ -97,18 +97,18 @@ export class ChatInfrastructureService {
   }
 
   private setupSocketListeners(): void {
-    this.socket.on('sendMessageSuccess', (message: ReceiveMessageDto) => {
+    this.socket.on('sendMessageSuccess', (message: any) => {
       console.log('sendMessageSuccess', message);
-        this.sendMessageSuccess$.next({
-          conversationId: message.conversation_id,
-          content: message.content,
-          createdAt: message.created_at,
-          messageId: message.message_id,
-          senderId: message.sender_id,
-          status: 'sending'
-        });
-      }
-    );
+      this.sendMessageSuccess$.next({
+        conversationId: message.conversation_id,
+        content: message.content,
+        createdAt: message.created_at,
+        messageId: message!.id,
+        senderId: message.sender_id,
+        status: 'sent'
+      });
+    }
+  );
 
     this.socket.on('loadConversationListSuccess', (x: any) => {
       console.log('xxxx', x);

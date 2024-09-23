@@ -31,6 +31,7 @@ export class ChatStore {
   readonly messageSync = inject(MessageSyncService);
 
   readonly messageTrigger$ = this.messageSync.messageTrigger$;
+  readonly messageTriggerSuccess$ = this.messageSync.messageTriggerSuccess$;
 
   // EVENTS
   readonly sendMessage$ = new Subject<MessageSend>();
@@ -64,12 +65,6 @@ export class ChatStore {
     connect('memberIdMap', this.setMemberIdMap$);
     connect(this.selectConversation$, selectConversation());
   });
-
-  // conversationId: string;
-  // userId: string;
-  // content: string;
-  // timestamp: string;
-  // status: MessageStatus;
 
   // READ
   readonly messageList = this.rxState.signal('messageList');

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
-  SendMessageDto,
+  SendMessageRequestDto,
   ConversationDetailsDto,
   MemberDto,
   MessageDto,
@@ -43,11 +43,12 @@ export class SupabaseService {
     }).sort((a, b) => b.lastMessageTimestamp.localeCompare(a.lastMessageTimestamp));
   }
 
-  async saveMessage(message: SendMessageDto): Promise<MessageDto> {
+  async saveMessage(message: SendMessageRequestDto): Promise<MessageDto> {
       const { data } = await this.supabase
         .from('message')
         .insert({
           conversation_id: message.conversationId,
+          local_message_id: message.localMessageId,
           sender_id: message.userId,
           content: message.content,
           created_at: message.timestamp,
@@ -105,7 +106,7 @@ export class SupabaseService {
       return data;
   }
 
-  async updateConversationList(sendMessageDto: SendMessageDto): Promise<void> {
+  async updateConversationList(sendMessageDto: SendMessageRequestDto): Promise<void> {
     await this.supabase
       .from('conversation')
       .update({

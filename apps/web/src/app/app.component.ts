@@ -1,12 +1,16 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
+import { NotifierModule, NotifierService } from 'angular-notifier';
 
 @Component({
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, NotifierModule],
   selector: 'mg-root',
-  template: '<router-outlet />',
+  template: `
+    <router-outlet />
+    <notifier-container />
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {

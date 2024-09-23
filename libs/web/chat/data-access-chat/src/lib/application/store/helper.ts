@@ -2,15 +2,15 @@ import { ChatState } from '../../models/chat-state.type';
 import { Conversation } from '../../models/conversation.type';
 import { ReceivedMessage, Message } from '../../models/message.type';
 
-export function sendMessageSuccess() {
-  console.log('whoze');
-  return (state: ChatState, message: ReceivedMessage): Message[] => {
+export function sendMessageSuccess(state: ChatState, message: ReceivedMessage): Message[] {
     console.log(message);
     return state.selectedConversation?.conversationId === message.conversationId ?
       [...state.messageList.map(msg => {
 
-        if (msg.messageId === '') {
-          console.log('weszles?');
+        console.log(msg.localMessageId);
+        console.log(message.localMessageId);
+
+        if(msg.localMessageId === message.localMessageId) {
           const newMsg: Message = {
             ...msg,
             status: 'sent'
@@ -21,7 +21,6 @@ export function sendMessageSuccess() {
       })] : state.messageList;
 
 
-  };
 }
 
 export function selectConversation(): any {

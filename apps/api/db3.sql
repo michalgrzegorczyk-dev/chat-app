@@ -1,4 +1,6 @@
 -- correct one !
+//todo add local_message_id
+
 
 -- Complete Supabase Setup Script with Fixes
 

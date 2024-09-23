@@ -56,6 +56,9 @@ dependencies:
   '@types/uuid':
     specifier: ^10.0.0
     version: 10.0.0
+  angular-notifier:
+    specifier: ^14.0.0
+    version: 14.0.0(@angular/common@18.2.4)(@angular/core@18.2.4)
   axios:
     specifier: ^1.6.0
     version: 1.7.7
@@ -6171,6 +6174,17 @@ packages:
       fast-uri: 3.0.1
       json-schema-traverse: 1.0.0
       require-from-string: 2.0.2
+
+  /angular-notifier@14.0.0(@angular/common@18.2.4)(@angular/core@18.2.4):
+    resolution: {integrity: sha512-xGCwn7bdol+vEJxTW1LYeuIFGgwa9iQWv9l9Ry2QWNrn8RNIJY/FEDJzZpZ7dkVjUbZ8Lw+bWVMdnCzjM5kTlA==}
+    peerDependencies:
+      '@angular/common': '>= 16.0.0 < 17.0.0'
+      '@angular/core': '>= 16.0.0 < 17.0.0'
+    dependencies:
+      '@angular/common': 18.2.4(@angular/core@18.2.4)(rxjs@7.8.1)
+      '@angular/core': 18.2.4(rxjs@7.8.1)(zone.js@0.14.10)
+      tslib: 2.4.1
+    dev: false
 
   /ansi-colors@4.1.3:
     resolution: {integrity: sha512-/6w/C21Pm1A7aZitlI5Ni/2J6FFQN8i1Cvz3kHABAAbw93v/NlvKdVOqz7CCWz/3iv/JplRSEEZ83XION15ovw==}
@@ -13588,6 +13602,10 @@ packages:
       minimist: 1.2.8
       strip-bom: 3.0.0
     dev: true
+
+  /tslib@2.4.1:
+    resolution: {integrity: sha512-tGyy4dAjRIEwI7BzsB0lynWgOpfqjUdq91XXAlIWD2OwKBH7oCl/GZG/HT4BOHrTlPMOASlMQ7veyTqpmRcrNA==}
+    dev: false
 
   /tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}

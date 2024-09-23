@@ -98,12 +98,13 @@ export class ChatInfrastructureService {
 
   private setupSocketListeners(): void {
     this.socket.on('sendMessageSuccess', (message: any) => {
-      console.log('sendMessageSuccess', message);
+      console.log('sendMessageSuccesspppp', message);
       this.sendMessageSuccess$.next({
         conversationId: message.conversation_id,
+        localMessageId: message.local_message_id,
         content: message.content,
         createdAt: message.created_at,
-        messageId: message!.id,
+        messageId: message.id,
         senderId: message.sender_id,
         status: 'sent'
       });
@@ -111,9 +112,7 @@ export class ChatInfrastructureService {
   );
 
     this.socket.on('loadConversationListSuccess', (x: any) => {
-      console.log('xxxx', x);
       this.loadConversationListSuccess$.next(x);
-
     });
   }
 }

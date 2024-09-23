@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ChatStore, MessageSend, ChatFacade } from '@chat-app/domain';
 import { AuthService } from '@chat-app/web/shared/util/auth';
+import { v4 as uuidv4 } from 'uuid';
 
 @Component({
   selector: 'mg-send-message-input',
@@ -21,6 +22,7 @@ export class SendMessageInputComponent {
 
     if (this.inputMessage.trim() !== '' && selectedConversation) {
       const messageToSend: MessageSend = {
+        localMessageId: uuidv4(),
         conversationId: selectedConversation.conversationId,
         userId: this.user().id,
         content: this.inputMessage.trim(),

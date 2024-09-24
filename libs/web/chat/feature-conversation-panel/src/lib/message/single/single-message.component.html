@@ -12,10 +12,10 @@
 
   <div
     [ngClass]="{
-      'bg-primary-100 text-white': message.senderId === currentUserId,
-      'bg-gray-100 text-gray-800': message.senderId !== currentUserId
+      'bg-primary-50 text-white border-primary-100': message.senderId === currentUserId,
+      'bg-white text-gray-800 border-gray-200': message.senderId !== currentUserId
     }"
-    class="max-w-xs p-3 rounded-md relative"
+    class="max-w-xs p-3 rounded-md relative border"
   >
     <p class="text-sm text-black">{{ message.content }}</p>
     <div class="flex justify-between items-center mt-2">

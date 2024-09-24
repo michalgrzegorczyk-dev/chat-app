@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { MessageSend } from '@chat-app/domain';
 import { Observable, fromEvent, Subject } from 'rxjs';
+import { NotifierService } from '@chat-app/ui-notifier';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,11 @@ export class MessageSyncService {
   messageTrigger$ = new Subject<MessageSend>();
   messageTriggerSuccess$ = new Subject<MessageSend>();
 
-  constructor() {
+  readonly notifier: NotifierService;
+
+  constructor(notifierService: NotifierService) {
+    this.notifier = notifierService;
+
     this.isOnline$ = fromEvent(window, 'online');
 
     this.isOnline$.subscribe(() => {
@@ -25,6 +30,7 @@ export class MessageSyncService {
     if (navigator.onLine) {
       this.messageTriggerSuccess$.next(message);
     } else {
+      this.notifier.notify('info', 'Message added to queue.')
       this.queue.push(message);
       this.saveToLocalStorage();
     }

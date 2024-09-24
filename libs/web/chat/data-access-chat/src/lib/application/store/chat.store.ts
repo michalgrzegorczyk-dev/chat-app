@@ -30,14 +30,14 @@ export class ChatStore {
   readonly router = inject(Router);
   readonly chatInfrastructureService = inject(ChatInfrastructureService);
   readonly messageSync = inject(MessageSyncService);
-  private readonly notifier: NotifierService;
+  readonly notifier: NotifierService;
 
   constructor(notifierService: NotifierService) {
     this.notifier = notifierService;
   }
 
-  readonly messageTrigger$ = this.messageSync.messageTrigger$;
-  readonly messageTriggerSuccess$ = this.messageSync.messageTriggerSuccess$;
+  readonly messagesWakeUpTrigger$ = this.messageSync.messageTrigger$;
+  readonly messageReadyToSendFromScheduler$ = this.messageSync.messageTriggerSuccess$;
 
   // EVENTS
   readonly sendMessage$ = new Subject<MessageSend>();
@@ -51,24 +51,36 @@ export class ChatStore {
   readonly loadConversationList$ = new Subject<void>();
 
   private readonly effects = setupChatEffects(this);
-
+// <button class="button button--primary" (click)="showNotification('default', 'Good evening, you lovely person!')">Default me!</button>
+// <button class="button button--primary" (click)="showNotification('info', 'This library is built on top of Angular 2.')">Info me!</button>
+// <button class="button button--primary" (click)="showNotification('success', 'Notification successfully opened.')">Success me!</button>
+// <button class="button button--primary" (click)="showNotification('warning', 'Warning! But not an error! Just a warning!')">
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, msg) => {
-      this.notifier.notify('success', 'Message was sent successfully!');
+      this.notifier.notify('success', 'Message was sent.');
       return sendMessageSuccess(state, msg);
     });
-    connect('messageList', this.setMessageList$);
-    connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
-    connect('messageList', this.sendMessage$, (state, message) => [...state.messageList, {
-      localMessageId: message.localMessageId,
-      messageId: '', //todo
-      senderId: message.userId,
-      content: message.content,
-      createdAt: new Date().toISOString(),
-      status: 'sending'
-    }]);
+    connect('messageList', this.setMessageList$, (state, list) => {
+      this.notifier.notify('default', 'Messages SET.');
+      return list;
+    });
+    connect('messageList', this.addMessage$, (state, message) => {
+      this.notifier.notify('default', 'Message added.');
+      return [...state.messageList, message];
+    });
+    connect('messageList', this.sendMessage$, (state, message) => {
+      this.notifier.notify('default', 'Message displayed on UI');
+      return [...state.messageList, {
+        localMessageId: message.localMessageId,
+        messageId: '', //todo
+        senderId: message.userId,
+        content: message.content,
+        createdAt: new Date().toISOString(),
+        status: 'sending'
+      }];
+    });
     connect('conversationList', this.setConversationList$);
     connect('conversationList', this.chatInfrastructureService.loadConversationListSuccess$);
     connect('messageListLoading', this.setMessageListLoading$);

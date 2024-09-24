@@ -7,15 +7,19 @@ import { routing } from '@chat-app/util-routing';
 export function setupChatEffects(store: ChatStore) {
   return rxEffects(({ register }) => {
 
-    register(store.messageTrigger$, (messageSend) => {
+    register(store.messagesWakeUpTrigger$, (messageSend) => {
+      // todo what is message Trigger IIDK
+      store.notifier.notify('info', 'Trigger');
       store.sendMessage$.next(messageSend);
     });
 
     register(store.sendMessage$, (messageSend) => {
+      store.notifier.notify('default', 'Schedule Message');
       store.messageSync.scheduleMessage(messageSend);
     });
 
-    register(store.messageTriggerSuccess$, (messageSend) => {
+    register(store.messageReadyToSendFromScheduler$, (messageSend) => {
+      store.notifier.notify('info', 'Message Ready To Send.');
       store.chatInfrastructureService.sendMessage(messageSend);
     });
 

@@ -31,15 +31,15 @@ const INITIAL_STATE: ChatState = {
 export class ChatStore {
   readonly router = inject(Router);
   readonly chatInfrastructureService = inject(ChatInfrastructureService);
-  readonly messageSync = inject(MessageScheduler);
+  readonly messageScheduler = inject(MessageScheduler);
   readonly notifier: NotifierService;
 
   constructor(notifierService: NotifierService) {
     this.notifier = notifierService;
   }
 
-  readonly messagesWakeUpTrigger$ = this.messageSync.messageTrigger$;
-  readonly messageReadyToSendFromScheduler$ = this.messageSync.messageTriggerSuccess$;
+  readonly messagesWakeUpTrigger$ = this.messageScheduler.messageTrigger$;
+  readonly messageReadyToSendFromScheduler$ = this.messageScheduler.messageTriggerSuccess$;
 
   // EVENTS
   readonly sendMessage$ = new Subject<MessageSend>();
@@ -62,7 +62,7 @@ export class ChatStore {
 
     register(this.sendMessage$, (messageSend) => {
       this.notifier.notify('default', 'Schedule Message');
-      this.messageSync.scheduleMessage(messageSend);
+      this.messageScheduler.scheduleMessage(messageSend);
     });
 
     register(this.messageReadyToSendFromScheduler$, (messageSend) => {

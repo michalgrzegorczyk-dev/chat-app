@@ -11,7 +11,7 @@ import { User } from '../../models/user.type';
 import { setupChatEffects } from './chat.effects';
 import { sendMessageSuccess, selectConversation } from './helper';
 import { MessageSyncService } from './message-sync.service';
-import { NotifierService } from 'angular-notifier';
+import { NotifierService } from '@chat-app/ui-notifier';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -36,13 +36,6 @@ export class ChatStore {
     this.notifier = notifierService;
   }
 
-  // constructor(notifierService: NotifierService) {
-  //   this.notifier = notifierService;
-  //   setTimeout(() => {
-  //     this.notifier.notify('success', 'Welcome to the chat app!');
-  //   }, 2000);
-  // }
-
   readonly messageTrigger$ = this.messageSync.messageTrigger$;
   readonly messageTriggerSuccess$ = this.messageSync.messageTriggerSuccess$;
 
@@ -62,7 +55,10 @@ export class ChatStore {
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
     connect('conversationListLoading', this.setConversationListLoading$);
-    connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, msg) => sendMessageSuccess(state, msg));
+    connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, msg) => {
+      this.notifier.notify('success', 'Message was sent successfully!');
+      return sendMessageSuccess(state, msg);
+    });
     connect('messageList', this.setMessageList$);
     connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
     connect('messageList', this.sendMessage$, (state, message) => [...state.messageList, {

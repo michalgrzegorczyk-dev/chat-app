@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, Inject } from '@angular/core';
 import { rxState } from '@rx-angular/state';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
@@ -8,12 +8,13 @@ import { Message } from '../../models/message.type';
 import { Conversation } from '../../models/conversation.type';
 import { MessageSend } from '../../models/message-send.type';
 import { User } from '../../models/user.type';
-import { ChatSync } from './chat.sync';
 import { NotifierService } from '@chat-app/ui-notifier';
 import { rxEffects } from '@rx-angular/state/effects';
 import { ConversationDetails } from '../../models/conversation-details.type';
 import { routing } from '@chat-app/util-routing';
 import { take } from 'rxjs/operators';
+import { SyncStrategy } from './chat.strategy';
+import { TOKEN } from '../../../../../../../../apps/web/src/app/layout/chat/chat.component';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -26,16 +27,80 @@ const INITIAL_STATE: ChatState = {
 };
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ChatStore {
   readonly router = inject(Router);
   readonly chatInfrastructureService = inject(ChatInfra);
-  readonly chatSync = inject(ChatSync);
-  readonly notifier: NotifierService;
+  readonly notifier = inject(NotifierService);
 
-  constructor(notifierService: NotifierService) {
-    this.notifier = notifierService;
+  //todo constructor?
+  constructor(@Inject(TOKEN) readonly chatSync: SyncStrategy) {
+    const effects = rxEffects(({ register }) => {
+      register(this.chatSync.getSendMessage$(), (messageSend) => {
+        this.notifier.notify('info', '[FROM SYNC] Send Message.');
+        this.chatInfrastructureService.sendMessage(messageSend);
+      });
+      register(this.sendMessage$, (messageSend) => {
+        this.notifier.notify('info', 'Send Message.');
+        this.chatSync.addMessage(messageSend);
+        this.chatInfrastructureService.sendMessage(messageSend);
+      });
+
+      register(this.selectConversation$, (selectedConversation) => {
+        if (!selectedConversation) {
+          return;
+        }
+
+        this.setMessageListLoading$.next(true);
+        return this.chatInfrastructureService
+          .getConversationContent(selectedConversation)
+          .subscribe((conversationDetails: ConversationDetails) => {
+            this.setMessageList$.next(conversationDetails.messageList);
+            this.setMemberIdMap$.next(
+              new Map(
+                conversationDetails.memberList.map((member) => [
+                  member.id,
+                  member
+                ])
+              )
+            );
+            this.setMessageListLoading$.next(false);
+          });
+      });
+
+      register(this.selectConversation$, async (conversation) => {
+        if (!conversation) {
+          return;
+        }
+        await this.router.navigate([`${routing.chat.url()}`, conversation.conversationId]);
+      });
+
+      register(this.chatInfrastructureService.loadConversationListPing$, () => {
+        this.setConversationList$.next([]);
+        this.chatInfrastructureService
+          .fetchConversations()
+          .pipe(take(1))
+          .subscribe((conversationList) => {
+            this.setConversationList$.next(conversationList);
+          });
+      });
+
+      register(this.loadConversationList$, () => {
+        this.setConversationListLoading$.next(true);
+        this.setConversationList$.next([]);
+        this.chatInfrastructureService
+          .fetchConversations()
+          .pipe(take(1))
+          .subscribe((conversationList) => {
+            this.setConversationList$.next(conversationList);
+            if (conversationList[0]) {
+              this.selectConversation$.next(conversationList[0]);
+            }
+            this.setConversationListLoading$.next(false);
+          });
+      });
+    });
   }
 
   // EVENTS
@@ -49,71 +114,6 @@ export class ChatStore {
   readonly setMemberIdMap$ = new Subject<Map<string, User>>();
   readonly loadConversationList$ = new Subject<void>();
 
-  private readonly effects = rxEffects(({ register }) => {
-    register(this.chatSync.sendMessage$, (messageSend) => {
-      this.notifier.notify('info', '[FROM SYNC] Send Message.');
-      this.chatInfrastructureService.sendMessage(messageSend);
-    });
-    register(this.sendMessage$, (messageSend) => {
-      this.notifier.notify('info', 'Send Message.');
-      this.chatSync.addMessage(messageSend);
-      this.chatInfrastructureService.sendMessage(messageSend);
-    });
-
-    register(this.selectConversation$, (selectedConversation) => {
-      if (!selectedConversation) {
-        return;
-      }
-
-      this.setMessageListLoading$.next(true);
-      return this.chatInfrastructureService
-        .getConversationContent(selectedConversation)
-        .subscribe((conversationDetails: ConversationDetails) => {
-          this.setMessageList$.next(conversationDetails.messageList);
-          this.setMemberIdMap$.next(
-            new Map(
-              conversationDetails.memberList.map((member) => [
-                member.id,
-                member
-              ])
-            )
-          );
-          this.setMessageListLoading$.next(false);
-        });
-    });
-
-    register(this.selectConversation$, async (conversation) => {
-      if (!conversation) {
-        return;
-      }
-      await this.router.navigate([`${routing.chat.url()}`, conversation.conversationId]);
-    });
-
-    register(this.chatInfrastructureService.loadConversationListPing$, () => {
-      this.setConversationList$.next([]);
-      this.chatInfrastructureService
-        .fetchConversations()
-        .pipe(take(1))
-        .subscribe((conversationList) => {
-          this.setConversationList$.next(conversationList);
-        });
-    });
-
-    register(this.loadConversationList$, () => {
-      this.setConversationListLoading$.next(true);
-      this.setConversationList$.next([]);
-      this.chatInfrastructureService
-        .fetchConversations()
-        .pipe(take(1))
-        .subscribe((conversationList) => {
-          this.setConversationList$.next(conversationList);
-          if (conversationList[0]) {
-            this.selectConversation$.next(conversationList[0]);
-          }
-          this.setConversationListLoading$.next(false);
-        });
-    });
-  });
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
     connect('conversationListLoading', this.setConversationListLoading$);
@@ -122,11 +122,7 @@ export class ChatStore {
       this.notifier.notify('success', 'Message Sent');
       return state.selectedConversation?.conversationId === message.conversationId ?
         [...state.messageList.map(msg => {
-
-          // console.log(msg.localMessageId);
-          // console.log(message.localMessageId);
-
-          if(msg.localMessageId === message.localMessageId) {
+          if (msg.localMessageId === message.localMessageId) {
             const newMsg: Message = {
               ...msg,
               status: 'sent'
@@ -178,7 +174,6 @@ export class ChatStore {
 
     });
   });
-
   // READ
   readonly messageList = this.rxState.signal('messageList');
   readonly messageListLoading = this.rxState.signal('messageListLoading');
@@ -186,4 +181,5 @@ export class ChatStore {
   readonly conversationListLoading = this.rxState.signal('conversationListLoading');
   readonly selectedConversation = this.rxState.signal('selectedConversation');
   readonly memberIdMap = this.rxState.signal('memberIdMap');
+
 }

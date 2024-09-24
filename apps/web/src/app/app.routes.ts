@@ -4,7 +4,6 @@ import { ChatComponent } from './layout/chat/chat.component';
 import { AuthGuard } from '@chat-app/web/shared/util/auth';
 import { ConversationPanelShellComponent } from '@chat-app/feature-conversation-panel';
 import { routing } from '@chat-app/util-routing';
-import { AccountComponent } from './layout/account/account.component';
 
 export const appRoutes: Routes = [
   {

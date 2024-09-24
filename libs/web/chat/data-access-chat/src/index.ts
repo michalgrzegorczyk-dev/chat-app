@@ -8,3 +8,4 @@ export * from './lib/models/user.type';
 
 export * from './lib/application/store/chat.store';
 export * from './lib/application/chat.facade';
+export * from './lib/application/store/chat.strategy';

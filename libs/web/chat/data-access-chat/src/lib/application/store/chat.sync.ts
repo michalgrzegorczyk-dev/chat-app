@@ -39,7 +39,7 @@ export class ChatSync {
     }
   }
 
-  private sendMessage(message: MessageSend): void {
+  sendMessage(message: MessageSend): void {
     this.sendMessage$.next(message);
   }
 }

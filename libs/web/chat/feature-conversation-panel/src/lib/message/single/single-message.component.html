@@ -11,11 +11,31 @@
              'bg-white text-gray-800': message.senderId !== currentUserId,
              'order-1': message.senderId === currentUserId
            }"
-       class="max-w-xs p-3 rounded-lg shadow-sm">
-    <p>{{ message.content }} ({{message.status}})</p>
-    <p class="text-xs mt-1 text-gray-500">
-      {{ message.createdAt | date:'short' }}
-    </p>
+       class="max-w-xs p-3 rounded-lg shadow-sm relative">
+    <p>{{ message.content }}</p>
+    <div class="flex justify-between items-center mt-1">
+      <p class="text-xs text-gray-500">
+        {{ message.createdAt | date:'short' }}
+      </p>
+      @if (message.senderId === currentUserId) {
+        <span class="text-xs text-gray-500 ml-2">
+          @switch (message.status) {
+            @case ('sending') {
+              <span class="text-blue-500">✓</span>
+            }
+            @case ('sent') {
+              <span class="text-blue-500">✓✓</span>
+            }
+            @case ('read') {
+              <span class="text-green-500">✓✓</span>
+            }
+            @default {
+<!--              <span class="text-gray-400">⋯</span>-->
+            }
+          }
+        </span>
+      }
+    </div>
   </div>
 
   @if (message.senderId === currentUserId) {

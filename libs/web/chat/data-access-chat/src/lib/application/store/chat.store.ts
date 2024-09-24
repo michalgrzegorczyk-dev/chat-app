@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { rxState } from '@rx-angular/state';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import { ChatInfrastructureService } from '../../infrastructure/chat-infrastructure.service';
+import { ChatInfrastructure } from '../../infrastructure/chat.infrastructure';
 import { ChatState } from '../../models/chat-state.type';
 import { Message } from '../../models/message.type';
 import { Conversation } from '../../models/conversation.type';
@@ -30,16 +30,16 @@ const INITIAL_STATE: ChatState = {
 })
 export class ChatStore {
   readonly router = inject(Router);
-  readonly chatInfrastructureService = inject(ChatInfrastructureService);
-  readonly messageScheduler = inject(MessageScheduler);
+  readonly chatInfrastructureService = inject(ChatInfrastructure);
+  // readonly messageScheduler = inject(MessageScheduler);
   readonly notifier: NotifierService;
 
   constructor(notifierService: NotifierService) {
     this.notifier = notifierService;
   }
 
-  readonly messagesWakeUpTrigger$ = this.messageScheduler.messageTrigger$;
-  readonly messageReadyToSendFromScheduler$ = this.messageScheduler.messageTriggerSuccess$;
+  // readonly messagesWakeUpTrigger$ = this.messageScheduler.messageTrigger$;
+  // readonly messageReadyToSendFromScheduler$ = this.messageScheduler.messageTriggerSuccess$;
 
   // EVENTS
   readonly sendMessage$ = new Subject<MessageSend>();
@@ -54,18 +54,7 @@ export class ChatStore {
 
   private readonly effects = rxEffects(({ register }) => {
 
-    register(this.messagesWakeUpTrigger$, (messageSend) => {
-      // todo what is message Trigger IIDK
-      this.notifier.notify('info', 'Trigger');
-      this.sendMessage$.next(messageSend);
-    });
-
     register(this.sendMessage$, (messageSend) => {
-      this.notifier.notify('default', 'Schedule Message');
-      this.messageScheduler.scheduleMessage(messageSend);
-    });
-
-    register(this.messageReadyToSendFromScheduler$, (messageSend) => {
       this.notifier.notify('info', 'Message Ready To Send.');
       this.chatInfrastructureService.sendMessage(messageSend);
     });

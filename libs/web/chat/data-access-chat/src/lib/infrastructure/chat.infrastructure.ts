@@ -15,7 +15,7 @@ import { ROUTES_PARAMS, CHAT_ROUTES } from '@chat-app/util-routing';
 @Injectable({
   providedIn: 'root'
 })
-export class ChatInfrastructureService {
+export class ChatInfrastructure {
   readonly sendMessageSuccess$ = new Subject<ReceivedMessage>();
   readonly loadConversationListSuccess$ = new Subject<Conversation[]>();
   readonly loadConversationListPing$ = new Subject<boolean>();
@@ -93,7 +93,11 @@ export class ChatInfrastructureService {
   }
 
   sendMessage(messageSend: MessageSend): void {
-    this.socket.emit('sendMessage', messageSend);
+    this.socket.emit('sendMessage', messageSend, ((error:any) => {
+      if (error) {
+        console.log('sendMessageError', error);
+      }
+    }));
   }
 
   private setupSocketListeners(): void {

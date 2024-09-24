@@ -63,7 +63,7 @@ export class ChatStore {
     connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
     connect('messageList', this.sendMessage$, (state, message) => [...state.messageList, {
       localMessageId: message.localMessageId,
-      messageId: '',
+      messageId: '', //todo
       senderId: message.userId,
       content: message.content,
       createdAt: new Date().toISOString(),

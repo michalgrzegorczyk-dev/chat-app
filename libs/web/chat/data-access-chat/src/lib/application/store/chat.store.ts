@@ -31,7 +31,7 @@ const INITIAL_STATE: ChatState = {
 export class ChatStore {
   readonly router = inject(Router);
   readonly chatInfrastructureService = inject(ChatInfra);
-  // readonly messageScheduler = inject(MessageScheduler);
+  readonly chatSync = inject(ChatSync);
   readonly notifier: NotifierService;
 
   constructor(notifierService: NotifierService) {
@@ -50,9 +50,13 @@ export class ChatStore {
   readonly loadConversationList$ = new Subject<void>();
 
   private readonly effects = rxEffects(({ register }) => {
+    register(this.chatSync.sendMessage$, (messageSend) => {
+      this.notifier.notify('info', '[FROM SYNC] Send Message.');
+      this.chatInfrastructureService.sendMessage(messageSend);
+    });
     register(this.sendMessage$, (messageSend) => {
       this.notifier.notify('info', 'Send Message.');
-      // dataSyncer.addMessage
+      this.chatSync.addMessage(messageSend);
       this.chatInfrastructureService.sendMessage(messageSend);
     });
 
@@ -114,13 +118,13 @@ export class ChatStore {
     set(INITIAL_STATE);
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, message) => {
-      // dataSyncer.removeMessage
+      this.chatSync.removeMessage(message);
       this.notifier.notify('success', 'Message Sent');
       return state.selectedConversation?.conversationId === message.conversationId ?
         [...state.messageList.map(msg => {
 
-          console.log(msg.localMessageId);
-          console.log(message.localMessageId);
+          // console.log(msg.localMessageId);
+          // console.log(message.localMessageId);
 
           if(msg.localMessageId === message.localMessageId) {
             const newMsg: Message = {
@@ -156,21 +160,21 @@ export class ChatStore {
     connect('messageListLoading', this.setMessageListLoading$);
     connect('memberIdMap', this.setMemberIdMap$);
     connect(this.selectConversation$, (state, conversation) => {
-        if (!conversation) {
-          return {
-            ...state
-          };
-        }
-
-        const updatedConversations = state.conversationList.map((conv: Conversation) => ({
-          ...conv
-        }));
-
+      if (!conversation) {
         return {
-          ...state,
-          conversationList: updatedConversations,
-          selectedConversation: conversation
+          ...state
         };
+      }
+
+      const updatedConversations = state.conversationList.map((conv: Conversation) => ({
+        ...conv
+      }));
+
+      return {
+        ...state,
+        conversationList: updatedConversations,
+        selectedConversation: conversation
+      };
 
     });
   });

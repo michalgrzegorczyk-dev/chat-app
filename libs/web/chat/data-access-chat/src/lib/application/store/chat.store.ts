@@ -8,10 +8,12 @@ import { Message } from '../../models/message.type';
 import { Conversation } from '../../models/conversation.type';
 import { MessageSend } from '../../models/message-send.type';
 import { User } from '../../models/user.type';
-import { setupChatEffects } from './chat.effects';
-import { sendMessageSuccess, selectConversation } from './helper';
-import { MessageSyncService } from './message-sync.service';
+import { MessageScheduler } from './message-scheduler';
 import { NotifierService } from '@chat-app/ui-notifier';
+import { rxEffects } from '@rx-angular/state/effects';
+import { ConversationDetails } from '../../models/conversation-details.type';
+import { routing } from '@chat-app/util-routing';
+import { take } from 'rxjs/operators';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -29,7 +31,7 @@ const INITIAL_STATE: ChatState = {
 export class ChatStore {
   readonly router = inject(Router);
   readonly chatInfrastructureService = inject(ChatInfrastructureService);
-  readonly messageSync = inject(MessageSyncService);
+  readonly messageSync = inject(MessageScheduler);
   readonly notifier: NotifierService;
 
   constructor(notifierService: NotifierService) {
@@ -50,17 +52,98 @@ export class ChatStore {
   readonly setMemberIdMap$ = new Subject<Map<string, User>>();
   readonly loadConversationList$ = new Subject<void>();
 
-  private readonly effects = setupChatEffects(this);
-// <button class="button button--primary" (click)="showNotification('default', 'Good evening, you lovely person!')">Default me!</button>
-// <button class="button button--primary" (click)="showNotification('info', 'This library is built on top of Angular 2.')">Info me!</button>
-// <button class="button button--primary" (click)="showNotification('success', 'Notification successfully opened.')">Success me!</button>
-// <button class="button button--primary" (click)="showNotification('warning', 'Warning! But not an error! Just a warning!')">
+  private readonly effects = rxEffects(({ register }) => {
+
+    register(this.messagesWakeUpTrigger$, (messageSend) => {
+      // todo what is message Trigger IIDK
+      this.notifier.notify('info', 'Trigger');
+      this.sendMessage$.next(messageSend);
+    });
+
+    register(this.sendMessage$, (messageSend) => {
+      this.notifier.notify('default', 'Schedule Message');
+      this.messageSync.scheduleMessage(messageSend);
+    });
+
+    register(this.messageReadyToSendFromScheduler$, (messageSend) => {
+      this.notifier.notify('info', 'Message Ready To Send.');
+      this.chatInfrastructureService.sendMessage(messageSend);
+    });
+
+    register(this.selectConversation$, (selectedConversation) => {
+      if (!selectedConversation) {
+        return;
+      }
+
+      this.setMessageListLoading$.next(true);
+      return this.chatInfrastructureService
+        .getConversationContent(selectedConversation)
+        .subscribe((conversationDetails: ConversationDetails) => {
+          this.setMessageList$.next(conversationDetails.messageList);
+          this.setMemberIdMap$.next(
+            new Map(
+              conversationDetails.memberList.map((member) => [
+                member.id,
+                member
+              ])
+            )
+          );
+          this.setMessageListLoading$.next(false);
+        });
+    });
+
+    register(this.selectConversation$, async (conversation) => {
+      if (!conversation) {
+        return;
+      }
+      await this.router.navigate([`${routing.chat.url()}`, conversation.conversationId]);
+    });
+
+    register(this.chatInfrastructureService.loadConversationListPing$, () => {
+      this.setConversationList$.next([]);
+      this.chatInfrastructureService
+        .fetchConversations()
+        .pipe(take(1))
+        .subscribe((conversationList) => {
+          this.setConversationList$.next(conversationList);
+        });
+    });
+
+    register(this.loadConversationList$, () => {
+      this.setConversationListLoading$.next(true);
+      this.setConversationList$.next([]);
+      this.chatInfrastructureService
+        .fetchConversations()
+        .pipe(take(1))
+        .subscribe((conversationList) => {
+          this.setConversationList$.next(conversationList);
+          if (conversationList[0]) {
+            this.selectConversation$.next(conversationList[0]);
+          }
+          this.setConversationListLoading$.next(false);
+        });
+    });
+  });
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
     connect('conversationListLoading', this.setConversationListLoading$);
-    connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, msg) => {
+    connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, message) => {
       this.notifier.notify('success', 'Message was sent.');
-      return sendMessageSuccess(state, msg);
+      return state.selectedConversation?.conversationId === message.conversationId ?
+        [...state.messageList.map(msg => {
+
+          console.log(msg.localMessageId);
+          console.log(message.localMessageId);
+
+          if(msg.localMessageId === message.localMessageId) {
+            const newMsg: Message = {
+              ...msg,
+              status: 'sent'
+            };
+            return newMsg;
+          }
+          return msg;
+        })] : state.messageList;
     });
     connect('messageList', this.setMessageList$, (state, list) => {
       this.notifier.notify('default', 'Messages SET.');
@@ -85,7 +168,24 @@ export class ChatStore {
     connect('conversationList', this.chatInfrastructureService.loadConversationListSuccess$);
     connect('messageListLoading', this.setMessageListLoading$);
     connect('memberIdMap', this.setMemberIdMap$);
-    connect(this.selectConversation$, selectConversation());
+    connect(this.selectConversation$, (state, conversation) => {
+        if (!conversation) {
+          return {
+            ...state
+          };
+        }
+
+        const updatedConversations = state.conversationList.map((conv: Conversation) => ({
+          ...conv
+        }));
+
+        return {
+          ...state,
+          conversationList: updatedConversations,
+          selectedConversation: conversation
+        };
+
+    });
   });
 
   // READ

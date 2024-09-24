@@ -7,7 +7,15 @@ import { routing } from '@chat-app/util-routing';
 export function setupChatEffects(store: ChatStore) {
   return rxEffects(({ register }) => {
 
+    register(store.messageTrigger$, (messageSend) => {
+      store.sendMessage$.next(messageSend);
+    });
+
     register(store.sendMessage$, (messageSend) => {
+      store.messageSync.scheduleMessage(messageSend);
+    });
+
+    register(store.messageTriggerSuccess$, (messageSend) => {
       store.chatInfrastructureService.sendMessage(messageSend);
     });
 

@@ -92,28 +92,27 @@ export class ChatInfrastructureService {
       );
   }
 
-sendMessage(messageSend: MessageSend): void {
+  sendMessage(messageSend: MessageSend): void {
     this.socket.emit('sendMessage', messageSend);
   }
 
   private setupSocketListeners(): void {
-    this.socket.on('sendMessageSuccess', (message: ReceiveMessageDto) => {
-      console.log('sendMessageSuccess', message);
-        this.sendMessageSuccess$.next({
-          conversationId: message.conversation_id,
-          content: message.content,
-          createdAt: message.created_at,
-          messageId: message.message_id,
-          senderId: message.sender_id,
-          status: 'sending'
-        });
-      }
-    );
+    this.socket.on('sendMessageSuccess', (message: any) => {
+      console.log('sendMessageSuccesspppp', message);
+      this.sendMessageSuccess$.next({
+        conversationId: message.conversation_id,
+        localMessageId: message.local_message_id,
+        content: message.content,
+        createdAt: message.created_at,
+        messageId: message.id,
+        senderId: message.sender_id,
+        status: 'sent'
+      });
+    }
+  );
 
     this.socket.on('loadConversationListSuccess', (x: any) => {
-      console.log('xxxx', x);
       this.loadConversationListSuccess$.next(x);
-
     });
   }
 }

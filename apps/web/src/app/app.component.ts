@@ -1,12 +1,17 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { NotifierService, NotifierContainerComponent } from '@chat-app/ui-notifier';
 
 @Component({
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, NotifierContainerComponent],
   selector: 'mg-root',
-  template: '<router-outlet />',
+  template: `
+    <router-outlet />
+    <notifier-container />
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
+
 }

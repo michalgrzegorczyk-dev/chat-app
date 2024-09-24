@@ -6,7 +6,7 @@ import { NotifierService } from '@chat-app/ui-notifier';
 @Injectable({
   providedIn: 'root'
 })
-export class MessageScheduler {
+export class ChatSync {
 
   private queue: MessageSend[] = [];
   private isOnline$: Observable<Event>;

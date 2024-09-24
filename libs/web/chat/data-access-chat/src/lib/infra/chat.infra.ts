@@ -15,7 +15,7 @@ import { ROUTES_PARAMS, CHAT_ROUTES } from '@chat-app/util-routing';
 @Injectable({
   providedIn: 'root'
 })
-export class ChatInfrastructure {
+export class ChatInfra {
   readonly sendMessageSuccess$ = new Subject<ReceivedMessage>();
   readonly loadConversationListSuccess$ = new Subject<Conversation[]>();
   readonly loadConversationListPing$ = new Subject<boolean>();

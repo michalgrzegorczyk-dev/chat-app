@@ -2,13 +2,13 @@ import { Injectable, inject } from '@angular/core';
 import { rxState } from '@rx-angular/state';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
-import { ChatInfrastructure } from '../../infrastructure/chat.infrastructure';
+import { ChatInfra } from '../../infra/chat.infra';
 import { ChatState } from '../../models/chat-state.type';
 import { Message } from '../../models/message.type';
 import { Conversation } from '../../models/conversation.type';
 import { MessageSend } from '../../models/message-send.type';
 import { User } from '../../models/user.type';
-import { MessageScheduler } from './message-scheduler';
+import { ChatSync } from './chat.sync';
 import { NotifierService } from '@chat-app/ui-notifier';
 import { rxEffects } from '@rx-angular/state/effects';
 import { ConversationDetails } from '../../models/conversation-details.type';
@@ -30,16 +30,13 @@ const INITIAL_STATE: ChatState = {
 })
 export class ChatStore {
   readonly router = inject(Router);
-  readonly chatInfrastructureService = inject(ChatInfrastructure);
+  readonly chatInfrastructureService = inject(ChatInfra);
   // readonly messageScheduler = inject(MessageScheduler);
   readonly notifier: NotifierService;
 
   constructor(notifierService: NotifierService) {
     this.notifier = notifierService;
   }
-
-  // readonly messagesWakeUpTrigger$ = this.messageScheduler.messageTrigger$;
-  // readonly messageReadyToSendFromScheduler$ = this.messageScheduler.messageTriggerSuccess$;
 
   // EVENTS
   readonly sendMessage$ = new Subject<MessageSend>();
@@ -53,9 +50,9 @@ export class ChatStore {
   readonly loadConversationList$ = new Subject<void>();
 
   private readonly effects = rxEffects(({ register }) => {
-
     register(this.sendMessage$, (messageSend) => {
-      this.notifier.notify('info', 'Message Ready To Send.');
+      this.notifier.notify('info', 'Send Message.');
+      // dataSyncer.addMessage
       this.chatInfrastructureService.sendMessage(messageSend);
     });
 
@@ -117,7 +114,8 @@ export class ChatStore {
     set(INITIAL_STATE);
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, message) => {
-      this.notifier.notify('success', 'Message was sent.');
+      // dataSyncer.removeMessage
+      this.notifier.notify('success', 'Message Sent');
       return state.selectedConversation?.conversationId === message.conversationId ?
         [...state.messageList.map(msg => {
 

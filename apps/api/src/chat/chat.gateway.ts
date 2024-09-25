@@ -34,8 +34,15 @@ export class ChatGateway implements OnGatewayConnection {
         client.disconnect();
         return;
       }
-      this.globalUsersSocketMap.set(userId, client.id);
-      this.logger.log(`Client connected: ${client.id} for user: ${userId}`);
+      //check if user exist in globaluserssocketmap
+      if (this.globalUsersSocketMap.has(userId)) {
+        console.log('User already connected');
+        console.log(this.globalUsersSocketMap.get(userId));
+      } else {
+        this.globalUsersSocketMap.set(userId, client.id);
+        this.logger.log(`Client connected: ${client.id} for user: ${userId}`);
+      }
+      // this.globalUsersSocketMap.set(userId, client.id);
     } catch (error) {
       this.logger.error(`Error in handleConnection: ${error.message}`);
     }
@@ -44,6 +51,8 @@ export class ChatGateway implements OnGatewayConnection {
   // TODO: client never used but can be used to notify the sender that the message was sent
   @SubscribeMessage('sendMessage')
   async handleSendMessage(@MessageBody() requestDto: SendMessageRequestDto, @ConnectedSocket() client: Socket): Promise<void> {
+    console.log('handleSendMessage');
+
     await this.supabaseService.updateConversationList(requestDto);
     const savedMessage = await this.supabaseService.saveMessage(requestDto);
     const conversationUsers = await this.supabaseService.getUserIdListFromConversation(requestDto.conversationId);

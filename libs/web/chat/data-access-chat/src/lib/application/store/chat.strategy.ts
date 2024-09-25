@@ -1,4 +1,5 @@
-import { MessageSend, ReceivedMessage } from '@chat-app/domain';
+import { MessageSend } from '../../models/message-send.type';
+import { ReceivedMessage } from '../../models/message.type';
 import { Observable, Subject } from 'rxjs';
 import { Injectable, inject } from '@angular/core';
 import { ChatSync } from './chat.sync';
@@ -7,19 +8,14 @@ export interface SyncStrategy {
   addMessage(message: MessageSend): void;
   removeMessage(message: ReceivedMessage): void;
   getSendMessage$(): Observable<MessageSend>;
+  requestSync(): void;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class ChatSyncStrategy implements SyncStrategy {
-
-  chatSync = inject(ChatSync)
-  sendMessage$ = this.chatSync.sendMessage$;
-
-  private sendMessage(message: MessageSend): void {
-    this.chatSync.sendMessage(message);
-  }
+  private readonly chatSync = inject(ChatSync)
 
   addMessage(message: MessageSend) {
     this.chatSync.addMessage(message);
@@ -31,6 +27,10 @@ export class ChatSyncStrategy implements SyncStrategy {
 
   getSendMessage$(): Observable<MessageSend> {
     return this.chatSync.sendMessage$;
+  }
+
+  requestSync(): void {
+    this.chatSync.requestSync();
   }
 }
 
@@ -48,7 +48,12 @@ export class NoSyncStrategy implements SyncStrategy {
     // Do nothing
   }
 
+
   getSendMessage$(): Observable<MessageSend> {
     return this.sendMessage$;
+  }
+
+  requestSync(): void {
+
   }
 }

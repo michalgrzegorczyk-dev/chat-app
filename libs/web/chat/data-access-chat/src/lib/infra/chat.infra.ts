@@ -93,7 +93,8 @@ export class ChatInfra {
   }
 
   sendMessage(messageSend: MessageSend): void {
-    this.socket.emit('sendMessage', messageSend, ((error:any) => {
+    console.log('before send')
+    this.socket.emit('sendMessage', messageSend, ((error: any) => {
       if (error) {
         console.log('sendMessageError', error);
       }

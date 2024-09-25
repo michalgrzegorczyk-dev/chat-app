@@ -1,4 +1,4 @@
-import {Component, inject} from "@angular/core";
+import { Component, inject, HostListener } from '@angular/core';
 import {ConversationLoadingComponent} from "../conversation/loading/conversation-loading.component";
 import { ChatStore, ChatFacade } from '@chat-app/domain';
 import { ConversationHeaderComponent } from '../conversation/header/conversation-header.component';
@@ -24,5 +24,6 @@ import { ConversationDetailsComponent } from '../conversation/details/conversati
   ]
 })
 export class ConversationPanelShellComponent {
-  readonly messageListLoading = inject(ChatFacade).messageListLoading;
+  private readonly chatFacade = inject(ChatFacade);
+  readonly messageListLoading = this.chatFacade.messageListLoading;
 }

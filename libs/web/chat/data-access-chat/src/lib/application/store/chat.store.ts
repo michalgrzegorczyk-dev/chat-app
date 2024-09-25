@@ -44,6 +44,7 @@ export class ChatStore {
       register(this.sendMessage$, (messageSend) => {
         this.notifier.notify('info', 'Send Message.');
         this.chatSync.addMessage(messageSend);
+        console.log('sending message');
         this.chatInfrastructureService.sendMessage(messageSend);
       });
 

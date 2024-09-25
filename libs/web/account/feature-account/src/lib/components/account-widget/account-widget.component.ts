@@ -22,7 +22,7 @@ export class AccountWidgetComponent {
   dropdownItems: any = [
     { type: 'button', text: 'Add Conversation' },
     { type: 'link', text: 'Account Settings', href: 'account' },
-    { type: 'link', text: 'Sign Out', href: 'auth' }
+    { type: 'link', text: 'Change Account', href: 'auth' }
   ];
 
   async onItemClick($event: any): Promise<void> {

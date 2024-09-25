@@ -14,7 +14,7 @@ import { ConversationDetails } from '../../models/conversation-details.type';
 import { routing } from '@chat-app/util-routing';
 import { take } from 'rxjs/operators';
 import { SyncStrategy } from './chat.strategy';
-import { TOKEN } from '../../../../../../../../apps/web/src/app/layout/chat/chat.component';
+import { CHAT_SYNC_STRATEGY_TOKEN } from '../../../../../../../../apps/web/src/app/layout/chat/chat.component';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -35,7 +35,7 @@ export class ChatStore {
   readonly notifier = inject(NotifierService);
 
   //todo constructor?
-  constructor(@Inject(TOKEN) readonly chatSync: SyncStrategy) {
+  constructor(@Inject(CHAT_SYNC_STRATEGY_TOKEN) readonly chatSync: SyncStrategy) {
     const effects = rxEffects(({ register }) => {
       register(this.chatSync.getSendMessage$(), (messageSend) => {
         this.notifier.notify('info', '[FROM SYNC] Send Message.');

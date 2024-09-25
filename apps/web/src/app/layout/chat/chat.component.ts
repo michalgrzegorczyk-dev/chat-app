@@ -5,7 +5,7 @@ import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-
 import { RouterOutlet } from '@angular/router';
 import { SyncStrategy, ChatSyncStrategy } from '@chat-app/domain';
 
-export const TOKEN = new InjectionToken<SyncStrategy>('syncStrategy');
+export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<SyncStrategy>('syncStrategy');
 
 @Component({
   selector: 'mg-chat',
@@ -15,7 +15,7 @@ export const TOKEN = new InjectionToken<SyncStrategy>('syncStrategy');
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
-      provide: TOKEN,
+      provide: CHAT_SYNC_STRATEGY_TOKEN,
       useClass: ChatSyncStrategy
     }
   ]

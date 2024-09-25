@@ -13,7 +13,7 @@ There is no authorization of the user, but you can select predefined users to ch
 ✅ [FUNCTIONAL] Data sync, when switching offline-online<br>
 ✅ [FUNCTIONAL] Switching tabs is up-to-date<br>
 ✅ [FUNCTIONAL] Group and signle conversations<br>
-✅ [FUNCTIONAL] Multilaguage<br>
+✅ [FUNCTIONAL] Change between languages in runtime<br>
 <br>
 ✅ [LEARN] RxAngular, Tailwind, RxDB<br>
 ✅ [LEARN] Nx, Nx Boundaries, DDD<br>

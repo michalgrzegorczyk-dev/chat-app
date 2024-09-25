@@ -21,6 +21,7 @@ There is no authorization of the user, but you can select predefined users to ch
 <br>
 ❌ [NO NEED] Authorization is not required<br>
 ❌ [NO NEED] Low focus on system design<br>
+❌ [NO NEED] Responsive design<br>
 
 
 ## Features

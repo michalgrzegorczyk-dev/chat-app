@@ -16,7 +16,7 @@ There is no authorization of the user, but you can select predefined users to ch
 <br>
 ✅ [LEARN] RxAngular, Tailwind, RxDB<br>
 ✅ [LEARN] Nx, Nx Boundaries, DDD<br>
-✅ [LEARN] NestJS, Supabase, WebSocket API, Socket.IO<br>
+✅ [LEARN] NestJS, Supabase, Socket.IO<br>
 <br>
 ❌ [NO NEED] Authorization is not required<br>
 ❌ [NO NEED] No strong focus on system design<br>

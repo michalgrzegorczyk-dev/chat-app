@@ -19,7 +19,7 @@ There is no authorization of the user, but you can select predefined users to ch
 ✅ [LEARN] NestJS, Supabase, Socket.IO<br>
 <br>
 ❌ [NO NEED] Authorization is not required<br>
-❌ [NO NEED] No strong focus on system design<br>
+❌ [NO NEED] Low focus on system design<br>
 <br>
 🎯 https://rxdb.info/ <br>
 🎯 Maximum strictness in TypeScript <br>

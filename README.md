@@ -14,12 +14,9 @@ There is no authorization of the user, but you can select predefined users to ch
 ✅ [FUNCTIONAL] Switching tabs is up-to-date<br>
 ✅ [FUNCTIONAL] Group and signle conversations<br>
 <br>
-✅ [LEARN] RxAngular<br>
-✅ [LEARN] Tailwind<br>
-✅ [LEARN] RxDB<br>
-✅ [LEARN] Nx Boundaries<br>
-✅ [LEARN] Supabase<br>
-✅ [LEARN] Socket.IO<br>
+✅ [LEARN] RxAngular, Tailwind, RxDB<br>
+✅ [LEARN] Nx, Nx Boundaries, DDD<br>
+✅ [LEARN] NestJS, Supabase, WebSocket API, Socket.IO<br>
 <br>
 ❌ [NO NEED] Authorization is not required<br>
 ❌ [NO NEED] No strong focus on system design<br>

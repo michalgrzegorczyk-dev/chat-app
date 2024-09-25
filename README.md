@@ -20,11 +20,7 @@ There is no authorization of the user, but you can select predefined users to ch
 <br>
 ❌ [NO NEED] Authorization is not required<br>
 ❌ [NO NEED] Low focus on system design<br>
-<br>
-🎯 https://rxdb.info/ <br>
-🎯 Maximum strictness in TypeScript <br>
-🎯 Maximum strictness in ESLint <br>
-🎯 Maximum strictness in NX boundaries <br>
+
 
 ## Features
 - **Select Predefined User**: Users can select a user to chat with from a list of predefined users.

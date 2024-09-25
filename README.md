@@ -20,7 +20,7 @@ There is no authorization of the user, but you can select predefined users to ch
 ✅ [LEARN] NestJS, Supabase, Socket.IO<br>
 <br>
 ❌ [NO NEED] Authorization is not required<br>
-❌ [NO NEED] Low focus on system design<br>
+❌ [NO NEED] No focus on system design<br>
 ❌ [NO NEED] Responsive design<br>
 
 

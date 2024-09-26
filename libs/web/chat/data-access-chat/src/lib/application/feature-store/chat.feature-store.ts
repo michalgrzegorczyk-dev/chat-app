@@ -31,9 +31,10 @@ export class ChatFeatureStore {
   readonly router = inject(Router);
   readonly chatInfra = inject(ChatInfra);
   readonly notifier = inject(NotifierService);
+  readonly dataSync = inject(CHAT_SYNC_STRATEGY_TOKEN) as DataSyncStrategy;
 
   //todo constructor?
-  constructor(@Inject(CHAT_SYNC_STRATEGY_TOKEN) readonly dataSync: DataSyncStrategy) {
+  constructor() {
 
     this.dataSync.getMessageSent$().subscribe(message => {
       this.getMessageSent$.next(message);

@@ -4,7 +4,10 @@ import { fromEvent, Subject, BehaviorSubject } from 'rxjs';
 import { NetworkService } from '../to-be-separated/network.service';
 import { PageVisibilityService } from '../to-be-separated/page-visibility.service';
 import { BroadcastChannelService, BroadcastMessage } from '../to-be-separated/broadcastChannel.service';
+<<<<<<< HEAD
 import { MessageService } from '../to-be-separated/message.service';
+=======
+>>>>>>> 84750c1 (feat(chat): add broadcast service)
 
 /**
  * Enum-like object representing the different types of messages
@@ -52,7 +55,10 @@ export class ChatSync implements OnDestroy {
   private readonly networkService = inject(NetworkService);
   private readonly pageVisibilityService = inject(PageVisibilityService);
   private readonly broadcastChannelService = inject(BroadcastChannelService);
+<<<<<<< HEAD
   private readonly messageService = inject(MessageService);
+=======
+>>>>>>> 84750c1 (feat(chat): add broadcast service)
 
   constructor() {
     this.networkService.getOnlineStatus().subscribe((isOnline) => {
@@ -64,6 +70,7 @@ export class ChatSync implements OnDestroy {
     this.broadcastChannelService.onMessage().subscribe((message: BroadcastMessage) => this.handleBroadcastMessage(message));
     this.pageVisibilityService.onPageVisible().subscribe(() => this.onPageVisible());
 
+<<<<<<< HEAD
     this.messageService.onMessageSend().subscribe(message => {
       this.handleMessageSend(message);
     });
@@ -83,6 +90,18 @@ export class ChatSync implements OnDestroy {
   //   this.broadcastSyncData();
   // }
 
+=======
+  /**
+   * Adds a message to the queue and broadcasts the updated queue.
+   * @param message The message to be added to the queue.
+   */
+  addMessage(message: MessageSend) {
+    const updatedQueue = [...this.queueSubject.value, message];
+    this.queueSubject.next(updatedQueue);
+    this.broadcastSyncData();
+  }
+
+>>>>>>> 84750c1 (feat(chat): add broadcast service)
   /**
    * Removes a message from the queue and broadcasts the updated queue.
    * @param message The message to be removed from the queue.
@@ -152,12 +171,34 @@ export class ChatSync implements OnDestroy {
     }
   }
 
+<<<<<<< HEAD
   private broadcastSyncData() {
     this.messageService.getQueue().subscribe(queue => {
       this.broadcastChannelService.postMessage({
         type: BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA,
         payload: queue
       });
+=======
+  private handleBroadcastMessage(message: BroadcastMessage) {
+    console.log('Received broadcast message', message.type);
+    switch (message.type) {
+      case BROADCAST_CHANNEL_TYPES.REQUEST_SYNC:
+        this.broadcastSyncData();
+        break;
+      case BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA:
+        this.receiveSyncData(message.payload);
+        break;
+      case BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT:
+        this.handleMessageSent(message.payload);
+        break;
+    }
+  }
+
+  private broadcastSyncData() {
+    this.broadcastChannelService.postMessage({
+      type: BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA,
+      payload: this.queueSubject.value
+>>>>>>> 84750c1 (feat(chat): add broadcast service)
     });
   }
 
@@ -168,6 +209,7 @@ export class ChatSync implements OnDestroy {
     });
   }
 
+<<<<<<< HEAD
   // public notifyMessageSent(message: ReceivedMessage) {
   //   this.broadcastChannelService.postMessage({
   //     type: BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT,
@@ -187,10 +229,14 @@ export class ChatSync implements OnDestroy {
 
   public notifyMessageSent(message: ReceivedMessage) {
     this.messageService.handleReceivedMessage(message);
+=======
+  public notifyMessageSent(message: ReceivedMessage) {
+>>>>>>> 84750c1 (feat(chat): add broadcast service)
     this.broadcastChannelService.postMessage({
       type: BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT,
       payload: message
     });
+<<<<<<< HEAD
   }
 
   private handleMessageSend(message: MessageSend) {
@@ -223,5 +269,8 @@ export class ChatSync implements OnDestroy {
         this.queueSubject.next(uniqueQueue);
       }
     });
+=======
+    this.handleMessageSent(message);
+>>>>>>> 84750c1 (feat(chat): add broadcast service)
   }
 }

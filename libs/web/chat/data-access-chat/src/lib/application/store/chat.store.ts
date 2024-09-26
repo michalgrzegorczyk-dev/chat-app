@@ -26,9 +26,7 @@ const INITIAL_STATE: ChatState = {
   memberIdMap: new Map()
 };
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ChatStore {
   readonly router = inject(Router);
   readonly chatInfrastructureService = inject(ChatInfra);
@@ -138,23 +136,23 @@ export class ChatStore {
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
-    connect('messageList', this.getMessageSent$, (state:ChatState, message: ReceivedMessage) => {
-      this.notifier.notify('success', 'Message Sent');
-      if (state.selectedConversation?.conversationId !== message.conversationId) {
-        return state.messageList;
-      }
-
-      return state.messageList.map((msg:Message) => {
-        if (msg.localMessageId === message.localMessageId) {
-          return {
-            ...msg,
-            status: 'sent',
-            messageId: message.messageId // Update the server-generated messageId
-          };
-        }
-        return msg;
-      });
-    });
+    // connect('messageList', this.getMessageSent$, (state:ChatState, message: ReceivedMessage) => {
+    //   this.notifier.notify('success', 'Message Sent');
+    //   if (state.selectedConversation?.conversationId !== message.conversationId) {
+    //     return state.messageList;
+    //   }
+    //
+    //   return state.messageList.map((msg:Message) => {
+    //     if (msg.localMessageId === message.localMessageId) {
+    //       return {
+    //         ...msg,
+    //         status: 'sent',
+    //         messageId: message.messageId // Update the server-generated messageId
+    //       };
+    //     }
+    //     return msg;
+    //   });
+    // });
 
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, message) => {

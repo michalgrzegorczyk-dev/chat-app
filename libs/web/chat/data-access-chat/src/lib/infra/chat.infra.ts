@@ -28,6 +28,7 @@ export class ChatInfra {
   private readonly authService = inject(AuthService);
 
   constructor() {
+    console.log('INIT CONSTRUCTOR CHAT IUNFRA')
     this.setupSocketListeners();
   }
 

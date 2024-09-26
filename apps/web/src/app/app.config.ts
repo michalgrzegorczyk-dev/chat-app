@@ -15,6 +15,5 @@ export const appConfig: ApplicationConfig = {
       provide: CHAT_SYNC_STRATEGY_TOKEN,
       useClass: ChatSyncStrategy
     },
-    ChatInfra
   ]
 };

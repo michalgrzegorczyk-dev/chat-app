@@ -3,9 +3,7 @@ import { MessageSend } from '../models/message-send.type';
 import { Conversation } from '../models/conversation.type';
 import { inject, Injectable } from '@angular/core';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ChatFacade {
   private readonly chatStore = inject(ChatStore);
 

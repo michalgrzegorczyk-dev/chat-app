@@ -3,6 +3,7 @@ import { MessageSend, ReceivedMessage } from '@chat-app/domain';
 import { fromEvent, Subject, BehaviorSubject } from 'rxjs';
 import { NetworkService } from '../to-be-separated/network.service';
 import { PageVisibilityService } from '../to-be-separated/page-visibility.service';
+import { BroadcastChannelService, BroadcastMessage } from '../to-be-separated/broadcastChannel.service';
 
 /**
  * Enum-like object representing the different types of messages
@@ -57,33 +58,17 @@ export class ChatSync {
 
   private readonly networkService = inject(NetworkService);
   private readonly pageVisibilityService = inject(PageVisibilityService);
+  private readonly broadcastChannelService = inject(BroadcastChannelService);
 
-  constructor(private ngZone: NgZone) {
+  constructor() {
     this.networkService.getOnlineStatus().subscribe((isOnline) => {
       if (isOnline) {
         this.syncMessages();
       }
     });
 
-    this.broadcastChannel.onmessage = (event) => {
-      console.log('on message', event.data.type);
-      if (event.data.type === BROADCAST_CHANNEL_TYPES.REQUEST_SYNC) {
-        this.broadcastSyncData();
-      } else if (event.data.type === BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA) {
-        this.receiveSyncData(event.data.queue);
-      } else if (event.data.type === BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT) {
-        this.handleMessageSent(event.data.message);
-      }
-    };
-
+    this.broadcastChannelService.onMessage().subscribe((message: BroadcastMessage) => this.handleBroadcastMessage(message));
     this.pageVisibilityService.onPageVisible().subscribe(() => this.onPageVisible());
-  }
-
-  /**
-   * Requests synchronization of messages by broadcasting a sync request.
-   */
-  requestSync() {
-    this.broadcastChannel.postMessage({ type: 'sync_request' });
   }
 
   /**
@@ -94,18 +79,6 @@ export class ChatSync {
     const updatedQueue = [...this.queueSubject.value, message];
     this.queueSubject.next(updatedQueue);
     this.broadcastSyncData();
-  }
-
-  /**
-   * Notifies that a message has been sent by broadcasting the message.
-   * @param message The message that has been sent.
-   */
-  notifyMessageSent(message: ReceivedMessage) {
-    this.broadcastChannel.postMessage({
-      type: BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT,
-      message: message
-    });
-    this.handleMessageSent(message);
   }
 
   /**
@@ -125,16 +98,6 @@ export class ChatSync {
   private handleMessageSent(message: ReceivedMessage) {
     this.removeMessage(message);
     this.messageSentSubject.next(message);
-  }
-
-  /**
-   * Broadcasts the current queue of messages to be sent.
-   */
-  private broadcastSyncData() {
-    this.broadcastChannel.postMessage({
-      type: BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA,
-      queue: this.queueSubject.value
-    });
   }
 
   /**
@@ -170,5 +133,42 @@ export class ChatSync {
       this.queueSubject.next(currentQueue);
       this.broadcastSyncData();
     }
+  }
+
+  private handleBroadcastMessage(message: BroadcastMessage) {
+    console.log('Received broadcast message', message.type);
+    switch (message.type) {
+      case BROADCAST_CHANNEL_TYPES.REQUEST_SYNC:
+        this.broadcastSyncData();
+        break;
+      case BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA:
+        this.receiveSyncData(message.payload);
+        break;
+      case BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT:
+        this.handleMessageSent(message.payload);
+        break;
+    }
+  }
+
+  private broadcastSyncData() {
+    this.broadcastChannelService.postMessage({
+      type: BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA,
+      payload: this.queueSubject.value
+    });
+  }
+
+  public requestSync() {
+    this.broadcastChannelService.postMessage({
+      type: BROADCAST_CHANNEL_TYPES.REQUEST_SYNC,
+      payload: null
+    });
+  }
+
+  public notifyMessageSent(message: ReceivedMessage) {
+    this.broadcastChannelService.postMessage({
+      type: BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT,
+      payload: message
+    });
+    this.handleMessageSent(message);
   }
 }

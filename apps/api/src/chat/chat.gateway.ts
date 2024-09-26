@@ -35,14 +35,14 @@ export class ChatGateway implements OnGatewayConnection {
         return;
       }
       //check if user exist in globaluserssocketmap
-      if (this.globalUsersSocketMap.has(userId)) {
-        console.log('User already connected');
-        console.log(this.globalUsersSocketMap.get(userId));
-      } else {
-        this.globalUsersSocketMap.set(userId, client.id);
+      // if (this.globalUsersSocketMap.has(userId)) {
+      //   console.log('User already connected');
+      //   console.log(this.globalUsersSocketMap.get(userId));
+      // } else {
+      //   this.globalUsersSocketMap.set(userId, client.id);
+      // }
         this.logger.log(`Client connected: ${client.id} for user: ${userId}`);
-      }
-      // this.globalUsersSocketMap.set(userId, client.id);
+      this.globalUsersSocketMap.set(userId, client.id);
     } catch (error) {
       this.logger.error(`Error in handleConnection: ${error.message}`);
     }
@@ -58,12 +58,14 @@ export class ChatGateway implements OnGatewayConnection {
     const conversationUsers = await this.supabaseService.getUserIdListFromConversation(requestDto.conversationId);
 
     for (const userId of conversationUsers) {
+      console.log('for',this.globalUsersSocketMap );
       const userSocketId = this.globalUsersSocketMap.get(userId);
       if (userSocketId) {
         const conversations = await this.supabaseService.getConversationsByUserId(userId);
         const userSocketId = this.globalUsersSocketMap.get(userId);
 
         if (userSocketId) {
+          console.log('wchodze tu?')
           this.server.to(userSocketId).emit('loadConversationListSuccess', conversations);
           this.server.to(userSocketId).emit('sendMessageSuccess', savedMessage);
         }

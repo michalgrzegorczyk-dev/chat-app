@@ -1,11 +1,14 @@
-export interface ConversationListElementDto { //todo conversationListElementDto
+export interface ConversationListElementDto {
   conversationId: string;
   avatarUrl: string;
   name: string;
-  chatType: string; // todo conversation type
+  chatType: string;
 
-  //todo make it nested object
   lastMessageTimestamp: string;
   lastMessageContent: string;
   lastMessageSenderId: string;
 }
+
+//todo conversationListElementDto
+// todo conversation type
+//todo make it nested object

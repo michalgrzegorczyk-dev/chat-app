@@ -17,30 +17,92 @@ export class SupabaseService {
     this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
   }
 
+  // async getConversationsByUserId(userId: string): Promise<ConversationListElementDto[]> {
+  //   const { data } = await this.supabase
+  //     .from('conversationuser')
+  //     .select(`
+  //           conversation_id,
+  //           conversation:conversation_id(name, avatar_url, chat_type, last_message, last_message_timestamp, last_message_sender_id),
+  //           other_user:conversation_id(users!inner(id, name, profile_photo_url))
+  //       `)
+  //     .eq('user_id', userId)
+  //     .neq('other_user.users.id', userId);
+  //
+  //   return data.map((item: any) => {
+  //     const isOneOnOne = item.conversation.chat_type === 'single';
+  //
+  //     return {
+  //       conversationId: item.conversation_id,
+  //       avatarUrl: isOneOnOne ? item.other_user.users[0].profile_photo_url : item.conversation.avatar_url,
+  //       name: isOneOnOne ? item.other_user.users[0].name : item.conversation.name,
+  //       chatType: item.conversation.chat_type,
+  //       lastMessageContent: item.conversation.last_message,
+  //       lastMessageTimestamp: item.conversation.last_message_timestamp,
+  //       lastMessageSenderId: item.conversation.last_message_sender_id
+  //     };
+  //   }).sort((a, b) => b.lastMessageTimestamp.localeCompare(a.lastMessageTimestamp));
+  // }
+
+
   async getConversationsByUserId(userId: string): Promise<ConversationListElementDto[]> {
-    const { data } = await this.supabase
-      .from('conversationuser')
-      .select(`
-            conversation_id,
-            conversation:conversation_id(name, avatar_url, chat_type, last_message, last_message_timestamp, last_message_sender_id),
-            other_user:conversation_id(users!inner(id, name, profile_photo_url))
-        `)
-      .eq('user_id', userId)
-      .neq('other_user.users.id', userId);
+    console.log('Fetching conversations for user ID:', userId);
 
-    return data.map((item: any) => {
-      const isOneOnOne = item.conversation.chat_type === 'single';
+    try {
+      const { data, error } = await this.supabase
+        .from('conversationuser')
+        .select(`
+        conversation_id,
+        conversation:conversation_id(
+          name,
+          avatar_url,
+          chat_type,
+          last_message,
+          last_message_timestamp
+        ),
+        other_user:conversation_id(users!inner(id, name, profile_photo_url)),
+        last_message:conversation_id(
+          message(sender_id)
+        )
+      `)
+        .eq('user_id', userId)
+        .neq('other_user.users.id', userId)
+        .order('conversation(last_message_timestamp)', { ascending: false });
 
-      return {
-        conversationId: item.conversation_id,
-        avatarUrl: isOneOnOne ? item.other_user.users[0].profile_photo_url : item.conversation.avatar_url,
-        name: isOneOnOne ? item.other_user.users[0].name : item.conversation.name,
-        chatType: item.conversation.chat_type,
-        lastMessageContent: item.conversation.last_message,
-        lastMessageTimestamp: item.conversation.last_message_timestamp,
-        lastMessageSenderId: item.conversation.last_message_sender_id
-      };
-    }).sort((a, b) => b.lastMessageTimestamp.localeCompare(a.lastMessageTimestamp));
+      if (error) {
+        console.error('Error fetching conversations:', error);
+        return [];
+      }
+
+      if (!data || data.length === 0) {
+        console.log('No conversations found for user ID:', userId);
+        return [];
+      }
+
+      console.log('Raw data from Supabase:', data);
+
+      const conversations: ConversationListElementDto[] = data.map((item: any) => {
+        const isOneOnOne = item.conversation.chat_type === 'single';
+        const otherUser = item.other_user.users[0]; // Assuming there's always at least one other user
+        const lastMessage = item.last_message.message[0]; // Get the last message
+
+        return {
+          conversationId: item.conversation_id,
+          avatarUrl: isOneOnOne ? otherUser?.profile_photo_url : item.conversation.avatar_url,
+          name: isOneOnOne ? otherUser?.name : item.conversation.name,
+          chatType: item.conversation.chat_type,
+          lastMessageContent: item.conversation.last_message || '',
+          lastMessageTimestamp: item.conversation.last_message_timestamp || '',
+          lastMessageSenderId: lastMessage?.sender_id || ''
+        };
+      });
+
+      console.log('Processed conversations:', conversations);
+
+      return conversations;
+    } catch (error) {
+      console.error('Unexpected error in getConversationsByUserId:', error);
+      return [];
+    }
   }
 
   async saveMessage(message: SendMessageRequestDto): Promise<MessageDto> {

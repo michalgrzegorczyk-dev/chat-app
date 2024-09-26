@@ -4,7 +4,7 @@ import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
 import { ChatInfra } from '../../infra/chat.infra';
 import { ChatState } from '../../models/chat-state.type';
-import { Message } from '../../models/message.type';
+import { Message, ReceivedMessage } from '../../models/message.type';
 import { Conversation } from '../../models/conversation.type';
 import { MessageSend } from '../../models/message-send.type';
 import { User } from '../../models/user.type';
@@ -27,7 +27,7 @@ const INITIAL_STATE: ChatState = {
 };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class ChatStore {
   readonly router = inject(Router);
@@ -36,11 +36,29 @@ export class ChatStore {
 
   //todo constructor?
   constructor(@Inject(CHAT_SYNC_STRATEGY_TOKEN) readonly chatSync: SyncStrategy) {
+
+    this.chatSync.getMessageSent$().subscribe(message => {
+      this.getMessageSent$.next(message);
+    });
+
+    this.chatSync.getQueue$().subscribe(queue => {
+      this.queue$.next(queue);
+    });
+
+
+
     const effects = rxEffects(({ register }) => {
       register(this.chatSync.getSendMessage$(), (messageSend) => {
         this.notifier.notify('info', '[FROM SYNC] Send Message.');
         this.chatInfrastructureService.sendMessage(messageSend);
       });
+
+
+      register(this.chatInfrastructureService.sendMessageSuccess$, (message) => {
+        this.chatSync.notifyMessageSent(message);
+      });
+
+
       register(this.sendMessage$, (messageSend) => {
         this.notifier.notify('info', 'Send Message.');
         this.chatSync.addMessage(messageSend);
@@ -114,9 +132,30 @@ export class ChatStore {
   readonly addMessage$ = new Subject<Message>();
   readonly setMemberIdMap$ = new Subject<Map<string, User>>();
   readonly loadConversationList$ = new Subject<void>();
+  readonly queue$ = new Subject<MessageSend[]>();
+  readonly getMessageSent$ = new Subject<ReceivedMessage>();
 
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
+
+    // connect('messageList', this.getMessageSent$, (state:ChatState, message: ReceivedMessage) => {
+    //   this.notifier.notify('success', 'Message Sent');
+    //   if (state.selectedConversation?.conversationId !== message.conversationId) {
+    //     return state.messageList;
+    //   }
+    //
+    //   return state.messageList.map((msg:Message) => {
+    //     if (msg.localMessageId === message.localMessageId) {
+    //       return {
+    //         ...msg,
+    //         status: 'sent',
+    //         messageId: message.messageId // Update the server-generated messageId
+    //       };
+    //     }
+    //     return msg;
+    //   });
+    // });
+
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, message) => {
       this.chatSync.removeMessage(message);
@@ -140,6 +179,33 @@ export class ChatStore {
     connect('messageList', this.addMessage$, (state, message) => {
       this.notifier.notify('default', 'Message added.');
       return [...state.messageList, message];
+    });
+
+    // esz
+    connect('messageList', this.queue$, (state, queue) => {
+      // return state.messageList;
+
+      if(queue && queue.length === 0) {
+        return state.messageList;
+      }
+
+      if(queue.length > 0 && state.messageList[state.messageList.length - 1].localMessageId !== queue[0].localMessageId) {
+        // alert('yooo');
+        const message: Message = {
+          localMessageId: queue[0].localMessageId,
+          messageId: '',
+          senderId: queue[0].userId,
+          content: queue[0].content,
+          createdAt: new Date().toISOString(),
+          status: 'sending'
+        };
+        return [...state.messageList, message];
+      }
+      return state.messageList;
+
+
+      // this.notifier.notify('default', 'Message added.');
+      // return [...state.messageList, message];
     });
     connect('messageList', this.sendMessage$, (state, message) => {
       this.notifier.notify('default', 'Message displayed on UI');

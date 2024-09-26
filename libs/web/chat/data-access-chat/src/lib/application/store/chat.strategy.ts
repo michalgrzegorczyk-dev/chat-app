@@ -1,6 +1,6 @@
 import { MessageSend } from '../../models/message-send.type';
 import { ReceivedMessage } from '../../models/message.type';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, of } from 'rxjs';
 import { Injectable, inject } from '@angular/core';
 import { ChatSync } from './chat.sync';
 
@@ -9,6 +9,9 @@ export interface SyncStrategy {
   removeMessage(message: ReceivedMessage): void;
   getSendMessage$(): Observable<MessageSend>;
   requestSync(): void;
+  getQueue$(): Observable<MessageSend[]>;
+  notifyMessageSent(message: ReceivedMessage): void;
+  getMessageSent$(): Observable<ReceivedMessage>;
 }
 
 @Injectable({
@@ -32,6 +35,18 @@ export class ChatSyncStrategy implements SyncStrategy {
   requestSync(): void {
     this.chatSync.requestSync();
   }
+
+  getQueue$(): Observable<MessageSend[]> {
+    return this.chatSync.queue$;
+  }
+
+  notifyMessageSent(message: ReceivedMessage): void {
+    this.chatSync.notifyMessageSent(message);
+  }
+
+  getMessageSent$(): Observable<ReceivedMessage> {
+    return this.chatSync.messageSent$;
+  }
 }
 
 @Injectable({
@@ -39,6 +54,7 @@ export class ChatSyncStrategy implements SyncStrategy {
 })
 export class NoSyncStrategy implements SyncStrategy {
   private sendMessage$ = new Subject<MessageSend>();
+  private readonly chatSync = inject(ChatSync)
 
   addMessage(message: MessageSend): void {
     // Do nothing
@@ -55,5 +71,16 @@ export class NoSyncStrategy implements SyncStrategy {
 
   requestSync(): void {
 
+  }
+
+  getQueue$(): Observable<MessageSend[]> {
+    return of([])
+  }
+
+  getMessageSent$(): Observable<ReceivedMessage> {
+    return of();
+  }
+
+  notifyMessageSent(message: ReceivedMessage): void {
   }
 }

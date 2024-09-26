@@ -103,18 +103,19 @@ export class ChatInfra {
 
   private setupSocketListeners(): void {
     this.socket.on('sendMessageSuccess', (message: any) => {
-      console.log('sendMessageSuccesspppp', message);
-      this.sendMessageSuccess$.next({
-        conversationId: message.conversation_id,
-        localMessageId: message.local_message_id,
-        content: message.content,
-        createdAt: message.created_at,
-        messageId: message.id,
-        senderId: message.sender_id,
-        status: 'sent'
-      });
-    }
-  );
+      console.log('CZY TY WGLE TU WHCODZISZ?')
+        console.log('sendMessageSuccesspppp', message);
+        this.sendMessageSuccess$.next({
+          conversationId: message.conversation_id,
+          localMessageId: message.local_message_id,
+          content: message.content,
+          createdAt: message.created_at,
+          messageId: message.id,
+          senderId: message.sender_id,
+          status: 'sent'
+        });
+      }
+    );
 
     this.socket.on('loadConversationListSuccess', (x: any) => {
       this.loadConversationListSuccess$.next(x);

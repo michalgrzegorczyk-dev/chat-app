@@ -5,6 +5,7 @@ import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-
 import { RouterOutlet } from '@angular/router';
 import { SyncStrategy, ChatSyncStrategy, ChatFacade, ChatStore } from '@chat-app/domain';
 import { ChatInfra } from '../../../../../../libs/web/chat/data-access-chat/src/lib/infra/chat.infra';
+import { ChatSync } from '../../../../../../libs/web/chat/data-access-chat/src/lib/application/store/chat.sync';
 
 export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<SyncStrategy>('syncStrategy');
 
@@ -21,7 +22,8 @@ export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<SyncStrategy>('syncSt
     },
     ChatInfra,
     ChatFacade,
-    ChatStore
+    ChatStore,
+    ChatSync
   ]
 })
 export class ChatComponent implements OnInit {

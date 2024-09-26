@@ -1,9 +1,10 @@
-import { Component, inject, ChangeDetectionStrategy, InjectionToken } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, InjectionToken, OnInit } from '@angular/core';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { AccountWidgetComponent } from '@chat-app/feature-account';
 import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-list';
 import { RouterOutlet } from '@angular/router';
 import { SyncStrategy, ChatSyncStrategy } from '@chat-app/domain';
+import { ChatInfra } from '../../../../../../libs/web/chat/data-access-chat/src/lib/infra/chat.infra';
 
 export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<SyncStrategy>('syncStrategy');
 
@@ -17,9 +18,14 @@ export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<SyncStrategy>('syncSt
     {
       provide: CHAT_SYNC_STRATEGY_TOKEN,
       useClass: ChatSyncStrategy
-    }
+    },
+    ChatInfra
   ]
 })
-export class ChatComponent {
+export class ChatComponent implements OnInit {
   readonly user = inject(AuthService).user;
+
+  ngOnInit() {
+    console.log('CHAT NG ON INIT', this.user().name);
+  }
 }

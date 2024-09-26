@@ -22,10 +22,12 @@ export class AccountWidgetComponent {
   dropdownItems: any = [
     { type: 'button', text: 'Add Conversation' },
     { type: 'link', text: 'Account Settings', href: 'account' },
-    { type: 'link', text: 'Change Account', href: 'auth' }
+    { type: 'button', text: 'Change Account', href: 'auth' }
   ];
 
   async onItemClick($event: any): Promise<void> {
-
+    if($event.text === 'Change Account') {
+      await this.authService.logOut();
+    }
   }
 }

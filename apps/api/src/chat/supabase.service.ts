@@ -45,7 +45,6 @@ export class SupabaseService {
 
 
   async getConversationsByUserId(userId: string): Promise<ConversationListElementDto[]> {
-    console.log('Fetching conversations for user ID:', userId);
 
     try {
       const { data, error } = await this.supabase
@@ -68,17 +67,16 @@ export class SupabaseService {
         .neq('other_user.users.id', userId)
         .order('conversation(last_message_timestamp)', { ascending: false });
 
+      // console.log(data);
+
       if (error) {
-        console.error('Error fetching conversations:', error);
         return [];
       }
 
       if (!data || data.length === 0) {
-        console.log('No conversations found for user ID:', userId);
         return [];
       }
 
-      console.log('Raw data from Supabase:', data);
 
       const conversations: ConversationListElementDto[] = data.map((item: any) => {
         const isOneOnOne = item.conversation.chat_type === 'single';
@@ -96,11 +94,9 @@ export class SupabaseService {
         };
       });
 
-      console.log('Processed conversations:', conversations);
 
       return conversations;
     } catch (error) {
-      console.error('Unexpected error in getConversationsByUserId:', error);
       return [];
     }
   }
@@ -169,6 +165,7 @@ export class SupabaseService {
   }
 
   async updateConversationList(sendMessageDto: SendMessageRequestDto): Promise<void> {
+
     await this.supabase
       .from('conversation')
       .update({

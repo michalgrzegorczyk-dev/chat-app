@@ -23,7 +23,8 @@ CREATE TABLE IF NOT EXISTS public.conversation (
     avatar_url TEXT,
     chat_type TEXT NOT NULL,
     last_message TEXT,
-    last_message_timestamp TIMESTAMPTZ
+    last_message_timestamp TIMESTAMPTZ,
+    last_message_sender_id UUID
 );
 
 CREATE TABLE IF NOT EXISTS public.conversationuser (
@@ -71,8 +72,12 @@ INSERT INTO public.users (name, profile_photo_url) VALUES
 ('Bob', 'https://api.dicebear.com/6.x/bottts/svg?seed=Bob');
 
 INSERT INTO public.conversation (name, avatar_url, chat_type) VALUES
-('', 'https://scontent-fra3-2.xx.fbcdn.net/v/t39.30808-1/277746171_4907412222713449_1105463788788307087_n.jpg?stp=c0.619.1429.1429a_dst-jpg_s200x200&_nc_cat=111&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=Vv4jybY9wv0Q7kNvgGWVTNR&_nc_ad=z-m&_nc_cid=1365&_nc_ht=scontent-fra3-2.xx&oh=00_AYDLqBhbh-bYkxqL8gxqh-0lNTwpAMovtLlJvjIHTPcdPw&oe=66D42961', 'single'),
-('Trip Tokyo', 'https://www.shareicon.net/data/128x128/2016/06/30/788858_group_512x512.png', 'group');
+('',
+'https://scontent-fra3-2.xx.fbcdn.net/v/t39.30808-1/277746171_4907412222713449_1105463788788307087_n.jpg?stp=c0.619.1429.1429a_dst-jpg_s200x200&_nc_cat=111&ccb=1-7&_nc_sid=0ecb9b&_nc_ohc=Vv4jybY9wv0Q7kNvgGWVTNR&_nc_ad=z-m&_nc_cid=1365&_nc_ht=scontent-fra3-2.xx&oh=00_AYDLqBhbh-bYkxqL8gxqh-0lNTwpAMovtLlJvjIHTPcdPw&oe=66D42961',
+ 'single'),
+('Trip Tokyo',
+'https://www.shareicon.net/data/128x128/2016/06/30/788858_group_512x512.png',
+'group');
 
 -- Insert conversation users
 WITH user_ids AS (

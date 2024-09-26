@@ -14,9 +14,7 @@ export interface SyncStrategy {
   getMessageSent$(): Observable<ReceivedMessage>;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ChatSyncStrategy implements SyncStrategy {
   private readonly chatSync = inject(ChatSync)
 

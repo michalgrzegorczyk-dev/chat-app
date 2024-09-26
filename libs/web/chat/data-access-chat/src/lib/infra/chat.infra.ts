@@ -12,9 +12,7 @@ import { ROUTES_PARAMS, CHAT_ROUTES } from '@chat-app/util-routing';
 
 //todo add readme pessimistic only
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class ChatInfra {
   readonly sendMessageSuccess$ = new Subject<ReceivedMessage>();
   readonly loadConversationListSuccess$ = new Subject<Conversation[]>();
@@ -118,6 +116,8 @@ export class ChatInfra {
     );
 
     this.socket.on('loadConversationListSuccess', (x: any) => {
+      console.log('update conversations');
+      console.log(x);
       this.loadConversationListSuccess$.next(x);
     });
   }

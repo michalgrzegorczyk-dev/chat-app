@@ -41,7 +41,8 @@ export class ChatGateway implements OnGatewayConnection {
       // } else {
       //   this.globalUsersSocketMap.set(userId, client.id);
       // }
-        this.logger.log(`Client connected: ${client.id} for user: ${userId}`);
+      this.logger.log(`Client connected: ${client.id} for user: ${userId}`);
+      this.logger.log(`Global users socket map: ${this.globalUsersSocketMap.size}`);
       this.globalUsersSocketMap.set(userId, client.id);
     } catch (error) {
       this.logger.error(`Error in handleConnection: ${error.message}`);
@@ -52,20 +53,20 @@ export class ChatGateway implements OnGatewayConnection {
   @SubscribeMessage('sendMessage')
   async handleSendMessage(@MessageBody() requestDto: SendMessageRequestDto, @ConnectedSocket() client: Socket): Promise<void> {
     console.log('handleSendMessage');
+    console.log(this.globalUsersSocketMap);
+
 
     await this.supabaseService.updateConversationList(requestDto);
     const savedMessage = await this.supabaseService.saveMessage(requestDto);
     const conversationUsers = await this.supabaseService.getUserIdListFromConversation(requestDto.conversationId);
 
     for (const userId of conversationUsers) {
-      console.log('for',this.globalUsersSocketMap );
       const userSocketId = this.globalUsersSocketMap.get(userId);
       if (userSocketId) {
         const conversations = await this.supabaseService.getConversationsByUserId(userId);
         const userSocketId = this.globalUsersSocketMap.get(userId);
 
         if (userSocketId) {
-          console.log('wchodze tu?')
           this.server.to(userSocketId).emit('loadConversationListSuccess', conversations);
           this.server.to(userSocketId).emit('sendMessageSuccess', savedMessage);
         }

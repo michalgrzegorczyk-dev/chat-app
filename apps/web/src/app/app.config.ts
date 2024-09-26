@@ -4,6 +4,7 @@ import { appRoutes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
 import { ChatSyncStrategy } from '@chat-app/domain';
 import { CHAT_SYNC_STRATEGY_TOKEN } from './layout/chat/chat.component';
+import { ChatInfra } from '../../../../libs/web/chat/data-access-chat/src/lib/infra/chat.infra';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,6 +14,7 @@ export const appConfig: ApplicationConfig = {
     {
       provide: CHAT_SYNC_STRATEGY_TOKEN,
       useClass: ChatSyncStrategy
-    }
+    },
+    ChatInfra
   ]
 };

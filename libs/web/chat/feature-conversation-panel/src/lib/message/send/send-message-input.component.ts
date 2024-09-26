@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ChatStore, MessageSend, ChatFacade } from '@chat-app/domain';
+import { ChatFeatureStore, MessageSend, ChatFacade } from '@chat-app/domain';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { v4 as uuidv4 } from 'uuid';
 

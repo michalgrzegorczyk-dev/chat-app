@@ -5,7 +5,7 @@ import { MessageSend, ReceivedMessage } from '@chat-app/domain';
 @Injectable({
   providedIn: 'root'
 })
-export class MessageService {
+export class MessageQueueService {
   private queueSubject = new BehaviorSubject<MessageSend[]>([]);
   private sendMessageSubject = new Subject<MessageSend>();
   private messageReceivedSubject = new Subject<ReceivedMessage>();

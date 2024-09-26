@@ -1,9 +1,9 @@
 import { Injectable, NgZone, inject } from '@angular/core';
 import { MessageSend, ReceivedMessage } from '@chat-app/domain';
 import { fromEvent, Subject, BehaviorSubject } from 'rxjs';
-import { NetworkService } from '../to-be-separated/network.service';
-import { PageVisibilityService } from '../to-be-separated/page-visibility.service';
-import { BroadcastChannelService, BroadcastMessage } from '../to-be-separated/broadcastChannel.service';
+import { NetworkService } from './network.service';
+import { PageVisibilityService } from './page-visibility.service';
+import { BroadcastChannelService, BroadcastMessage } from './broadcast-channel.service';
 
 /**
  * Enum-like object representing the different types of messages
@@ -33,7 +33,7 @@ const BROADCAST_CHANNEL_TYPES = {
  * goes online or becomes visible.
  */
 @Injectable()
-export class ChatSync {
+export class ChatDataSync {
   /**
    * Observable that emits when a message is sent.
    */

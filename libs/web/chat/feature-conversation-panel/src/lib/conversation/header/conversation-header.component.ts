@@ -1,5 +1,5 @@
 import {Component, ChangeDetectionStrategy, inject} from "@angular/core";
-import { ChatStore, ChatFacade } from '@chat-app/domain';
+import { ChatFeatureStore, ChatFacade } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-conversation-header',

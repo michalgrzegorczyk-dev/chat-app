@@ -1,11 +1,11 @@
-import { ChatStore } from './store/chat.store';
-import { MessageSend } from '../models/message-send.type';
-import { Conversation } from '../models/conversation.type';
+import { ChatFeatureStore } from './chat.feature-store';
+import { MessageSend } from '../../models/message-send.type';
+import { Conversation } from '../../models/conversation.type';
 import { inject, Injectable } from '@angular/core';
 
 @Injectable()
 export class ChatFacade {
-  private readonly chatStore = inject(ChatStore);
+  private readonly chatStore = inject(ChatFeatureStore);
 
   readonly messageList = this.chatStore.messageList;
   readonly messageListLoading = this.chatStore.messageListLoading;

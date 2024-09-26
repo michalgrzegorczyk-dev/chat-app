@@ -2,7 +2,7 @@ import {Component, inject, OnInit, ChangeDetectionStrategy} from "@angular/core"
 import {ConversationListLoadingComponent} from "./conversation-list-loading/conversation-list-loading.component";
 import {ConversationsComponent} from "./conversation-list/converstaion-list.component";
 import {JsonPipe} from "@angular/common";
-import { ChatStore, Conversation, ChatFacade } from '@chat-app/domain';
+import { ChatFeatureStore, Conversation, ChatFacade } from '@chat-app/domain';
 import { RelativeTimePipe } from './relative-time.pipe';
 
 @Component({

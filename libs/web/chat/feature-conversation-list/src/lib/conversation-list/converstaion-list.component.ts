@@ -4,7 +4,7 @@ import { RelativeTimePipe } from '../relative-time.pipe';
 import { ButtonComponent, ButtonRemoveComponent } from '@chat-app/ui-button';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { ModalService } from '@chat-app/ui-modal';
-import { Conversation, ChatStore, ChatFacade } from '@chat-app/domain';
+import { Conversation, ChatFeatureStore, ChatFacade } from '@chat-app/domain';
 import { ConversationAddComponent } from '../conversation-add/conversation-add.component';
 import { ConversationRemoveComponent } from '../conversation-remove/conversation-remove.component';
 

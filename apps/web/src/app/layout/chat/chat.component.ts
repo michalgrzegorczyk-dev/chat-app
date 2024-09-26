@@ -3,11 +3,14 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
 import { AccountWidgetComponent } from '@chat-app/feature-account';
 import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-list';
 import { RouterOutlet } from '@angular/router';
-import { SyncStrategy, ChatSyncStrategy, ChatFacade, ChatStore } from '@chat-app/domain';
+import { DataSyncStrategy, ChatFacade, ChatFeatureStore } from '@chat-app/domain';
 import { ChatInfra } from '../../../../../../libs/web/chat/data-access-chat/src/lib/infra/chat.infra';
-import { ChatSync } from '../../../../../../libs/web/chat/data-access-chat/src/lib/application/store/chat.sync';
+import { ChatDataSync } from '../../../../../../libs/web/chat/data-access-chat/src/lib/application/data-sync/chat.data-sync';
+import {
+  WithDataSync
+} from '../../../../../../libs/web/chat/data-access-chat/src/lib/application/data-sync-strategy/with-data-sync.service';
 
-export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<SyncStrategy>('syncStrategy');
+export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<DataSyncStrategy>('syncStrategy');
 
 @Component({
   selector: 'mg-chat',
@@ -18,12 +21,12 @@ export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<SyncStrategy>('syncSt
   providers: [
     {
       provide: CHAT_SYNC_STRATEGY_TOKEN,
-      useClass: ChatSyncStrategy
+      useClass: WithDataSync
     },
     ChatInfra,
     ChatFacade,
-    ChatStore,
-    ChatSync
+    ChatFeatureStore,
+    ChatDataSync
   ]
 })
 export class ChatComponent implements OnInit {

@@ -13,7 +13,7 @@ import { rxEffects } from '@rx-angular/state/effects';
 import { ConversationDetails } from '../../models/conversation-details.type';
 import { routing } from '@chat-app/util-routing';
 import { take } from 'rxjs/operators';
-import { SyncStrategy } from './chat.strategy';
+import { DataSyncStrategy } from '../data-sync-strategy/data-sync.strategy';
 import { CHAT_SYNC_STRATEGY_TOKEN } from '../../../../../../../../apps/web/src/app/layout/chat/chat.component';
 
 const INITIAL_STATE: ChatState = {
@@ -27,41 +27,39 @@ const INITIAL_STATE: ChatState = {
 };
 
 @Injectable()
-export class ChatStore {
+export class ChatFeatureStore {
   readonly router = inject(Router);
-  readonly chatInfrastructureService = inject(ChatInfra);
+  readonly chatInfra = inject(ChatInfra);
   readonly notifier = inject(NotifierService);
 
   //todo constructor?
-  constructor(@Inject(CHAT_SYNC_STRATEGY_TOKEN) readonly chatSync: SyncStrategy) {
+  constructor(@Inject(CHAT_SYNC_STRATEGY_TOKEN) readonly dataSync: DataSyncStrategy) {
 
-    this.chatSync.getMessageSent$().subscribe(message => {
+    this.dataSync.getMessageSent$().subscribe(message => {
       this.getMessageSent$.next(message);
     });
 
-    this.chatSync.getQueue$().subscribe(queue => {
+    this.dataSync.getQueue$().subscribe(queue => {
       this.queue$.next(queue);
     });
 
-
-
     const effects = rxEffects(({ register }) => {
-      register(this.chatSync.getSendMessage$(), (messageSend) => {
+      register(this.dataSync.getSendMessage$(), (messageSend) => {
         this.notifier.notify('info', '[FROM SYNC] Send Message.');
-        this.chatInfrastructureService.sendMessage(messageSend);
+        this.chatInfra.sendMessage(messageSend);
       });
 
 
-      register(this.chatInfrastructureService.sendMessageSuccess$, (message) => {
-        this.chatSync.notifyMessageSent(message);
+      register(this.chatInfra.sendMessageSuccess$, (message) => {
+        this.dataSync.notifyMessageSent(message);
       });
 
 
       register(this.sendMessage$, (messageSend) => {
         this.notifier.notify('info', 'Send Message.');
-        this.chatSync.addMessage(messageSend);
+        this.dataSync.addMessage(messageSend);
         console.log('sending message');
-        this.chatInfrastructureService.sendMessage(messageSend);
+        this.chatInfra.sendMessage(messageSend);
       });
 
       register(this.selectConversation$, (selectedConversation) => {
@@ -70,7 +68,7 @@ export class ChatStore {
         }
 
         this.setMessageListLoading$.next(true);
-        return this.chatInfrastructureService
+        return this.chatInfra
           .getConversationContent(selectedConversation)
           .subscribe((conversationDetails: ConversationDetails) => {
             this.setMessageList$.next(conversationDetails.messageList);
@@ -93,9 +91,9 @@ export class ChatStore {
         await this.router.navigate([`${routing.chat.url()}`, conversation.conversationId]);
       });
 
-      register(this.chatInfrastructureService.loadConversationListPing$, () => {
+      register(this.chatInfra.loadConversationListPing$, () => {
         this.setConversationList$.next([]);
-        this.chatInfrastructureService
+        this.chatInfra
           .fetchConversations()
           .pipe(take(1))
           .subscribe((conversationList) => {
@@ -106,7 +104,7 @@ export class ChatStore {
       register(this.loadConversationList$, () => {
         this.setConversationListLoading$.next(true);
         this.setConversationList$.next([]);
-        this.chatInfrastructureService
+        this.chatInfra
           .fetchConversations()
           .pipe(take(1))
           .subscribe((conversationList) => {
@@ -155,8 +153,8 @@ export class ChatStore {
     // });
 
     connect('conversationListLoading', this.setConversationListLoading$);
-    connect('messageList', this.chatInfrastructureService.sendMessageSuccess$, (state, message) => {
-      this.chatSync.removeMessage(message);
+    connect('messageList', this.chatInfra.sendMessageSuccess$, (state, message) => {
+      this.dataSync.removeMessage(message);
       this.notifier.notify('success', 'Message Sent');
       return state.selectedConversation?.conversationId === message.conversationId ?
         [...state.messageList.map(msg => {
@@ -217,7 +215,7 @@ export class ChatStore {
       }];
     });
     connect('conversationList', this.setConversationList$);
-    connect('conversationList', this.chatInfrastructureService.loadConversationListSuccess$);
+    connect('conversationList', this.chatInfra.loadConversationListSuccess$);
     connect('messageListLoading', this.setMessageListLoading$);
     connect('memberIdMap', this.setMemberIdMap$);
     connect(this.selectConversation$, (state, conversation) => {

@@ -1,6 +1,6 @@
 import { Component, inject, HostListener } from '@angular/core';
 import {ConversationLoadingComponent} from "../conversation/loading/conversation-loading.component";
-import { ChatStore, ChatFacade } from '@chat-app/domain';
+import { ChatFeatureStore, ChatFacade } from '@chat-app/domain';
 import { ConversationHeaderComponent } from '../conversation/header/conversation-header.component';
 import { MessageListComponent } from '../message/list/message-list.component';
 import { SendMessageInputComponent } from '../message/send/send-message-input.component';

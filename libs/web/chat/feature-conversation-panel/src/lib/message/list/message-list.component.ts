@@ -10,7 +10,7 @@ import { UserDetailPipe } from '../../user-detail.pipe';
 import { SingleMessageComponent } from '../single/single-message.component';
 import { ScrollToBottomDirective } from '../../scroll-bottom.directive';
 import { AuthService } from '@chat-app/web/shared/util/auth';
-import { ChatStore, ChatFacade } from '@chat-app/domain';
+import { ChatFeatureStore, ChatFacade } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-message-list',

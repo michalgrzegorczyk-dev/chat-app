@@ -8,7 +8,6 @@ import { Message, ReceivedMessage } from '../../models/message.type';
 import { Conversation } from '../../models/conversation.type';
 import { MessageSend } from '../../models/message-send.type';
 import { User } from '../../models/user.type';
-import { NotifierService } from '@chat-app/ui-notifier';
 import { rxEffects } from '@rx-angular/state/effects';
 import { ConversationDetails } from '../../models/conversation-details.type';
 import { routing } from '@chat-app/util-routing';
@@ -28,38 +27,31 @@ const INITIAL_STATE: ChatState = {
 
 @Injectable()
 export class ChatFeatureStore {
-  readonly router = inject(Router);
-  readonly chatInfra = inject(ChatInfra);
-  readonly notifier = inject(NotifierService);
-  readonly dataSync = inject(CHAT_SYNC_STRATEGY_TOKEN) as DataSyncStrategy;
+  private readonly router = inject(Router);
+  private readonly chatInfra = inject(ChatInfra);
+  private readonly dataSync = inject(CHAT_SYNC_STRATEGY_TOKEN) as DataSyncStrategy;
 
-  //todo constructor?
+  // TODO, weird constructor
   constructor() {
-
-    this.dataSync.getMessageSent$().subscribe(message => {
-      this.getMessageSent$.next(message);
-    });
-
-    this.dataSync.getQueue$().subscribe(queue => {
-      this.queue$.next(queue);
-    });
-
     const effects = rxEffects(({ register }) => {
-      register(this.dataSync.getSendMessage$(), (messageSend) => {
-        this.notifier.notify('info', '[FROM SYNC] Send Message.');
-        this.chatInfra.sendMessage(messageSend);
+      register(this.dataSync.getQueue$(), (queue) => {
+        this.queue$.next(queue);
       });
 
+      register(this.dataSync.getMessageSent$(), (x) => {
+        this.getMessageSent$.next(x);
+      });
+
+      register(this.dataSync.getSendMessage$(), (messageSend) => {
+        this.chatInfra.sendMessage(messageSend);
+      });
 
       register(this.chatInfra.sendMessageSuccess$, (message) => {
         this.dataSync.notifyMessageSent(message);
       });
 
-
       register(this.sendMessage$, (messageSend) => {
-        this.notifier.notify('info', 'Send Message.');
         this.dataSync.addMessage(messageSend);
-        console.log('sending message');
         this.chatInfra.sendMessage(messageSend);
       });
 
@@ -135,28 +127,26 @@ export class ChatFeatureStore {
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
-    // connect('messageList', this.getMessageSent$, (state:ChatState, message: ReceivedMessage) => {
-    //   this.notifier.notify('success', 'Message Sent');
-    //   if (state.selectedConversation?.conversationId !== message.conversationId) {
-    //     return state.messageList;
-    //   }
-    //
-    //   return state.messageList.map((msg:Message) => {
-    //     if (msg.localMessageId === message.localMessageId) {
-    //       return {
-    //         ...msg,
-    //         status: 'sent',
-    //         messageId: message.messageId // Update the server-generated messageId
-    //       };
-    //     }
-    //     return msg;
-    //   });
-    // });
+    connect('messageList', this.getMessageSent$, (state:ChatState, message: ReceivedMessage) => {
+      if (state.selectedConversation?.conversationId !== message.conversationId) {
+        return state.messageList;
+      }
+
+      return state.messageList.map((msg:Message) => {
+        if (msg.localMessageId === message.localMessageId) {
+          return {
+            ...msg,
+            status: 'sent',
+            messageId: message.messageId // Update the server-generated messageId
+          };
+        }
+        return msg;
+      });
+    });
 
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfra.sendMessageSuccess$, (state, message) => {
       this.dataSync.removeMessage(message);
-      this.notifier.notify('success', 'Message Sent');
       return state.selectedConversation?.conversationId === message.conversationId ?
         [...state.messageList.map(msg => {
           if (msg.localMessageId === message.localMessageId) {
@@ -169,25 +159,17 @@ export class ChatFeatureStore {
           return msg;
         })] : state.messageList;
     });
-    connect('messageList', this.setMessageList$, (state, list) => {
-      this.notifier.notify('default', 'Messages SET.');
-      return list;
-    });
-    connect('messageList', this.addMessage$, (state, message) => {
-      this.notifier.notify('default', 'Message added.');
-      return [...state.messageList, message];
-    });
+    connect('messageList', this.setMessageList$);
+    connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
 
-    // esz
     connect('messageList', this.queue$, (state, queue) => {
-      // return state.messageList;
-
       if(queue && queue.length === 0) {
         return state.messageList;
       }
 
       if(queue.length > 0 && state.messageList[state.messageList.length - 1].localMessageId !== queue[0].localMessageId) {
-        // alert('yooo');
+
+        //todo questionable
         const message: Message = {
           localMessageId: queue[0].localMessageId,
           messageId: '',
@@ -196,16 +178,14 @@ export class ChatFeatureStore {
           createdAt: new Date().toISOString(),
           status: 'sending'
         };
+
         return [...state.messageList, message];
       }
+
       return state.messageList;
-
-
-      // this.notifier.notify('default', 'Message added.');
-      // return [...state.messageList, message];
     });
+
     connect('messageList', this.sendMessage$, (state, message) => {
-      this.notifier.notify('default', 'Message displayed on UI');
       return [...state.messageList, {
         localMessageId: message.localMessageId,
         messageId: '', //todo

@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
-import { MessageSend, ReceivedMessage } from '@chat-app/domain';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
-import { NetworkService } from '../../util-network/network.service';
+import { MessageSend } from '../../models/message-send.type';
+import { ReceivedMessage } from '../../models/message.type';
 import { BroadcastChannelService } from '../../util-broadcast-channel/broadcast-channel.service';
+import { NetworkService } from '../../util-network/network.service';
 import { BroadcastMessage } from '../../util-broadcast-channel/broadcast-message.type';
 
 enum BroadcastChannelType {
@@ -10,6 +11,11 @@ enum BroadcastChannelType {
   SYNC_CLIENT_DB = 'sync_queue_data',
   NOTIFY_MESSAGE_RECEIVED = 'notify_message_sent'
 }
+
+// Data Syncer: Module that contains the database and also manages the outgoing messages.
+// Also receives updates from the server and updates the database accordingly.
+// Client-side Database: Database to store all the data needed to be shown in the UI.
+// Message Scheduler: Monitors the outgoing messages, schedules them for sending and manages their statuses.
 
 @Injectable()
 export class DataSyncerChat {
@@ -40,25 +46,9 @@ export class DataSyncerChat {
     this.broadcastSyncData();
   }
 
-  // requestDataSync(): void {
-  //   this.broadcastMessage(BroadcastChannelType.REQUEST_SYNC);
-  // }
-
   notifyMessageReceived(message: ReceivedMessage): void {
     this.broadcastMessage(BroadcastChannelType.NOTIFY_MESSAGE_RECEIVED, message);
     this.handleMessageSent(message);
-  }
-
-  private initializeNetworkListener(): void {
-    this.networkService.getOnlineStatus().subscribe((isOnline) => {
-      if (isOnline) this.syncMessages();
-    });
-  }
-
-  private initializeBroadcastListener(): void {
-    this.broadcastChannelService.onMessage().subscribe((message) => {
-      this.handleBroadcastMessage(message);
-    });
   }
 
   private handleMessageSent(message: ReceivedMessage): void {
@@ -96,5 +86,19 @@ export class DataSyncerChat {
 
   private broadcastMessage(type: BroadcastChannelType, payload: any = null): void {
     this.broadcastChannelService.postMessage({ type, payload });
+  }
+
+  private initializeNetworkListener(): void {
+    this.networkService.getOnlineStatus().subscribe((isOnline) => {
+      if (isOnline) {
+        this.syncMessages();
+      }
+    });
+  }
+
+  private initializeBroadcastListener(): void {
+    this.broadcastChannelService.onMessage().subscribe((message) => {
+      this.handleBroadcastMessage(message);
+    });
   }
 }

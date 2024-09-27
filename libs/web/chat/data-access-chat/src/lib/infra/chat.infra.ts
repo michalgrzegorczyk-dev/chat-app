@@ -14,7 +14,7 @@ import { ROUTES_PARAMS, CHAT_ROUTES } from '@chat-app/util-routing';
 
 @Injectable()
 export class ChatInfra {
-  readonly sendMessageSuccess$ = new Subject<ReceivedMessage>();
+  readonly messageReceived$ = new Subject<ReceivedMessage>();
   readonly loadConversationListSuccess$ = new Subject<Conversation[]>();
   readonly loadConversationListPing$ = new Subject<boolean>();
 
@@ -96,7 +96,7 @@ export class ChatInfra {
 
   private setupSocketListeners(): void {
     this.socket.on('sendMessageSuccess', (message: any) => {
-        this.sendMessageSuccess$.next({
+        this.messageReceived$.next({
           conversationId: message.conversation_id,
           localMessageId: message.local_message_id,
           content: message.content,

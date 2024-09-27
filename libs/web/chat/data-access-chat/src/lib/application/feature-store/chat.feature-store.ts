@@ -55,7 +55,7 @@ export class ChatFeatureStore {
         if (msg.localMessageId === receivedMessage.localMessageId) {
           return {
             ...msg,
-            status: 'sent' as MessageStatus, // Explicitly cast to MessageStatus
+            status: 'sent' as MessageStatus,
             messageId: receivedMessage.messageId
           };
         }
@@ -64,7 +64,7 @@ export class ChatFeatureStore {
     });
 
     connect('conversationListLoading', this.setConversationListLoading$);
-    connect('messageList', this.chatInfra.sendMessageSuccess$, (state, message) => {
+    connect('messageList', this.chatInfra.messageReceived$, (state, message) => {
       console.log('[STATE, INFRA] sendMessageSuccess$', message);
       return state.selectedConversation?.conversationId === message.conversationId ?
         [...state.messageList.map(msg => {
@@ -165,7 +165,7 @@ export class ChatFeatureStore {
         console.log('[EFFECT, FROM SYNC] sendQueuedMessage$:', messageSend);
         return this.chatInfra.sendMessage(messageSend);
       });
-      register(this.chatInfra.sendMessageSuccess$, (message) => {
+      register(this.chatInfra.messageReceived$, (message) => {
         console.log('[EFFECT, INFRA] sendMessageSuccess$:', message);
         // this.dataSync.removeMessageFromQueue(message);
         this.dataSync.notifyMessageReceived(message);

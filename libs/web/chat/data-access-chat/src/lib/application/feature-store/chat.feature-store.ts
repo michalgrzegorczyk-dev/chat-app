@@ -12,8 +12,7 @@ import { rxEffects } from '@rx-angular/state/effects';
 import { ConversationDetails } from '../../models/conversation-details.type';
 import { routing } from '@chat-app/util-routing';
 import { take } from 'rxjs/operators';
-import { DataSyncStrategy } from '../data-sync-strategy/data-sync.strategy';
-import { CHAT_SYNC_STRATEGY_TOKEN } from '../../../../../../../../apps/web/src/app/layout/chat/chat.component';
+import { DATA_SYNC_STRATEGY_TOKEN } from '../data-sync-strategy/data-sync-strategy.token';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -29,26 +28,15 @@ const INITIAL_STATE: ChatState = {
 export class ChatFeatureStore {
   private readonly router = inject(Router);
   private readonly chatInfra = inject(ChatInfra);
-  private readonly dataSync = inject(CHAT_SYNC_STRATEGY_TOKEN) as DataSyncStrategy;
+  private readonly dataSync = inject(DATA_SYNC_STRATEGY_TOKEN);
 
   // TODO, weird constructor
   constructor() {
     const effects = rxEffects(({ register }) => {
-      register(this.dataSync.getQueue$(), (queue) => {
-        this.queue$.next(queue);
-      });
-
-      register(this.dataSync.getMessageSent$(), (x) => {
-        this.getMessageSent$.next(x);
-      });
-
-      register(this.dataSync.getSendMessage$(), (messageSend) => {
-        this.chatInfra.sendMessage(messageSend);
-      });
-
-      register(this.chatInfra.sendMessageSuccess$, (message) => {
-        this.dataSync.notifyMessageSent(message);
-      });
+      register(this.dataSync.getMessageQueue$(), (queue) => this.queue$.next(queue));
+      register(this.dataSync.getMessageReceived$(), (messageReceived) => this.getMessageSent$.next(messageReceived));
+      register(this.dataSync.getSendMessage$(), (messageSend) => this.chatInfra.sendMessage(messageSend));
+      register(this.chatInfra.sendMessageSuccess$, (message) => this.dataSync.notifyMessageSent(message));
 
       register(this.sendMessage$, (messageSend) => {
         this.dataSync.addMessage(messageSend);
@@ -137,7 +125,7 @@ export class ChatFeatureStore {
           return {
             ...msg,
             status: 'sent',
-            messageId: message.messageId // Update the server-generated messageId
+            messageId: message.messageId
           };
         }
         return msg;
@@ -215,9 +203,9 @@ export class ChatFeatureStore {
         conversationList: updatedConversations,
         selectedConversation: conversation
       };
-
     });
   });
+
   // READ
   readonly messageList = this.rxState.signal('messageList');
   readonly messageListLoading = this.rxState.signal('messageListLoading');

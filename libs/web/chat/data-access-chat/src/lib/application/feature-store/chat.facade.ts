@@ -25,9 +25,4 @@ export class ChatFacade {
   selectConversation(conversation: Conversation): void {
     this.chatStore.selectConversation$.next(conversation);
   }
-
-  requestSync(): void {
-    console.log('load');
-    // this.chatStore.chatSync.requestSync();
-  }
 }

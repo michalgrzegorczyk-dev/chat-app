@@ -7,9 +7,9 @@ export interface DataSyncStrategy {
   removeMessage(message: ReceivedMessage): void;
   getSendMessage$(): Observable<MessageSend>;
   requestSync(): void;
-  getQueue$(): Observable<MessageSend[]>;
+  getMessageQueue$(): Observable<MessageSend[]>;
   notifyMessageSent(message: ReceivedMessage): void;
-  getMessageSent$(): Observable<ReceivedMessage>;
+  getMessageReceived$(): Observable<ReceivedMessage>;
 }
 
 

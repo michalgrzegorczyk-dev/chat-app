@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
-import { MessageSend, ReceivedMessage, DataSyncStrategy } from '@chat-app/domain';
+import { DataSyncStrategy } from './data-sync.strategy';
+import { MessageSend } from '../../models/message-send.type';
+import { ReceivedMessage } from '../../models/message.type';
 
 @Injectable({
   providedIn: 'root'
@@ -25,11 +27,11 @@ export class WithoutDataSync implements DataSyncStrategy {
 
   }
 
-  getQueue$(): Observable<MessageSend[]> {
+  getMessageQueue$(): Observable<MessageSend[]> {
     return of([])
   }
 
-  getMessageSent$(): Observable<ReceivedMessage> {
+  getMessageReceived$(): Observable<ReceivedMessage> {
     return of();
   }
 

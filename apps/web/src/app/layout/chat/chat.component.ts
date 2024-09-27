@@ -1,16 +1,9 @@
-import { Component, inject, ChangeDetectionStrategy, InjectionToken, OnInit } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { AccountWidgetComponent } from '@chat-app/feature-account';
 import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-list';
 import { RouterOutlet } from '@angular/router';
-import { DataSyncStrategy, ChatFacade, ChatFeatureStore } from '@chat-app/domain';
-import { ChatInfra } from '../../../../../../libs/web/chat/data-access-chat/src/lib/infra/chat.infra';
-import { ChatDataSync } from '../../../../../../libs/web/chat/data-access-chat/src/lib/application/data-sync/chat.data-sync';
-import {
-  WithDataSync
-} from '../../../../../../libs/web/chat/data-access-chat/src/lib/application/data-sync-strategy/with-data-sync.service';
-
-export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<DataSyncStrategy>('syncStrategy');
+import { ChatDataSync, WithDataSync, ChatFacade, ChatFeatureStore, DATA_SYNC_STRATEGY_TOKEN, ChatInfra } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-chat',
@@ -20,7 +13,7 @@ export const CHAT_SYNC_STRATEGY_TOKEN = new InjectionToken<DataSyncStrategy>('sy
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
-      provide: CHAT_SYNC_STRATEGY_TOKEN,
+      provide: DATA_SYNC_STRATEGY_TOKEN,
       useClass: WithDataSync
     },
     ChatInfra,

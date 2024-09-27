@@ -1,7 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { ChatDataSync } from '../data-sync/chat.data-sync';
-import { MessageSend, ReceivedMessage, DataSyncStrategy } from '@chat-app/domain';
 import { Observable } from 'rxjs';
+import { DataSyncStrategy } from './data-sync.strategy';
+import { MessageSend } from '../../models/message-send.type';
+import { ReceivedMessage } from '../../models/message.type';
 
 @Injectable()
 export class WithDataSync implements DataSyncStrategy {
@@ -23,7 +25,7 @@ export class WithDataSync implements DataSyncStrategy {
     this.chatSync.requestSync();
   }
 
-  getQueue$(): Observable<MessageSend[]> {
+  getMessageQueue$(): Observable<MessageSend[]> {
     return this.chatSync.queue$;
   }
 
@@ -31,7 +33,7 @@ export class WithDataSync implements DataSyncStrategy {
     this.chatSync.notifyMessageSent(message);
   }
 
-  getMessageSent$(): Observable<ReceivedMessage> {
+  getMessageReceived$(): Observable<ReceivedMessage> {
     return this.chatSync.messageSent$;
   }
 }

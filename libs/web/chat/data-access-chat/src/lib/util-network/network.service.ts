@@ -1,21 +1,19 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, fromEvent, Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class NetworkService {
-  private onlineStatusSubject = new BehaviorSubject<boolean>(navigator.onLine);
+  private readonly onlineStatusSubject$$ = new BehaviorSubject<boolean>(navigator.onLine);
 
   constructor() {
     this.initializeNetworkListeners();
   }
 
-  public getOnlineStatus(): Observable<boolean> {
-    return this.onlineStatusSubject.asObservable();
+  getOnlineStatus(): Observable<boolean> {
+    return this.onlineStatusSubject$$.asObservable();
   }
 
-  public isOnline(): boolean {
+  isOnline(): boolean {
     return navigator.onLine;
   }
 
@@ -25,7 +23,6 @@ export class NetworkService {
   }
 
   private updateOnlineStatus(isOnline: boolean): void {
-    console.log(`Network status changed. Online: ${isOnline}`);
-    this.onlineStatusSubject.next(isOnline);
+    this.onlineStatusSubject$$.next(isOnline);
   }
 }

@@ -12,7 +12,7 @@ export * from './lib/application/data-sync-strategy/data-sync.strategy';
 export * from './lib/application/data-sync-strategy/data-sync-strategy.token';
 export * from './lib/application/data-sync-strategy/with-data-sync.service';
 export * from './lib/application/data-sync-strategy/without-data-sync.service';
-export * from './lib/application/data-sync/chat.data-sync';
+export * from './lib/application/data-syncer/chat.data-sync';
 
 
 export * from './lib/infra/chat.infra';

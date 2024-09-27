@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ChatDataSync } from '../data-sync/chat.data-sync';
+import { ChatDataSync } from '../data-syncer/chat.data-sync';
 import { Observable } from 'rxjs';
 import { DataSyncStrategy } from './data-sync.strategy';
 import { MessageSend } from '../../models/message-send.type';
@@ -11,10 +11,6 @@ export class WithDataSync implements DataSyncStrategy {
 
   addMessageToQueue(message: MessageSend) {
     this.chatSync.addMessage(message);
-  }
-
-  removeMessageFromQueue(message: ReceivedMessage) {
-    this.chatSync.removeMessage(message);
   }
 
   sendQueuedMessage$(): Observable<MessageSend> {

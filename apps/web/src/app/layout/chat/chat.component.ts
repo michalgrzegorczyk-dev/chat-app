@@ -4,6 +4,12 @@ import { AccountWidgetComponent } from '@chat-app/feature-account';
 import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-list';
 import { RouterOutlet } from '@angular/router';
 import { ChatDataSync, WithDataSync, ChatFacade, ChatFeatureStore, DATA_SYNC_STRATEGY_TOKEN, ChatInfra } from '@chat-app/domain';
+import {
+  BroadcastChannelService
+} from '../../../../../../libs/web/chat/data-access-chat/src/lib/util-broadcast-channel/broadcast-channel.service';
+import {
+  NetworkService
+} from '../../../../../../libs/web/chat/data-access-chat/src/lib/util-network/network.service';
 
 @Component({
   selector: 'mg-chat',
@@ -19,7 +25,9 @@ import { ChatDataSync, WithDataSync, ChatFacade, ChatFeatureStore, DATA_SYNC_STR
     ChatInfra,
     ChatFacade,
     ChatFeatureStore,
-    ChatDataSync
+    ChatDataSync,
+    BroadcastChannelService,
+    NetworkService
   ]
 })
 export class ChatComponent implements OnInit {

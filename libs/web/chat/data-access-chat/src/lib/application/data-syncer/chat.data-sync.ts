@@ -1,8 +1,9 @@
 import { Injectable, inject } from '@angular/core';
 import { MessageSend, ReceivedMessage } from '@chat-app/domain';
 import { Subject, BehaviorSubject } from 'rxjs';
-import { NetworkService } from './network.service';
-import { BroadcastChannelService, BroadcastMessage } from './broadcast-channel.service';
+import { NetworkService } from '../../util-network/network.service';
+import { BroadcastChannelService } from '../../util-broadcast-channel/broadcast-channel.service';
+import { BroadcastMessage } from '../../util-broadcast-channel/broadcast-message.type';
 
 const BROADCAST_CHANNEL_TYPES = {
   /**
@@ -49,20 +50,14 @@ export class ChatDataSync {
     this.broadcastSyncData();
   }
 
-  removeMessage(message: ReceivedMessage) {
-    // const updatedQueue = this.queueSubject.value.filter((msg: any) => msg.localMessageId !== message.localMessageId);
-    // this.queueSubject.next(updatedQueue);
-    // this.broadcastSyncData();
-  }
-
-  public requestSync() {
+  requestSync() {
     this.broadcastChannelService.postMessage({
       type: BROADCAST_CHANNEL_TYPES.REQUEST_SYNC,
       payload: null
     });
   }
 
-  public notifyMessageSent(message: ReceivedMessage) {
+  notifyMessageSent(message: ReceivedMessage) {
     this.broadcastChannelService.postMessage({
       type: BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT,
       payload: message
@@ -71,14 +66,7 @@ export class ChatDataSync {
   }
 
   private handleMessageSent(message: ReceivedMessage) {
-    // this.removeMessage(message);
-    // console.log('REMOVING MESSAGE FROM QUEUE', this.queueSubject.value);
     this.messageSentSubject.next(message);
-  }
-
-  private onPageVisible() {
-    console.log('Page is now visible');
-    this.requestSync();
   }
 
   private receiveSyncData(receivedQueue: MessageSend[]) {

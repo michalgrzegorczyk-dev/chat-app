@@ -1,5 +1,5 @@
-import { MessageSend } from '../../models/message-send.type';
-import { ReceivedMessage } from '../../models/message.type';
+import { MessageSend } from '../../../models/message-send.type';
+import { ReceivedMessage } from '../../../models/message.type';
 import { Observable } from 'rxjs';
 
 export interface DataSyncStrategy {

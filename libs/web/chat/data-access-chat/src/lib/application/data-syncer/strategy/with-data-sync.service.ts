@@ -1,13 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { ChatDataSync } from '../data-syncer/chat.data-sync';
+import { DataSyncerChat } from '../data-syncer.chat';
 import { Observable } from 'rxjs';
 import { DataSyncStrategy } from './data-sync.strategy';
-import { MessageSend } from '../../models/message-send.type';
-import { ReceivedMessage } from '../../models/message.type';
+import { MessageSend } from '../../../models/message-send.type';
+import { ReceivedMessage } from '../../../models/message.type';
 
 @Injectable()
 export class WithDataSync implements DataSyncStrategy {
-  private readonly chatSync = inject(ChatDataSync)
+  private readonly chatSync = inject(DataSyncerChat)
 
   addMessageToQueue(message: MessageSend) {
     this.chatSync.addMessage(message);

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Subject, Observable, of } from 'rxjs';
 import { DataSyncStrategy } from './data-sync.strategy';
-import { MessageSend } from '../../models/message-send.type';
-import { ReceivedMessage } from '../../models/message.type';
+import { MessageSend } from '../../../models/message-send.type';
+import { ReceivedMessage } from '../../../models/message.type';
 
 @Injectable({
   providedIn: 'root'

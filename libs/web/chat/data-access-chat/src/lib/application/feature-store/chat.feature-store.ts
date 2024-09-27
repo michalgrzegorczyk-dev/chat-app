@@ -12,7 +12,7 @@ import { rxEffects } from '@rx-angular/state/effects';
 import { ConversationDetails } from '../../models/conversation-details.type';
 import { routing } from '@chat-app/util-routing';
 import { take } from 'rxjs/operators';
-import { DATA_SYNC_STRATEGY_TOKEN } from '../data-sync-strategy/data-sync-strategy.token';
+import { DATA_SYNC_STRATEGY_TOKEN } from '../data-syncer/strategy/data-sync-strategy.token';
 import { MessageStatus } from '@chat-app/dtos';
 
 const INITIAL_STATE: ChatState = {

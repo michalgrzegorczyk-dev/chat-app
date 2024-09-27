@@ -81,7 +81,6 @@ export class ChatInfra {
       .pipe(
         map((conversationDtoList: ConversationListElementDto[]) => {
           return conversationDtoList.map((conversationDto: ConversationListElementDto) => {
-            console.log(conversationDto);
             return {
               ...conversationDto,
             };
@@ -91,18 +90,12 @@ export class ChatInfra {
   }
 
   sendMessage(messageSend: MessageSend): void {
-    console.log('before send')
     this.socket.emit('sendMessage', messageSend, ((error: any) => {
-      if (error) {
-        console.log('sendMessageError', error);
-      }
     }));
   }
 
   private setupSocketListeners(): void {
     this.socket.on('sendMessageSuccess', (message: any) => {
-      console.log('CZY TY WGLE TU WHCODZISZ?')
-        console.log('sendMessageSuccesspppp', message);
         this.sendMessageSuccess$.next({
           conversationId: message.conversation_id,
           localMessageId: message.local_message_id,
@@ -116,8 +109,6 @@ export class ChatInfra {
     );
 
     this.socket.on('loadConversationListSuccess', (x: any) => {
-      console.log('update conversations');
-      console.log(x);
       this.loadConversationListSuccess$.next(x);
     });
   }

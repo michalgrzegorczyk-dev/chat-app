@@ -34,16 +34,27 @@ export class ChatFeatureStore {
   // TODO, weird constructor
   constructor() {
     const effects = rxEffects(({ register }) => {
-      register(this.dataSync.getMessageQueue$(), (queue) => this.queue$.next(queue));
-      register(this.dataSync.getMessageReceived$(), (messageReceived) => this.getMessageSent$.next(messageReceived));
-      register(this.dataSync.getSendMessage$(), (messageSend) => {
-        alert('send');
+      register(this.dataSync.getMessageQueue$(), (queue) => {
+        console.log('[EFFECT, FROM SYNC] getMessageQueue$:', queue);
+        return this.queue$.next(queue);
+      });
+      register(this.dataSync.getMessageReceived$(), (messageReceived) => {
+        console.log('[EFFECT, FROM SYNC] getMessageReceived$:', messageReceived);
+        return this.getMessageSent$.next(messageReceived);
+      });
+      register(this.dataSync.sendQueuedMessage$(), (messageSend) => {
+        console.log('[EFFECT, FROM SYNC] sendQueuedMessage$:', messageSend);
         return this.chatInfra.sendMessage(messageSend);
       });
-      register(this.chatInfra.sendMessageSuccess$, (message) => this.dataSync.notifyMessageSent(message));
+      register(this.chatInfra.sendMessageSuccess$, (message) => {
+        console.log('[EFFECT, INFRA] sendMessageSuccess$:', message);
+        // this.dataSync.removeMessageFromQueue(message);
+        this.dataSync.notifyMessageSent(message);
+      });
 
       register(this.sendMessage$, (messageSend) => {
-        this.dataSync.addMessage(messageSend);
+        console.log('[EFFECT] sendMessage$', messageSend);
+        this.dataSync.addMessageToQueue(messageSend);
         this.chatInfra.sendMessage(messageSend);
       });
 
@@ -120,6 +131,7 @@ export class ChatFeatureStore {
     set(INITIAL_STATE);
 
     connect('messageList', this.getMessageSent$, (state: ChatState, receivedMessage: ReceivedMessage) => {
+      console.log('[STATE] getMessageSent$', receivedMessage);
       if (state.selectedConversation?.conversationId !== receivedMessage.conversationId) {
         return state.messageList;
       }
@@ -138,7 +150,7 @@ export class ChatFeatureStore {
 
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfra.sendMessageSuccess$, (state, message) => {
-      this.dataSync.removeMessage(message);
+      console.log('[STATE, INFRA] sendMessageSuccess$', message);
       return state.selectedConversation?.conversationId === message.conversationId ?
         [...state.messageList.map(msg => {
           if (msg.localMessageId === message.localMessageId) {
@@ -151,33 +163,60 @@ export class ChatFeatureStore {
           return msg;
         })] : state.messageList;
     });
-    connect('messageList', this.setMessageList$);
-    connect('messageList', this.addMessage$, (state, message) => [...state.messageList, message]);
+    connect('messageList', this.setMessageList$, (state, messageList) => {
+      console.log('[STATE] setMessageList$', messageList);
+      return messageList;
+    });
+    connect('messageList', this.addMessage$, (state, message) => {
+      console.log('[STATE] addMessage$', message);
+      return [...state.messageList, message];
+    });
 
-    connect('messageList', this.queue$, (state, queue) => {
-      if(queue && queue.length === 0) {
+    connect('messageList', this.queue$, (state, queue: MessageSend[]) => {
+      console.log('[STATE] queue$', queue);
+      if (queue && queue.length === 0) {
         return state.messageList;
       }
 
-      if(queue.length > 0 && state.messageList[state.messageList.length - 1].localMessageId !== queue[0].localMessageId) {
+      console.log(queue);
 
-        //todo questionable
-        const message: Message = {
-          localMessageId: queue[0].localMessageId,
+      // lookup in queue for messages that are not in messageList
+      const toAdd = queue.filter((msg) => !state.messageList.find((m) => m.localMessageId === msg.localMessageId));
+      console.log('to add', toAdd);
+
+      for (const msg of toAdd) {
+        state.messageList.push({
+          localMessageId: msg.localMessageId,
           messageId: '',
-          senderId: queue[0].userId,
-          content: queue[0].content,
+          senderId: msg.userId,
+          content: msg.content,
           createdAt: new Date().toISOString(),
           status: 'sending'
-        };
-
-        return [...state.messageList, message];
+        });
       }
 
       return state.messageList;
-    });
+
+        // if(queue.length > 0 && state.messageList[state.messageList.length - 1]?.localMessageId !== queue[0]?.localMessageId) {
+        //
+        //   //todo questionable
+        //   const message: Message = {
+        //     localMessageId: queue[0].localMessageId,
+        //     messageId: '',
+        //     senderId: queue[0].userId,
+        //     content: queue[0].content,
+        //     createdAt: new Date().toISOString(),
+        //     status: 'sending'
+        //   };
+        //
+        //   return [...state.messageList, message];
+        // }
+
+        return state.messageList;
+      });
 
     connect('messageList', this.sendMessage$, (state, message) => {
+      console.log('[STATE] sendMessage$', message);
       return [...state.messageList, {
         localMessageId: message.localMessageId,
         messageId: '', //todo

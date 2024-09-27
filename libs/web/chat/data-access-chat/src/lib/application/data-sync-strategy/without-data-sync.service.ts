@@ -10,16 +10,16 @@ import { ReceivedMessage } from '../../models/message.type';
 export class WithoutDataSync implements DataSyncStrategy {
   private sendMessage$ = new Subject<MessageSend>();
 
-  addMessage(message: MessageSend): void {
+  addMessageToQueue(message: MessageSend): void {
     // Do nothing
   }
 
-  removeMessage(message: ReceivedMessage): void {
+  removeMessageFromQueue(message: ReceivedMessage): void {
     // Do nothing
   }
 
 
-  getSendMessage$(): Observable<MessageSend> {
+  sendQueuedMessage$(): Observable<MessageSend> {
     return this.sendMessage$;
   }
 

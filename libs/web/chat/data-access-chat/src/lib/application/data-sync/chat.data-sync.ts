@@ -53,9 +53,9 @@ export class ChatDataSync {
   }
 
   removeMessage(message: ReceivedMessage) {
-    const updatedQueue = this.queueSubject.value.filter((msg: any) => msg.localMessageId !== message.localMessageId);
-    this.queueSubject.next(updatedQueue);
-    this.broadcastSyncData();
+    // const updatedQueue = this.queueSubject.value.filter((msg: any) => msg.localMessageId !== message.localMessageId);
+    // this.queueSubject.next(updatedQueue);
+    // this.broadcastSyncData();
   }
 
   public requestSync() {
@@ -74,7 +74,8 @@ export class ChatDataSync {
   }
 
   private handleMessageSent(message: ReceivedMessage) {
-    this.removeMessage(message);
+    // this.removeMessage(message);
+    // console.log('REMOVING MESSAGE FROM QUEUE', this.queueSubject.value);
     this.messageSentSubject.next(message);
   }
 
@@ -84,7 +85,9 @@ export class ChatDataSync {
   }
 
   private receiveSyncData(receivedQueue: MessageSend[]) {
-    this.queueSubject.next(receivedQueue);
+    if(receivedQueue.length > 0) { //todo create wrapper
+      this.queueSubject.next(receivedQueue);
+    }
   }
 
   private syncMessages() {
@@ -93,7 +96,6 @@ export class ChatDataSync {
       while (currentQueue.length > 0) {
         const message = currentQueue.pop();
         if (message) {
-          console.log('Sending', message.localMessageId);
           this.sendMessage$.next(message);
         }
       }

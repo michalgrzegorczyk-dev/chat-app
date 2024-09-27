@@ -9,15 +9,15 @@ import { ReceivedMessage } from '../../models/message.type';
 export class WithDataSync implements DataSyncStrategy {
   private readonly chatSync = inject(ChatDataSync)
 
-  addMessage(message: MessageSend) {
+  addMessageToQueue(message: MessageSend) {
     this.chatSync.addMessage(message);
   }
 
-  removeMessage(message: ReceivedMessage) {
+  removeMessageFromQueue(message: ReceivedMessage) {
     this.chatSync.removeMessage(message);
   }
 
-  getSendMessage$(): Observable<MessageSend> {
+  sendQueuedMessage$(): Observable<MessageSend> {
     return this.chatSync.sendMessage$;
   }
 

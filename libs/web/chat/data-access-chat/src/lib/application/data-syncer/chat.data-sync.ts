@@ -1,113 +1,99 @@
 import { Injectable, inject } from '@angular/core';
 import { MessageSend, ReceivedMessage } from '@chat-app/domain';
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import { NetworkService } from '../../util-network/network.service';
 import { BroadcastChannelService } from '../../util-broadcast-channel/broadcast-channel.service';
 import { BroadcastMessage } from '../../util-broadcast-channel/broadcast-message.type';
 
-const BROADCAST_CHANNEL_TYPES = {
-  /**
-   * Type for requesting synchronization of messages.
-   */
-  REQUEST_SYNC: 'request_sync',
-
-  /**
-   * Type for sending the current queue of messages to be synchronized.
-   */
-  SYNC_QUEUE_DATA: 'sync_queue_data',
-
-  /**
-   * Type for notifying that a message has been sent.
-   */
-  NOTIFY_MESSAGE_SENT: 'notify_message_sent'
-};
+enum BroadcastChannelType {
+  REQUEST_SYNC = 'request_sync',
+  SYNC_QUEUE_DATA = 'sync_queue_data',
+  NOTIFY_MESSAGE_SENT = 'notify_message_sent'
+}
 
 @Injectable()
 export class ChatDataSync {
   readonly sendMessage$ = new Subject<MessageSend>();
   private readonly queueSubject = new BehaviorSubject<MessageSend[]>([]);
-  readonly queue$ = this.queueSubject.asObservable();
+  readonly queue$: Observable<MessageSend[]> = this.queueSubject.asObservable();
 
   private messageSentSubject = new Subject<ReceivedMessage>();
-  readonly messageSent$ = this.messageSentSubject.asObservable();
+  readonly messageSent$: Observable<ReceivedMessage> = this.messageSentSubject.asObservable();
 
   private readonly networkService = inject(NetworkService);
   private readonly broadcastChannelService = inject(BroadcastChannelService);
 
-  constructor() {
-    this.networkService.getOnlineStatus().subscribe((isOnline) => {
-      if (isOnline) {
-        this.syncMessages();
-      }
-    });
+  private readonly messageHandlers: Record<BroadcastChannelType, (payload: any) => void> = {
+    [BroadcastChannelType.REQUEST_SYNC]: () => this.broadcastSyncData(),
+    [BroadcastChannelType.SYNC_QUEUE_DATA]: (payload: MessageSend[]) => this.updateQueue(payload),
+    [BroadcastChannelType.NOTIFY_MESSAGE_SENT]: (payload: ReceivedMessage) => this.handleMessageSent(payload)
+  };
 
-    this.broadcastChannelService.onMessage().subscribe((message: BroadcastMessage) => this.handleBroadcastMessage(message));
+  constructor() {
+    this.initializeNetworkListener();
+    this.initializeBroadcastListener();
   }
 
-  addMessage(message: MessageSend) {
-    const updatedQueue = [...this.queueSubject.value, message];
-    this.queueSubject.next(updatedQueue);
+  addMessage(message: MessageSend): void {
+    this.updateQueue([...this.queueSubject.value, message]);
     this.broadcastSyncData();
   }
 
-  requestSync() {
-    this.broadcastChannelService.postMessage({
-      type: BROADCAST_CHANNEL_TYPES.REQUEST_SYNC,
-      payload: null
-    });
+  requestSync(): void {
+    this.broadcastMessage(BroadcastChannelType.REQUEST_SYNC);
   }
 
-  notifyMessageSent(message: ReceivedMessage) {
-    this.broadcastChannelService.postMessage({
-      type: BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT,
-      payload: message
-    });
+  notifyMessageSent(message: ReceivedMessage): void {
+    this.broadcastMessage(BroadcastChannelType.NOTIFY_MESSAGE_SENT, message);
     this.handleMessageSent(message);
   }
 
-  private handleMessageSent(message: ReceivedMessage) {
+  private initializeNetworkListener(): void {
+    this.networkService.getOnlineStatus().subscribe((isOnline) => {
+      if (isOnline) this.syncMessages();
+    });
+  }
+
+  private initializeBroadcastListener(): void {
+    this.broadcastChannelService.onMessage().subscribe((message) => {
+      this.handleBroadcastMessage(message);
+    });
+  }
+
+  private handleMessageSent(message: ReceivedMessage): void {
     this.messageSentSubject.next(message);
   }
 
-  private receiveSyncData(receivedQueue: MessageSend[]) {
-    if(receivedQueue.length > 0) { //todo create wrapper
-      this.queueSubject.next(receivedQueue);
+  private updateQueue(newQueue: MessageSend[]): void {
+    this.queueSubject.next(newQueue);
+  }
+
+  private syncMessages(): void {
+    if (!this.networkService.isOnline()) {
+      return;
+    }
+
+    const currentQueue = [...this.queueSubject.value];
+    while (currentQueue.length > 0) {
+      const message = currentQueue.pop();
+      if (message) this.sendMessage$.next(message);
+    }
+    this.updateQueue(currentQueue);
+    this.broadcastSyncData();
+  }
+
+  private handleBroadcastMessage(message: BroadcastMessage): void {
+    const handler = this.messageHandlers[message.type as BroadcastChannelType];
+    if (handler) {
+      handler(message.payload);
     }
   }
 
-  private syncMessages() {
-    if (this.networkService.isOnline()) {
-      const currentQueue = this.queueSubject.value;
-      while (currentQueue.length > 0) {
-        const message = currentQueue.pop();
-        if (message) {
-          this.sendMessage$.next(message);
-        }
-      }
-      this.queueSubject.next(currentQueue);
-      this.broadcastSyncData();
-    }
+  private broadcastSyncData(): void {
+    this.broadcastMessage(BroadcastChannelType.SYNC_QUEUE_DATA, this.queueSubject.value);
   }
 
-  private handleBroadcastMessage(message: BroadcastMessage) {
-    console.log('Received broadcast message', message.type);
-    switch (message.type) {
-      case BROADCAST_CHANNEL_TYPES.REQUEST_SYNC:
-        this.broadcastSyncData();
-        break;
-      case BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA:
-        this.receiveSyncData(message.payload);
-        break;
-      case BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT:
-        this.handleMessageSent(message.payload);
-        break;
-    }
-  }
-
-  private broadcastSyncData() {
-    this.broadcastChannelService.postMessage({
-      type: BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA,
-      payload: this.queueSubject.value
-    });
+  private broadcastMessage(type: BroadcastChannelType, payload: any = null): void {
+    this.broadcastChannelService.postMessage({ type, payload });
   }
 }

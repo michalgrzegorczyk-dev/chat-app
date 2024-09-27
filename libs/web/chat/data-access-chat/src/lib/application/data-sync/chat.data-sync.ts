@@ -2,7 +2,6 @@ import { Injectable, inject } from '@angular/core';
 import { MessageSend, ReceivedMessage } from '@chat-app/domain';
 import { Subject, BehaviorSubject } from 'rxjs';
 import { NetworkService } from './network.service';
-import { PageVisibilityService } from './page-visibility.service';
 import { BroadcastChannelService, BroadcastMessage } from './broadcast-channel.service';
 
 const BROADCAST_CHANNEL_TYPES = {
@@ -32,7 +31,6 @@ export class ChatDataSync {
   readonly messageSent$ = this.messageSentSubject.asObservable();
 
   private readonly networkService = inject(NetworkService);
-  private readonly pageVisibilityService = inject(PageVisibilityService);
   private readonly broadcastChannelService = inject(BroadcastChannelService);
 
   constructor() {
@@ -43,7 +41,6 @@ export class ChatDataSync {
     });
 
     this.broadcastChannelService.onMessage().subscribe((message: BroadcastMessage) => this.handleBroadcastMessage(message));
-    this.pageVisibilityService.onPageVisible().subscribe(() => this.onPageVisible());
   }
 
   addMessage(message: MessageSend) {

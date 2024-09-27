@@ -14,11 +14,6 @@ export class WithoutDataSync implements DataSyncStrategy {
     // Do nothing
   }
 
-  removeMessageFromQueue(message: ReceivedMessage): void {
-    // Do nothing
-  }
-
-
   sendQueuedMessage$(): Observable<MessageSend> {
     return this.sendMessage$;
   }

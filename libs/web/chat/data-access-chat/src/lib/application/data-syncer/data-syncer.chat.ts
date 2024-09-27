@@ -7,8 +7,8 @@ import { BroadcastMessage } from '../../util-broadcast-channel/broadcast-message
 
 enum BroadcastChannelType {
   REQUEST_SYNC = 'request_sync',
-  SYNC_QUEUE_DATA = 'sync_queue_data',
-  NOTIFY_MESSAGE_SENT = 'notify_message_sent'
+  SYNC_CLIENT_DB = 'sync_queue_data',
+  NOTIFY_MESSAGE_RECEIVED = 'notify_message_sent'
 }
 
 @Injectable()
@@ -26,8 +26,8 @@ export class DataSyncerChat {
 
   private readonly messageHandlers: Record<BroadcastChannelType, (payload: any) => void> = {
     [BroadcastChannelType.REQUEST_SYNC]: () => this.broadcastSyncData(),
-    [BroadcastChannelType.SYNC_QUEUE_DATA]: (payload: MessageSend[]) => this.updateQueue(payload),
-    [BroadcastChannelType.NOTIFY_MESSAGE_SENT]: (payload: ReceivedMessage) => this.handleMessageSent(payload)
+    [BroadcastChannelType.SYNC_CLIENT_DB]: (payload: MessageSend[]) => this.updateQueue(payload),
+    [BroadcastChannelType.NOTIFY_MESSAGE_RECEIVED]: (payload: ReceivedMessage) => this.handleMessageSent(payload)
   };
 
   constructor() {
@@ -35,17 +35,17 @@ export class DataSyncerChat {
     this.initializeBroadcastListener();
   }
 
-  addMessage(message: MessageSend): void {
+  addMessageToClientDb(message: MessageSend): void {
     this.updateQueue([...this.queueSubject.value, message]);
     this.broadcastSyncData();
   }
 
-  requestSync(): void {
-    this.broadcastMessage(BroadcastChannelType.REQUEST_SYNC);
-  }
+  // requestDataSync(): void {
+  //   this.broadcastMessage(BroadcastChannelType.REQUEST_SYNC);
+  // }
 
-  notifyMessageSent(message: ReceivedMessage): void {
-    this.broadcastMessage(BroadcastChannelType.NOTIFY_MESSAGE_SENT, message);
+  notifyMessageReceived(message: ReceivedMessage): void {
+    this.broadcastMessage(BroadcastChannelType.NOTIFY_MESSAGE_RECEIVED, message);
     this.handleMessageSent(message);
   }
 
@@ -91,7 +91,7 @@ export class DataSyncerChat {
   }
 
   private broadcastSyncData(): void {
-    this.broadcastMessage(BroadcastChannelType.SYNC_QUEUE_DATA, this.queueSubject.value);
+    this.broadcastMessage(BroadcastChannelType.SYNC_CLIENT_DB, this.queueSubject.value);
   }
 
   private broadcastMessage(type: BroadcastChannelType, payload: any = null): void {

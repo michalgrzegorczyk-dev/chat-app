@@ -5,9 +5,8 @@ import { Observable } from 'rxjs';
 export interface DataSyncStrategy {
   addMessageToQueue(message: MessageSend): void;
   sendQueuedMessage$(): Observable<MessageSend>;
-  requestSync(): void;
   getMessageQueue$(): Observable<MessageSend[]>;
-  notifyMessageSent(message: ReceivedMessage): void;
+  notifyMessageReceived(message: ReceivedMessage): void;
   getMessageReceived$(): Observable<ReceivedMessage>;
 }
 

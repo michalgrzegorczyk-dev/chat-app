@@ -1,4 +1,4 @@
-import { Injectable, inject, Inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { rxState } from '@rx-angular/state';
 import { Subject } from 'rxjs';
 import { Router } from '@angular/router';
@@ -27,9 +27,128 @@ const INITIAL_STATE: ChatState = {
 
 @Injectable()
 export class ChatFeatureStore {
+  // EVENTS
+  readonly sendMessage$ = new Subject<MessageSend>();
+  readonly setMessageList$ = new Subject<Message[]>();
+  readonly setMessageListLoading$ = new Subject<boolean>();
+  readonly setConversationList$ = new Subject<Conversation[]>();
+  readonly selectConversation$ = new Subject<Conversation | null>();
+  readonly setConversationListLoading$ = new Subject<boolean>();
+  readonly addMessage$ = new Subject<Message>();
+  readonly setMemberIdMap$ = new Subject<Map<string, User>>();
+  readonly loadConversationList$ = new Subject<void>();
+  readonly queue$ = new Subject<MessageSend[]>();
+  readonly getMessageSent$ = new Subject<ReceivedMessage>();
   private readonly router = inject(Router);
   private readonly chatInfra = inject(ChatInfra);
   private readonly dataSync = inject(DATA_SYNC_STRATEGY_TOKEN);
+  private readonly rxState = rxState<ChatState>(({ set, connect }) => {
+    set(INITIAL_STATE);
+
+    connect('messageList', this.getMessageSent$, (state: ChatState, receivedMessage: ReceivedMessage) => {
+      console.log('[STATE] getMessageSent$', receivedMessage);
+      if (state.selectedConversation?.conversationId !== receivedMessage.conversationId) {
+        return state.messageList;
+      }
+
+      return state.messageList.map((msg: Message) => {
+        if (msg.localMessageId === receivedMessage.localMessageId) {
+          return {
+            ...msg,
+            status: 'sent' as MessageStatus, // Explicitly cast to MessageStatus
+            messageId: receivedMessage.messageId
+          };
+        }
+        return msg;
+      });
+    });
+
+    connect('conversationListLoading', this.setConversationListLoading$);
+    connect('messageList', this.chatInfra.sendMessageSuccess$, (state, message) => {
+      console.log('[STATE, INFRA] sendMessageSuccess$', message);
+      return state.selectedConversation?.conversationId === message.conversationId ?
+        [...state.messageList.map(msg => {
+          if (msg.localMessageId === message.localMessageId) {
+            const newMsg: Message = {
+              ...msg,
+              status: 'sent'
+            };
+            return newMsg;
+          }
+          return msg;
+        })] : state.messageList;
+    });
+    connect('messageList', this.setMessageList$, (state, messageList) => {
+      console.log('[STATE] setMessageList$', messageList);
+      return messageList;
+    });
+    connect('messageList', this.addMessage$, (state, message) => {
+      console.log('[STATE] addMessage$', message);
+      return [...state.messageList, message];
+    });
+
+    connect('messageList', this.queue$, (state, queue: MessageSend[]) => {
+      console.log('[STATE] queue$', queue);
+      if (queue && queue.length === 0) {
+        return state.messageList;
+      }
+
+      const toAdd = queue.filter((msg) => !state.messageList.find((m) => m.localMessageId === msg.localMessageId));
+
+      for (const msg of toAdd) {
+        state.messageList.push({
+          localMessageId: msg.localMessageId,
+          messageId: '',
+          senderId: msg.userId,
+          content: msg.content,
+          createdAt: new Date().toISOString(),
+          status: 'sending'
+        });
+      }
+
+      return state.messageList;
+    });
+
+    connect('messageList', this.sendMessage$, (state, message) => {
+      console.log('[STATE] sendMessage$', message);
+      return [...state.messageList, {
+        localMessageId: message.localMessageId,
+        messageId: '', //todo
+        senderId: message.userId,
+        content: message.content,
+        createdAt: new Date().toISOString(),
+        status: 'sending'
+      }];
+    });
+    connect('conversationList', this.setConversationList$);
+    connect('conversationList', this.chatInfra.loadConversationListSuccess$);
+    connect('messageListLoading', this.setMessageListLoading$);
+    connect('memberIdMap', this.setMemberIdMap$);
+    connect(this.selectConversation$, (state, conversation) => {
+      if (!conversation) {
+        return {
+          ...state
+        };
+      }
+
+      const updatedConversations = state.conversationList.map((conv: Conversation) => ({
+        ...conv
+      }));
+
+      return {
+        ...state,
+        conversationList: updatedConversations,
+        selectedConversation: conversation
+      };
+    });
+  });
+  // READ
+  readonly messageList = this.rxState.signal('messageList');
+  readonly messageListLoading = this.rxState.signal('messageListLoading');
+  readonly conversationList = this.rxState.signal('conversationList');
+  readonly conversationListLoading = this.rxState.signal('conversationListLoading');
+  readonly selectedConversation = this.rxState.signal('selectedConversation');
+  readonly memberIdMap = this.rxState.signal('memberIdMap');
 
   // TODO, weird constructor
   constructor() {
@@ -49,7 +168,7 @@ export class ChatFeatureStore {
       register(this.chatInfra.sendMessageSuccess$, (message) => {
         console.log('[EFFECT, INFRA] sendMessageSuccess$:', message);
         // this.dataSync.removeMessageFromQueue(message);
-        this.dataSync.notifyMessageSent(message);
+        this.dataSync.notifyMessageReceived(message);
       });
 
       register(this.sendMessage$, (messageSend) => {
@@ -113,148 +232,5 @@ export class ChatFeatureStore {
       });
     });
   }
-
-  // EVENTS
-  readonly sendMessage$ = new Subject<MessageSend>();
-  readonly setMessageList$ = new Subject<Message[]>();
-  readonly setMessageListLoading$ = new Subject<boolean>();
-  readonly setConversationList$ = new Subject<Conversation[]>();
-  readonly selectConversation$ = new Subject<Conversation | null>();
-  readonly setConversationListLoading$ = new Subject<boolean>();
-  readonly addMessage$ = new Subject<Message>();
-  readonly setMemberIdMap$ = new Subject<Map<string, User>>();
-  readonly loadConversationList$ = new Subject<void>();
-  readonly queue$ = new Subject<MessageSend[]>();
-  readonly getMessageSent$ = new Subject<ReceivedMessage>();
-
-  private readonly rxState = rxState<ChatState>(({ set, connect }) => {
-    set(INITIAL_STATE);
-
-    connect('messageList', this.getMessageSent$, (state: ChatState, receivedMessage: ReceivedMessage) => {
-      console.log('[STATE] getMessageSent$', receivedMessage);
-      if (state.selectedConversation?.conversationId !== receivedMessage.conversationId) {
-        return state.messageList;
-      }
-
-      return state.messageList.map((msg: Message) => {
-        if (msg.localMessageId === receivedMessage.localMessageId) {
-          return {
-            ...msg,
-            status: 'sent' as MessageStatus, // Explicitly cast to MessageStatus
-            messageId: receivedMessage.messageId
-          };
-        }
-        return msg;
-      });
-    });
-
-    connect('conversationListLoading', this.setConversationListLoading$);
-    connect('messageList', this.chatInfra.sendMessageSuccess$, (state, message) => {
-      console.log('[STATE, INFRA] sendMessageSuccess$', message);
-      return state.selectedConversation?.conversationId === message.conversationId ?
-        [...state.messageList.map(msg => {
-          if (msg.localMessageId === message.localMessageId) {
-            const newMsg: Message = {
-              ...msg,
-              status: 'sent'
-            };
-            return newMsg;
-          }
-          return msg;
-        })] : state.messageList;
-    });
-    connect('messageList', this.setMessageList$, (state, messageList) => {
-      console.log('[STATE] setMessageList$', messageList);
-      return messageList;
-    });
-    connect('messageList', this.addMessage$, (state, message) => {
-      console.log('[STATE] addMessage$', message);
-      return [...state.messageList, message];
-    });
-
-    connect('messageList', this.queue$, (state, queue: MessageSend[]) => {
-      console.log('[STATE] queue$', queue);
-      if (queue && queue.length === 0) {
-        return state.messageList;
-      }
-
-      console.log(queue);
-
-      // lookup in queue for messages that are not in messageList
-      const toAdd = queue.filter((msg) => !state.messageList.find((m) => m.localMessageId === msg.localMessageId));
-      console.log('to add', toAdd);
-
-      for (const msg of toAdd) {
-        state.messageList.push({
-          localMessageId: msg.localMessageId,
-          messageId: '',
-          senderId: msg.userId,
-          content: msg.content,
-          createdAt: new Date().toISOString(),
-          status: 'sending'
-        });
-      }
-
-      return state.messageList;
-
-        // if(queue.length > 0 && state.messageList[state.messageList.length - 1]?.localMessageId !== queue[0]?.localMessageId) {
-        //
-        //   //todo questionable
-        //   const message: Message = {
-        //     localMessageId: queue[0].localMessageId,
-        //     messageId: '',
-        //     senderId: queue[0].userId,
-        //     content: queue[0].content,
-        //     createdAt: new Date().toISOString(),
-        //     status: 'sending'
-        //   };
-        //
-        //   return [...state.messageList, message];
-        // }
-
-        return state.messageList;
-      });
-
-    connect('messageList', this.sendMessage$, (state, message) => {
-      console.log('[STATE] sendMessage$', message);
-      return [...state.messageList, {
-        localMessageId: message.localMessageId,
-        messageId: '', //todo
-        senderId: message.userId,
-        content: message.content,
-        createdAt: new Date().toISOString(),
-        status: 'sending'
-      }];
-    });
-    connect('conversationList', this.setConversationList$);
-    connect('conversationList', this.chatInfra.loadConversationListSuccess$);
-    connect('messageListLoading', this.setMessageListLoading$);
-    connect('memberIdMap', this.setMemberIdMap$);
-    connect(this.selectConversation$, (state, conversation) => {
-      if (!conversation) {
-        return {
-          ...state
-        };
-      }
-
-      const updatedConversations = state.conversationList.map((conv: Conversation) => ({
-        ...conv
-      }));
-
-      return {
-        ...state,
-        conversationList: updatedConversations,
-        selectedConversation: conversation
-      };
-    });
-  });
-
-  // READ
-  readonly messageList = this.rxState.signal('messageList');
-  readonly messageListLoading = this.rxState.signal('messageListLoading');
-  readonly conversationList = this.rxState.signal('conversationList');
-  readonly conversationListLoading = this.rxState.signal('conversationListLoading');
-  readonly selectedConversation = this.rxState.signal('selectedConversation');
-  readonly memberIdMap = this.rxState.signal('memberIdMap');
 
 }

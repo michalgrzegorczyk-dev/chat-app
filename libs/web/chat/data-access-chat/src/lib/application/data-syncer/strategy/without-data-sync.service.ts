@@ -18,9 +18,9 @@ export class WithoutDataSync implements DataSyncStrategy {
     return this.sendMessage$;
   }
 
-  requestSync(): void {
-
-  }
+  // requestDataSync(): void {
+  //
+  // }
 
   getMessageQueue$(): Observable<MessageSend[]> {
     return of([])
@@ -30,6 +30,6 @@ export class WithoutDataSync implements DataSyncStrategy {
     return of();
   }
 
-  notifyMessageSent(message: ReceivedMessage): void {
+  notifyMessageReceived(message: ReceivedMessage): void {
   }
 }

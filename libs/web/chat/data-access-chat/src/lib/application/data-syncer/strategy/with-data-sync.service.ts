@@ -10,23 +10,23 @@ export class WithDataSync implements DataSyncStrategy {
   private readonly chatSync = inject(DataSyncerChat)
 
   addMessageToQueue(message: MessageSend) {
-    this.chatSync.addMessage(message);
+    this.chatSync.addMessageToClientDb(message);
   }
 
   sendQueuedMessage$(): Observable<MessageSend> {
     return this.chatSync.sendMessage$;
   }
 
-  requestSync(): void {
-    this.chatSync.requestSync();
-  }
+  // requestDataSync(): void {
+  //   this.chatSync.requestDataSync();
+  // }
 
   getMessageQueue$(): Observable<MessageSend[]> {
     return this.chatSync.queue$;
   }
 
-  notifyMessageSent(message: ReceivedMessage): void {
-    this.chatSync.notifyMessageSent(message);
+  notifyMessageReceived(message: ReceivedMessage): void {
+    this.chatSync.notifyMessageReceived(message);
   }
 
   getMessageReceived$(): Observable<ReceivedMessage> {

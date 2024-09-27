@@ -23,17 +23,10 @@ export class PageVisibilityService {
     });
   }
 
-  /**
-   * Returns an Observable that emits true when the page becomes visible
-   * and false when it becomes hidden.
-   */
   public onVisibilityChange(): Observable<boolean> {
     return this.pageVisibleSubject.asObservable();
   }
 
-  /**
-   * Returns an Observable that emits only when the page becomes visible.
-   */
   public onPageVisible(): Observable<void> {
     return this.pageVisibleSubject.pipe(
       distinctUntilChanged(),
@@ -42,9 +35,6 @@ export class PageVisibilityService {
     );
   }
 
-  /**
-   * Returns the current visibility state of the page.
-   */
   public isPageVisible(): boolean {
     return !document.hidden;
   }

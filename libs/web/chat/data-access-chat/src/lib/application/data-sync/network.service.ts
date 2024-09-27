@@ -11,6 +11,14 @@ export class NetworkService {
     this.initializeNetworkListeners();
   }
 
+  public getOnlineStatus(): Observable<boolean> {
+    return this.onlineStatusSubject.asObservable();
+  }
+
+  public isOnline(): boolean {
+    return navigator.onLine;
+  }
+
   private initializeNetworkListeners(): void {
     fromEvent(window, 'online').subscribe(() => this.updateOnlineStatus(true));
     fromEvent(window, 'offline').subscribe(() => this.updateOnlineStatus(false));
@@ -19,13 +27,5 @@ export class NetworkService {
   private updateOnlineStatus(isOnline: boolean): void {
     console.log(`Network status changed. Online: ${isOnline}`);
     this.onlineStatusSubject.next(isOnline);
-  }
-
-  public getOnlineStatus(): Observable<boolean> {
-    return this.onlineStatusSubject.asObservable();
-  }
-
-  public isOnline(): boolean {
-    return navigator.onLine;
   }
 }

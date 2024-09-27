@@ -6,7 +6,7 @@ import { MessageSend } from '../models/message-send.type';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { io } from 'socket.io-client';
-import { ConversationDetailsDto, ConversationListElementDto, ReceiveMessageDto } from '@chat-app/dtos';
+import { ConversationDetailsDto, ConversationListElementDto } from '@chat-app/dtos';
 import { ENVIRONMENT } from '@chat-app/environment';
 import { ROUTES_PARAMS, CHAT_ROUTES } from '@chat-app/util-routing';
 
@@ -28,7 +28,6 @@ export class ChatInfra {
   private readonly authService = inject(AuthService);
 
   constructor() {
-    console.log('INIT CONSTRUCTOR CHAT IUNFRA')
     this.setupSocketListeners();
   }
 

@@ -13,6 +13,7 @@ import { ConversationDetails } from '../../models/conversation-details.type';
 import { routing } from '@chat-app/util-routing';
 import { take } from 'rxjs/operators';
 import { DATA_SYNC_STRATEGY_TOKEN } from '../data-sync-strategy/data-sync-strategy.token';
+import { MessageStatus } from '@chat-app/dtos';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -35,7 +36,10 @@ export class ChatFeatureStore {
     const effects = rxEffects(({ register }) => {
       register(this.dataSync.getMessageQueue$(), (queue) => this.queue$.next(queue));
       register(this.dataSync.getMessageReceived$(), (messageReceived) => this.getMessageSent$.next(messageReceived));
-      register(this.dataSync.getSendMessage$(), (messageSend) => this.chatInfra.sendMessage(messageSend));
+      register(this.dataSync.getSendMessage$(), (messageSend) => {
+        alert('send');
+        return this.chatInfra.sendMessage(messageSend);
+      });
       register(this.chatInfra.sendMessageSuccess$, (message) => this.dataSync.notifyMessageSent(message));
 
       register(this.sendMessage$, (messageSend) => {
@@ -115,17 +119,17 @@ export class ChatFeatureStore {
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
-    connect('messageList', this.getMessageSent$, (state:ChatState, message: ReceivedMessage) => {
-      if (state.selectedConversation?.conversationId !== message.conversationId) {
+    connect('messageList', this.getMessageSent$, (state: ChatState, receivedMessage: ReceivedMessage) => {
+      if (state.selectedConversation?.conversationId !== receivedMessage.conversationId) {
         return state.messageList;
       }
 
-      return state.messageList.map((msg:Message) => {
-        if (msg.localMessageId === message.localMessageId) {
+      return state.messageList.map((msg: Message) => {
+        if (msg.localMessageId === receivedMessage.localMessageId) {
           return {
             ...msg,
-            status: 'sent',
-            messageId: message.messageId
+            status: 'sent' as MessageStatus, // Explicitly cast to MessageStatus
+            messageId: receivedMessage.messageId
           };
         }
         return msg;

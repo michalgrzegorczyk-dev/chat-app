@@ -1,14 +1,10 @@
-import { Injectable, NgZone, inject } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { MessageSend, ReceivedMessage } from '@chat-app/domain';
-import { fromEvent, Subject, BehaviorSubject } from 'rxjs';
+import { Subject, BehaviorSubject } from 'rxjs';
 import { NetworkService } from './network.service';
 import { PageVisibilityService } from './page-visibility.service';
 import { BroadcastChannelService, BroadcastMessage } from './broadcast-channel.service';
 
-/**
- * Enum-like object representing the different types of messages
- * that can be sent through the BroadcastChannel for chat synchronization.
- */
 const BROADCAST_CHANNEL_TYPES = {
   /**
    * Type for requesting synchronization of messages.
@@ -26,33 +22,12 @@ const BROADCAST_CHANNEL_TYPES = {
   NOTIFY_MESSAGE_SENT: 'notify_message_sent'
 };
 
-/**
- * The `ChatSync` class is responsible for managing the synchronization of chat messages
- * across different instances of the application. It uses a `BroadcastChannel` to communicate
- * between different tabs or windows and ensures that messages are synced when the application
- * goes online or becomes visible.
- */
 @Injectable()
 export class ChatDataSync {
-  /**
-   * Observable that emits when a message is sent.
-   */
   readonly sendMessage$ = new Subject<MessageSend>();
-
-  /**
-   * Observable that emits the current queue of messages to be sent.
-   */
   private readonly queueSubject = new BehaviorSubject<MessageSend[]>([]);
   readonly queue$ = this.queueSubject.asObservable();
 
-  /**
-   * BroadcastChannel used for inter-tab communication.
-   */
-  private broadcastChannel = new BroadcastChannel('chat_sync');
-
-  /**
-   * Observable that emits when a message is received.
-   */
   private messageSentSubject = new Subject<ReceivedMessage>();
   readonly messageSent$ = this.messageSentSubject.asObservable();
 
@@ -71,54 +46,47 @@ export class ChatDataSync {
     this.pageVisibilityService.onPageVisible().subscribe(() => this.onPageVisible());
   }
 
-  /**
-   * Adds a message to the queue and broadcasts the updated queue.
-   * @param message The message to be added to the queue.
-   */
   addMessage(message: MessageSend) {
     const updatedQueue = [...this.queueSubject.value, message];
     this.queueSubject.next(updatedQueue);
     this.broadcastSyncData();
   }
 
-  /**
-   * Removes a message from the queue and broadcasts the updated queue.
-   * @param message The message to be removed from the queue.
-   */
   removeMessage(message: ReceivedMessage) {
     const updatedQueue = this.queueSubject.value.filter((msg: any) => msg.localMessageId !== message.localMessageId);
     this.queueSubject.next(updatedQueue);
     this.broadcastSyncData();
   }
 
-  /**
-   * Handles a message that has been sent by removing it from the queue and notifying observers.
-   * @param message The message that has been sent.
-   */
+  public requestSync() {
+    this.broadcastChannelService.postMessage({
+      type: BROADCAST_CHANNEL_TYPES.REQUEST_SYNC,
+      payload: null
+    });
+  }
+
+  public notifyMessageSent(message: ReceivedMessage) {
+    this.broadcastChannelService.postMessage({
+      type: BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT,
+      payload: message
+    });
+    this.handleMessageSent(message);
+  }
+
   private handleMessageSent(message: ReceivedMessage) {
     this.removeMessage(message);
     this.messageSentSubject.next(message);
   }
 
-  /**
-   * Requests synchronization of messages when the page becomes visible.
-   */
   private onPageVisible() {
     console.log('Page is now visible');
     this.requestSync();
   }
 
-  /**
-   * Receives and updates the queue of messages to be sent.
-   * @param receivedQueue The received queue of messages.
-   */
   private receiveSyncData(receivedQueue: MessageSend[]) {
     this.queueSubject.next(receivedQueue);
   }
 
-  /**
-   * Synchronizes messages by sending all messages in the queue.
-   */
   private syncMessages() {
     if (this.networkService.isOnline()) {
       const currentQueue = this.queueSubject.value;
@@ -126,14 +94,14 @@ export class ChatDataSync {
         const message = currentQueue.pop();
         if (message) {
           console.log('Sending', message.localMessageId);
-          // this.sendMessage(message);
-          //   this.sendMessage$.next(message);
+          this.sendMessage$.next(message);
         }
       }
       this.queueSubject.next(currentQueue);
       this.broadcastSyncData();
     }
   }
+
   private handleBroadcastMessage(message: BroadcastMessage) {
     console.log('Received broadcast message', message.type);
     switch (message.type) {
@@ -148,23 +116,11 @@ export class ChatDataSync {
         break;
     }
   }
+
   private broadcastSyncData() {
     this.broadcastChannelService.postMessage({
       type: BROADCAST_CHANNEL_TYPES.SYNC_QUEUE_DATA,
       payload: this.queueSubject.value
     });
-  }
-  public requestSync() {
-    this.broadcastChannelService.postMessage({
-      type: BROADCAST_CHANNEL_TYPES.REQUEST_SYNC,
-      payload: null
-    });
-  }
-  public notifyMessageSent(message: ReceivedMessage) {
-    this.broadcastChannelService.postMessage({
-      type: BROADCAST_CHANNEL_TYPES.NOTIFY_MESSAGE_SENT,
-      payload: message
-    });
-    this.handleMessageSent(message);
   }
 }

@@ -22,25 +22,14 @@ export class BroadcastChannelService {
     };
   }
 
-  /**
-   * Send a message through the broadcast channel
-   * @param message The message to be sent
-   */
   public postMessage(message: BroadcastMessage): void {
     this.channel.postMessage(message);
   }
 
-  /**
-   * Listen for messages from the broadcast channel
-   * @returns An Observable that emits received messages
-   */
   public onMessage(): Observable<BroadcastMessage> {
     return this.messageSubject.asObservable();
   }
 
-  /**
-   * Close the broadcast channel
-   */
   public close(): void {
     this.channel.close();
   }

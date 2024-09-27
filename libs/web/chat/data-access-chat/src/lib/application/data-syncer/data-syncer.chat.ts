@@ -14,11 +14,12 @@ enum BroadcastChannelType {
 @Injectable()
 export class DataSyncerChat {
   readonly sendMessage$ = new Subject<MessageSend>();
-  private readonly queueSubject = new BehaviorSubject<MessageSend[]>([]);
-  readonly queue$: Observable<MessageSend[]> = this.queueSubject.asObservable();
 
   private messageSentSubject = new Subject<ReceivedMessage>();
   readonly messageSent$: Observable<ReceivedMessage> = this.messageSentSubject.asObservable();
+
+  private readonly queueSubject = new BehaviorSubject<MessageSend[]>([]);
+  readonly queue$: Observable<MessageSend[]> = this.queueSubject.asObservable();
 
   private readonly networkService = inject(NetworkService);
   private readonly broadcastChannelService = inject(BroadcastChannelService);

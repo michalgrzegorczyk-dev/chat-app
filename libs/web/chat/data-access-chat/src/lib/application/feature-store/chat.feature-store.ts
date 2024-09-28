@@ -14,7 +14,6 @@ import { routing } from '@chat-app/util-routing';
 import { take } from 'rxjs/operators';
 import { DATA_SYNC_STRATEGY_TOKEN } from '../data-syncer/strategy/data-sync-strategy.token';
 import { MessageStatus } from '@chat-app/dtos';
-import { NetworkService } from '../../util-network/network.service';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 
 const INITIAL_STATE: ChatState = {
@@ -43,8 +42,7 @@ export class ChatFeatureStore {
   private readonly router = inject(Router);
   private readonly chatInfra = inject(ChatInfra);
   private readonly auth = inject(AuthService);
-  private readonly network = inject(NetworkService);
-  private readonly dataSync = inject(DATA_SYNC_STRATEGY_TOKEN);
+  private readonly syncStrategy = inject(DATA_SYNC_STRATEGY_TOKEN);
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
@@ -142,16 +140,13 @@ export class ChatFeatureStore {
   // TODO, weird constructor
   constructor() {
     const effects = rxEffects(({ register }) => {
-      register(this.dataSync.sendQueuedMessage$(), (messageSend) => {
-        return this.chatInfra.sendMessageWebSocket(messageSend);
-      });
       register(this.chatInfra.messageReceived$, (message) => {
         return this.messageReceived$.next(message);
       });
 
       register(this.sendMessageEvent$, (messageSend) => {
         this.chatInfra.sendMessageWebSocket(messageSend);
-        this.dataSync.addMessageToClientDb(messageSend);
+        this.syncStrategy.addMessageToClientDb(messageSend);
       });
 
       register(this.selectConversation$, (selectedConversation) => {

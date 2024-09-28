@@ -10,9 +10,9 @@ export * from './lib/application/feature-store/chat.feature-store';
 export * from './lib/application/feature-store/chat.facade';
 export * from './lib/application/data-syncer/strategy/data-sync.strategy';
 export * from './lib/application/data-syncer/strategy/data-sync-strategy.token';
-export * from './lib/application/data-syncer/strategy/with-data-sync.service';
-export * from './lib/application/data-syncer/strategy/without-data-sync.service';
-export * from './lib/application/data-syncer/data-syncer.chat';
+export * from './lib/application/data-syncer/with-sync/with-data-sync.service';
+export * from './lib/application/data-syncer/without-sync/without-data-sync.service';
+export * from './lib/application/data-syncer/with-sync/data-syncer.chat';
 
 
 export * from './lib/infra/chat.infra';

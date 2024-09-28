@@ -14,9 +14,6 @@ import { NetworkService } from '../../util-network/network.service';
 export class DataSyncer {
   readonly sendMessage$ = new Subject<MessageSend>();
 
-  private messageReceived$$ = new Subject<ReceivedMessage>();
-  readonly messageReceived$: Observable<ReceivedMessage> = this.messageReceived$$.asObservable();
-
   private readonly queue$$ = new BehaviorSubject<MessageSend[]>([]);
   readonly queue$: Observable<MessageSend[]> = this.queue$$.asObservable();
 
@@ -27,26 +24,15 @@ export class DataSyncer {
   }
 
   addMessageToClientDb(message: MessageSend): void {
-    if(!this.networkService.isOnline()) {
+    if(!this.networkService.isOnline()) { // how to get if error in server
       this.queue$$.next([...this.queue$$.value, message]);
       console.log(this.queue$$.value);
-    }
-  }
-
-  notifyMessageReceived(message: ReceivedMessage): void {
-    this.messageReceived$$.next(message);
-  }
-
-  private syncMessages(): void {
-    if (!this.networkService.isOnline()) {
-      return;
     }
   }
 
   private initializeNetworkListener(): void {
     this.networkService.getOnlineStatus().subscribe((isOnline) => {
       if (isOnline) {
-        this.syncMessages();
       }
     });
   }

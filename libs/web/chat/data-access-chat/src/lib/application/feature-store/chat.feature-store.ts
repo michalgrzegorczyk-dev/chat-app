@@ -71,7 +71,7 @@ export class ChatFeatureStore {
     connect('messageList', this.chatInfra.messageReceived$, (state, message) => {
       console.log('[STATE, INFRA] sendMessageSuccess$', message);
       return state.selectedConversation?.conversationId === message.conversationId
-          && message.senderId !== this.auth.user().id
+      && message.senderId !== this.auth.user().id
         ?
         [...state.messageList, message] : state.messageList;
     });
@@ -150,16 +150,11 @@ export class ChatFeatureStore {
   // TODO, weird constructor
   constructor() {
     const effects = rxEffects(({ register }) => {
-      // register(this.dataSync.getMessageQueue$(), (queue) => {
-      //   console.log('[EFFECT, FROM SYNC] getMessageQueue$:', queue);
-      //   return this.queue$.next(queue);
-      // });
-
       register(this.network.getOnlineStatus().pipe(switchMap((isOnline) => {
         if (isOnline) {
           return this.dataSync.getMessageQueue$();
         }
-        return of([])
+        return of([]);
       })), (queue: MessageSend[]) => {
         console.log('[!!!!!!!!!!!!] getOnlineStatus:', queue);
         console.log('[!!!!!!!!!!!!] getOnlineStatus:', this.selectedConversation());
@@ -171,29 +166,23 @@ export class ChatFeatureStore {
               this.selectConversation$.next(conversation);
 
             }, 2000);
-          })
+          });
         }
-        // return this.queue$.next(queue);
       });
 
-      register(this.dataSync.getMessageReceived$(), (messageReceived) => {
-        console.log('[EFFECT, FROM SYNC] getMessageReceived$:', messageReceived);
-        return this.getMessageSent$.next(messageReceived);
-      });
       register(this.dataSync.sendQueuedMessage$(), (messageSend) => {
         console.log('[EFFECT, FROM SYNC] sendQueuedMessage$:', messageSend);
-        return this.chatInfra.sendMessage(messageSend);
+        return this.chatInfra.sendMessageWebSocket(messageSend);
       });
       register(this.chatInfra.messageReceived$, (message) => {
         console.log('[EFFECT, INFRA] sendMessageSuccess$:', message);
-        // this.dataSync.removeMessageFromQueue(message);
-        this.dataSync.notifyMessageReceived(message);
+        return this.getMessageSent$.next(message);
       });
 
       register(this.sendMessage$, (messageSend) => {
         console.log('[EFFECT] sendMessage$', messageSend);
-        this.dataSync.addMessageToQueue(messageSend);
-        this.chatInfra.sendMessage(messageSend);
+        this.chatInfra.sendMessageWebSocket(messageSend);
+        this.dataSync.addMessageToClientDb(messageSend);
       });
 
       register(this.selectConversation$, (selectedConversation) => {

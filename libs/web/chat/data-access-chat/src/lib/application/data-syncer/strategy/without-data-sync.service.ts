@@ -10,7 +10,7 @@ import { ReceivedMessage } from '../../../models/message.type';
 export class WithoutDataSync implements DataSyncStrategy {
   private sendMessage$ = new Subject<MessageSend>();
 
-  addMessageToQueue(message: MessageSend): void {
+  addMessageToClientDb(message: MessageSend): void {
     // Do nothing
   }
 
@@ -20,12 +20,5 @@ export class WithoutDataSync implements DataSyncStrategy {
 
   getMessageQueue$(): Observable<MessageSend[]> {
     return of([])
-  }
-
-  getMessageReceived$(): Observable<ReceivedMessage> {
-    return of();
-  }
-
-  notifyMessageReceived(message: ReceivedMessage): void {
   }
 }

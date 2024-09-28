@@ -89,8 +89,9 @@ export class ChatInfra {
       );
   }
 
-  sendMessage(messageSend: MessageSend): void {
+  sendMessageWebSocket(messageSend: MessageSend): void {
     this.socket.emit('sendMessage', messageSend, ((error: any) => {
+      console.log('erro');
     }));
   }
 

@@ -9,7 +9,7 @@ import { ReceivedMessage } from '../../../models/message.type';
 export class WithDataSync implements DataSyncStrategy {
   private readonly dataSyncer = inject(DataSyncer)
 
-  addMessageToQueue(message: MessageSend) {
+  addMessageToClientDb(message: MessageSend) {
     this.dataSyncer.addMessageToClientDb(message);
   }
 
@@ -19,13 +19,5 @@ export class WithDataSync implements DataSyncStrategy {
 
   getMessageQueue$(): Observable<MessageSend[]> {
     return this.dataSyncer.queue$;
-  }
-
-  notifyMessageReceived(message: ReceivedMessage): void {
-    this.dataSyncer.notifyMessageReceived(message);
-  }
-
-  getMessageReceived$(): Observable<ReceivedMessage> {
-    return this.dataSyncer.messageReceived$;
   }
 }

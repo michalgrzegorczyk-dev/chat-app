@@ -51,15 +51,15 @@ export class ChatFeatureStore {
       }
 
       // TODO: maybe not the best data structure for frequent updates
-      return state.messageList.map((msg: Message) => {
-        if (msg.localMessageId === receivedMessage.localMessageId) {
+      return state.messageList.map((currentMessage: Message) => {
+        if (currentMessage.localMessageId === receivedMessage.localMessageId) {
           return {
-            ...msg,
+            ...currentMessage,
             status: 'sent' as MessageStatus,
             messageId: receivedMessage.messageId
           };
         }
-        return msg;
+        return currentMessage;
       });
     });
 
@@ -194,5 +194,4 @@ export class ChatFeatureStore {
         });
     });
   });
-
 }

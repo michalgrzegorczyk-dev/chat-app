@@ -142,25 +142,6 @@ export class ChatFeatureStore {
   // TODO, weird constructor
   constructor() {
     const effects = rxEffects(({ register }) => {
-      register(this.network.getOnlineStatus().pipe(switchMap((isOnline) => {
-        if (isOnline) {
-          return this.dataSync.getMessageQueue$();
-        }
-        return of([]);
-      })), (queue: MessageSend[]) => {
-        console.log('[!!!!!!!!!!!!] getOnlineStatus:', queue);
-        console.log('[!!!!!!!!!!!!] getOnlineStatus:', this.selectedConversation());
-        const conversation = this.selectedConversation();
-        if (conversation) {
-          this.chatInfra.updateMessages(queue, conversation).subscribe((x) => {
-            setTimeout(() => {
-              this.selectConversation$.next(conversation);
-
-            }, 2000);
-          });
-        }
-      });
-
       register(this.dataSync.sendQueuedMessage$(), (messageSend) => {
         return this.chatInfra.sendMessageWebSocket(messageSend);
       });

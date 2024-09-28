@@ -3,7 +3,7 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
 import { AccountWidgetComponent } from '@chat-app/feature-account';
 import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-list';
 import { RouterOutlet } from '@angular/router';
-import { DataSyncerChat, WithDataSync, ChatFacade, ChatFeatureStore, DATA_SYNC_STRATEGY_TOKEN, ChatInfra } from '@chat-app/domain';
+import { DataSyncer, WithDataSync, ChatFacade, ChatFeatureStore, DATA_SYNC_STRATEGY_TOKEN, ChatInfra } from '@chat-app/domain';
 import {
   BroadcastChannelService
 } from '../../../../../../libs/web/chat/data-access-chat/src/lib/util-broadcast-channel/broadcast-channel.service';
@@ -25,7 +25,7 @@ import {
     ChatInfra,
     ChatFacade,
     ChatFeatureStore,
-    DataSyncerChat,
+    DataSyncer,
     BroadcastChannelService,
     NetworkService
   ]

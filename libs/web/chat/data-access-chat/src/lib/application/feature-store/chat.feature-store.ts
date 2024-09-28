@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { rxState } from '@rx-angular/state';
-import { Subject } from 'rxjs';
+import { Subject, switchMap, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { ChatInfra } from '../../infra/chat.infra';
 import { ChatState } from '../../models/chat-state.type';
@@ -14,6 +14,7 @@ import { routing } from '@chat-app/util-routing';
 import { take } from 'rxjs/operators';
 import { DATA_SYNC_STRATEGY_TOKEN } from '../data-syncer/strategy/data-sync-strategy.token';
 import { MessageStatus } from '@chat-app/dtos';
+import { NetworkService } from '../../util-network/network.service';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -41,6 +42,7 @@ export class ChatFeatureStore {
   readonly getMessageSent$ = new Subject<ReceivedMessage>();
   private readonly router = inject(Router);
   private readonly chatInfra = inject(ChatInfra);
+  private readonly network = inject(NetworkService);
   private readonly dataSync = inject(DATA_SYNC_STRATEGY_TOKEN);
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
@@ -157,6 +159,18 @@ export class ChatFeatureStore {
         console.log('[EFFECT, FROM SYNC] getMessageQueue$:', queue);
         return this.queue$.next(queue);
       });
+
+      register(this.network.getOnlineStatus().pipe(switchMap((isOnline) => {
+        if (isOnline) {
+          return this.dataSync.getMessageQueue$();
+        }
+        return of([])
+      })), (queue: MessageSend[]) => {
+        console.log('[!!!!!!!!!!!!] getOnlineStatus:', queue);
+        // this.chatInfra.updateMessages(queue, state.selectedConversation);
+        // return this.queue$.next(queue);
+      });
+
       register(this.dataSync.getMessageReceived$(), (messageReceived) => {
         console.log('[EFFECT, FROM SYNC] getMessageReceived$:', messageReceived);
         return this.getMessageSent$.next(messageReceived);

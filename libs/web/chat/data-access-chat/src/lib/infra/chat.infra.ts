@@ -112,4 +112,27 @@ export class ChatInfra {
       this.loadConversationListSuccess$.next(x);
     });
   }
+
+  updateMessages(queue: MessageSend[], selectedConversation: Conversation | null) {
+    const headers = new HttpHeaders().set(
+      'X-User-Id',
+      this.authService.user().id
+    );
+
+    if(selectedConversation) {
+      const params = new HttpParams()
+        .set(ROUTES_PARAMS.USER_ID, this.authService.user().id)
+        .set(ROUTES_PARAMS.CONVERSATION_ID, selectedConversation.conversationId);
+
+      this.http
+        .post<ConversationDetailsDto>(
+          `${this.environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}/${selectedConversation.conversationId}`,
+          { params, headers, queue }
+        ).subscribe((convDetailsDto) => {
+        console.log('finished');
+      });
+    }
+
+
+  }
 }

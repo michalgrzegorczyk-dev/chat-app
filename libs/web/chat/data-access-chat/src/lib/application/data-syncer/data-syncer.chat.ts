@@ -18,7 +18,7 @@ enum BroadcastChannelType {
 // Message Scheduler: Monitors the outgoing messages, schedules them for sending and manages their statuses.
 
 @Injectable()
-export class DataSyncerChat {
+export class DataSyncer {
   readonly sendMessage$ = new Subject<MessageSend>();
 
   private messageSentSubject = new Subject<ReceivedMessage>();
@@ -31,10 +31,12 @@ export class DataSyncerChat {
   private readonly broadcastChannelService = inject(BroadcastChannelService);
 
   private readonly messageHandlers: Record<BroadcastChannelType, (payload: any) => void> = {
-    [BroadcastChannelType.REQUEST_SYNC]: () => this.broadcastSyncData(),
+    [BroadcastChannelType.REQUEST_SYNC]: () => this.broadcastSyncDataBetweenTabs(),
     [BroadcastChannelType.SYNC_CLIENT_DB]: (payload: MessageSend[]) => this.updateQueue(payload),
     [BroadcastChannelType.NOTIFY_MESSAGE_RECEIVED]: (payload: ReceivedMessage) => this.handleMessageSent(payload)
   };
+
+  requireSyncMessagesAfterInernetOnline$ = new Subject<MessageSend[]>();
 
   constructor() {
     this.initializeNetworkListener();
@@ -43,7 +45,7 @@ export class DataSyncerChat {
 
   addMessageToClientDb(message: MessageSend): void {
     this.updateQueue([...this.queueSubject.value, message]);
-    this.broadcastSyncData();
+    this.broadcastSyncDataBetweenTabs();
   }
 
   notifyMessageReceived(message: ReceivedMessage): void {
@@ -64,13 +66,17 @@ export class DataSyncerChat {
       return;
     }
 
-    const currentQueue = [...this.queueSubject.value];
-    while (currentQueue.length > 0) {
-      const message = currentQueue.pop();
-      if (message) this.sendMessage$.next(message);
-    }
-    this.updateQueue(currentQueue);
-    this.broadcastSyncData();
+    // this.requireSyncMessagesAfterInernetOnline$.next(this.queueSubject.value);
+
+    // const currentQueue = [...this.queueSubject.value];
+    // while (currentQueue.length > 0) {
+    //   const message = currentQueue.pop();
+    //   if (message) this.sendMessage$.next(message);
+    // }
+
+
+    // this.updateQueue(currentQueue);
+    // this.broadcastSyncDataBetweenTabs();
   }
 
   private handleBroadcastMessage(message: BroadcastMessage): void {
@@ -80,7 +86,7 @@ export class DataSyncerChat {
     }
   }
 
-  private broadcastSyncData(): void {
+  private broadcastSyncDataBetweenTabs(): void {
     this.broadcastMessage(BroadcastChannelType.SYNC_CLIENT_DB, this.queueSubject.value);
   }
 

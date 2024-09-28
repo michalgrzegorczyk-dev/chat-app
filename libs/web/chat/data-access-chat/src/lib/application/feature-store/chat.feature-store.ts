@@ -30,17 +30,16 @@ const INITIAL_STATE: ChatState = {
 @Injectable()
 export class ChatFeatureStore {
   // EVENTS
-  readonly sendMessage$ = new Subject<MessageSend>();
+  readonly sendMessageEvent$ = new Subject<MessageSend>();
   readonly setMessageList$ = new Subject<Message[]>();
   readonly setMessageListLoading$ = new Subject<boolean>();
   readonly setConversationList$ = new Subject<Conversation[]>();
   readonly selectConversation$ = new Subject<Conversation | null>();
   readonly setConversationListLoading$ = new Subject<boolean>();
-  readonly addMessage$ = new Subject<Message>();
   readonly setMemberIdMap$ = new Subject<Map<string, User>>();
   readonly loadConversationList$ = new Subject<void>();
   readonly queue$ = new Subject<MessageSend[]>();
-  readonly getMessageSent$ = new Subject<ReceivedMessage>();
+  readonly messageReceived$ = new Subject<ReceivedMessage>();
   private readonly router = inject(Router);
   private readonly chatInfra = inject(ChatInfra);
   private readonly auth = inject(AuthService);
@@ -49,12 +48,12 @@ export class ChatFeatureStore {
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
-    connect('messageList', this.getMessageSent$, (state: ChatState, receivedMessage: ReceivedMessage) => {
-      console.log('[STATE] getMessageSent$', receivedMessage);
+    connect('messageList', this.messageReceived$, (state: ChatState, receivedMessage: ReceivedMessage) => {
       if (state.selectedConversation?.conversationId !== receivedMessage.conversationId) {
         return state.messageList;
       }
 
+      // TODO: maybe not the best data structure for frequent updates
       return state.messageList.map((msg: Message) => {
         if (msg.localMessageId === receivedMessage.localMessageId) {
           return {
@@ -69,23 +68,16 @@ export class ChatFeatureStore {
 
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfra.messageReceived$, (state, message) => {
-      console.log('[STATE, INFRA] sendMessageSuccess$', message);
-      return state.selectedConversation?.conversationId === message.conversationId
-      && message.senderId !== this.auth.user().id
-        ?
-        [...state.messageList, message] : state.messageList;
+      if (state.selectedConversation?.conversationId === message.conversationId &&
+        message.senderId !== this.auth.user().id) {
+        return [...state.messageList, message];
+      }
+      return state.messageList;
     });
     connect('messageList', this.setMessageList$, (state, messageList) => {
-      console.log('[STATE] setMessageList$', messageList);
       return messageList;
     });
-    connect('messageList', this.addMessage$, (state, message) => {
-      console.log('[STATE] addMessage$', message);
-      return [...state.messageList, message];
-    });
-
     connect('messageList', this.queue$, (state, queue: MessageSend[]) => {
-      console.log('[STATE] queue$', queue);
       if (queue && queue.length === 0) {
         return state.messageList;
       }
@@ -106,8 +98,8 @@ export class ChatFeatureStore {
       return state.messageList;
     });
 
-    connect('messageList', this.sendMessage$, (state, message) => {
-      console.log('[STATE] sendMessage$', message);
+    connect('messageList', this.sendMessageEvent$, (state, message) => {
+      // optimistic update
       return [...state.messageList, {
         localMessageId: message.localMessageId,
         messageId: '', //todo
@@ -161,7 +153,6 @@ export class ChatFeatureStore {
         const conversation = this.selectedConversation();
         if (conversation) {
           this.chatInfra.updateMessages(queue, conversation).subscribe((x) => {
-            console.log('updateMessages', x);
             setTimeout(() => {
               this.selectConversation$.next(conversation);
 
@@ -171,16 +162,13 @@ export class ChatFeatureStore {
       });
 
       register(this.dataSync.sendQueuedMessage$(), (messageSend) => {
-        console.log('[EFFECT, FROM SYNC] sendQueuedMessage$:', messageSend);
         return this.chatInfra.sendMessageWebSocket(messageSend);
       });
       register(this.chatInfra.messageReceived$, (message) => {
-        console.log('[EFFECT, INFRA] sendMessageSuccess$:', message);
-        return this.getMessageSent$.next(message);
+        return this.messageReceived$.next(message);
       });
 
-      register(this.sendMessage$, (messageSend) => {
-        console.log('[EFFECT] sendMessage$', messageSend);
+      register(this.sendMessageEvent$, (messageSend) => {
         this.chatInfra.sendMessageWebSocket(messageSend);
         this.dataSync.addMessageToClientDb(messageSend);
       });

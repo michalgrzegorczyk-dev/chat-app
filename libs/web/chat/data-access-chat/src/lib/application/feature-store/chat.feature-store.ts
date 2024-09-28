@@ -42,7 +42,6 @@ export class ChatFeatureStore {
   private readonly router = inject(Router);
   private readonly chatInfra = inject(ChatInfra);
   private readonly auth = inject(AuthService);
-  private readonly syncStrategy = inject(DATA_SYNC_STRATEGY_TOKEN);
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
@@ -137,72 +136,63 @@ export class ChatFeatureStore {
   readonly selectedConversation = this.rxState.signal('selectedConversation');
   readonly memberIdMap = this.rxState.signal('memberIdMap');
 
-  // TODO, weird constructor
-  constructor() {
-    const effects = rxEffects(({ register }) => {
-      register(this.chatInfra.messageReceived$, (message) => {
-        return this.messageReceived$.next(message);
-      });
 
-      register(this.sendMessageEvent$, (messageSend) => {
-        this.chatInfra.sendMessageWebSocket(messageSend);
-        this.syncStrategy.addMessageToClientDb(messageSend);
-      });
-
-      register(this.selectConversation$, (selectedConversation) => {
-        if (!selectedConversation) {
-          return;
-        }
-
-        this.setMessageListLoading$.next(true);
-        return this.chatInfra
-          .getConversationContent(selectedConversation)
-          .subscribe((conversationDetails: ConversationDetails) => {
-            this.setMessageList$.next(conversationDetails.messageList);
-            this.setMemberIdMap$.next(
-              new Map(
-                conversationDetails.memberList.map((member) => [
-                  member.id,
-                  member
-                ])
-              )
-            );
-            this.setMessageListLoading$.next(false);
-          });
-      });
-
-      register(this.selectConversation$, async (conversation) => {
-        if (!conversation) {
-          return;
-        }
-        await this.router.navigate([`${routing.chat.url()}`, conversation.conversationId]);
-      });
-
-      register(this.chatInfra.loadConversationListPing$, () => {
-        this.setConversationList$.next([]);
-        this.chatInfra
-          .fetchConversations()
-          .pipe(take(1))
-          .subscribe((conversationList) => {
-            this.setConversationList$.next(conversationList);
-          });
-      });
-
-      register(this.loadConversationList$, () => {
-        this.setConversationListLoading$.next(true);
-        this.setConversationList$.next([]);
-        this.chatInfra
-          .fetchConversations()
-          .pipe(take(1))
-          .subscribe((conversationList) => {
-            this.setConversationList$.next(conversationList);
-            if (conversationList[0]) {
-              this.selectConversation$.next(conversationList[0]);
-            }
-            this.setConversationListLoading$.next(false);
-          });
-      });
+  effects = rxEffects(({ register }) => {
+    register(this.chatInfra.messageReceived$, (message) => {
+      return this.messageReceived$.next(message);
     });
-  }
+
+    register(this.sendMessageEvent$, (messageSend) => {
+      this.chatInfra.sendMessageWebSocket(messageSend);
+    });
+
+    register(this.selectConversation$, (selectedConversation) => {
+      if (!selectedConversation) {
+        return;
+      }
+      this.router.navigate([`${routing.chat.url()}`, selectedConversation.conversationId]);
+
+      this.setMessageListLoading$.next(true);
+      return this.chatInfra
+        .getConversationContent(selectedConversation)
+        .subscribe((conversationDetails: ConversationDetails) => {
+          this.setMessageList$.next(conversationDetails.messageList);
+          this.setMemberIdMap$.next(
+            new Map(
+              conversationDetails.memberList.map((member) => [
+                member.id,
+                member
+              ])
+            )
+          );
+          this.setMessageListLoading$.next(false);
+        });
+    });
+
+    register(this.chatInfra.loadConversationListPing$, () => {
+      this.setConversationList$.next([]);
+      this.chatInfra
+        .fetchConversations()
+        .pipe(take(1))
+        .subscribe((conversationList) => {
+          this.setConversationList$.next(conversationList);
+        });
+    });
+
+    register(this.loadConversationList$, () => {
+      this.setConversationListLoading$.next(true);
+      this.setConversationList$.next([]);
+      this.chatInfra
+        .fetchConversations()
+        .pipe(take(1))
+        .subscribe((conversationList) => {
+          this.setConversationList$.next(conversationList);
+          if (conversationList[0]) {
+            this.selectConversation$.next(conversationList[0]);
+          }
+          this.setConversationListLoading$.next(false);
+        });
+    });
+  });
 
 }

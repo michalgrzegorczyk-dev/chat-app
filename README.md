@@ -83,7 +83,7 @@ There is no authorization of the user, but you can select predefined users to ch
 ### Running the Application
 To start the development server:
 ```bash
-todo
+pnpm run dev-all
 ```
 
 ## Project Structure

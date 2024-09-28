@@ -5,9 +5,6 @@ import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-
 import { RouterOutlet } from '@angular/router';
 import { DataSyncer, WithDataSync, ChatFacade, ChatFeatureStore, DATA_SYNC_STRATEGY_TOKEN, ChatInfra } from '@chat-app/domain';
 import {
-  BroadcastChannelService
-} from '../../../../../../libs/web/chat/data-access-chat/src/lib/util-broadcast-channel/broadcast-channel.service';
-import {
   NetworkService
 } from '../../../../../../libs/web/chat/data-access-chat/src/lib/util-network/network.service';
 
@@ -26,7 +23,6 @@ import {
     ChatFacade,
     ChatFeatureStore,
     DataSyncer,
-    BroadcastChannelService,
     NetworkService
   ]
 })

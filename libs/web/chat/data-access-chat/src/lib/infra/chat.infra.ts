@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Subject, map, Observable } from 'rxjs';
+import { Subject, map, Observable, tap } from 'rxjs';
 import { ReceivedMessage } from '../models/message.type';
 import { Conversation } from '../models/conversation.type';
 import { MessageSend } from '../models/message-send.type';
@@ -96,6 +96,7 @@ export class ChatInfra {
 
   private setupSocketListeners(): void {
     this.socket.on('sendMessageSuccess', (message: any) => {
+      console.log('xxRRRRxx');
         this.messageReceived$.next({
           conversationId: message.conversation_id,
           localMessageId: message.local_message_id,
@@ -113,26 +114,23 @@ export class ChatInfra {
     });
   }
 
-  updateMessages(queue: MessageSend[], selectedConversation: Conversation | null) {
+  updateMessages(queue: MessageSend[], selectedConversation: Conversation):Observable<any> {
+    console.log('sele', selectedConversation);
     const headers = new HttpHeaders().set(
       'X-User-Id',
       this.authService.user().id
     );
 
-    if(selectedConversation) {
       const params = new HttpParams()
         .set(ROUTES_PARAMS.USER_ID, this.authService.user().id)
         .set(ROUTES_PARAMS.CONVERSATION_ID, selectedConversation.conversationId);
 
-      this.http
+      return this.http
         .post<ConversationDetailsDto>(
-          `${this.environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}/${selectedConversation.conversationId}`,
-          { params, headers, queue }
-        ).subscribe((convDetailsDto) => {
-        console.log('finished');
-      });
-    }
-
+          `${this.environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}`,
+          { queue, conversationId: selectedConversation.conversationId },
+          { params, headers }
+        ).pipe(tap(x => console.log('eeee:)')))
 
   }
 }

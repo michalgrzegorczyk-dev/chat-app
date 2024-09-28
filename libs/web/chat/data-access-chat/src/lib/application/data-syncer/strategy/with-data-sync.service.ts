@@ -26,6 +26,6 @@ export class WithDataSync implements DataSyncStrategy {
   }
 
   getMessageReceived$(): Observable<ReceivedMessage> {
-    return this.dataSyncer.messageSent$;
+    return this.dataSyncer.messageReceived$;
   }
 }

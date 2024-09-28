@@ -15,6 +15,7 @@ import { take } from 'rxjs/operators';
 import { DATA_SYNC_STRATEGY_TOKEN } from '../data-syncer/strategy/data-sync-strategy.token';
 import { MessageStatus } from '@chat-app/dtos';
 import { NetworkService } from '../../util-network/network.service';
+import { AuthService } from '@chat-app/web/shared/util/auth';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -42,6 +43,7 @@ export class ChatFeatureStore {
   readonly getMessageSent$ = new Subject<ReceivedMessage>();
   private readonly router = inject(Router);
   private readonly chatInfra = inject(ChatInfra);
+  private readonly auth = inject(AuthService);
   private readonly network = inject(NetworkService);
   private readonly dataSync = inject(DATA_SYNC_STRATEGY_TOKEN);
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
@@ -68,17 +70,10 @@ export class ChatFeatureStore {
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfra.messageReceived$, (state, message) => {
       console.log('[STATE, INFRA] sendMessageSuccess$', message);
-      return state.selectedConversation?.conversationId === message.conversationId ?
-        [...state.messageList.map(msg => {
-          if (msg.localMessageId === message.localMessageId) {
-            const newMsg: Message = {
-              ...msg,
-              status: 'sent'
-            };
-            return newMsg;
-          }
-          return msg;
-        })] : state.messageList;
+      return state.selectedConversation?.conversationId === message.conversationId
+          && message.senderId !== this.auth.user().id
+        ?
+        [...state.messageList, message] : state.messageList;
     });
     connect('messageList', this.setMessageList$, (state, messageList) => {
       console.log('[STATE] setMessageList$', messageList);
@@ -155,10 +150,10 @@ export class ChatFeatureStore {
   // TODO, weird constructor
   constructor() {
     const effects = rxEffects(({ register }) => {
-      register(this.dataSync.getMessageQueue$(), (queue) => {
-        console.log('[EFFECT, FROM SYNC] getMessageQueue$:', queue);
-        return this.queue$.next(queue);
-      });
+      // register(this.dataSync.getMessageQueue$(), (queue) => {
+      //   console.log('[EFFECT, FROM SYNC] getMessageQueue$:', queue);
+      //   return this.queue$.next(queue);
+      // });
 
       register(this.network.getOnlineStatus().pipe(switchMap((isOnline) => {
         if (isOnline) {
@@ -167,7 +162,17 @@ export class ChatFeatureStore {
         return of([])
       })), (queue: MessageSend[]) => {
         console.log('[!!!!!!!!!!!!] getOnlineStatus:', queue);
-        // this.chatInfra.updateMessages(queue, state.selectedConversation);
+        console.log('[!!!!!!!!!!!!] getOnlineStatus:', this.selectedConversation());
+        const conversation = this.selectedConversation();
+        if (conversation) {
+          this.chatInfra.updateMessages(queue, conversation).subscribe((x) => {
+            console.log('updateMessages', x);
+            setTimeout(() => {
+              this.selectConversation$.next(conversation);
+
+            }, 2000);
+          })
+        }
         // return this.queue$.next(queue);
       });
 

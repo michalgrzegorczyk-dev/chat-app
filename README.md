@@ -1,5 +1,3 @@
-todo: https://blog.nrwl.io/easy-documentation-with-docusaurus-and-nx-4b932d8ad0e4
-
 # Chat App (Work In Progress)
 
 ![Chat App - Login Page](./apps/web/public/image1.png)

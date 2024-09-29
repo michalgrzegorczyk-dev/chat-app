@@ -15,4 +15,4 @@ export * from './lib/application/data-syncer/without-syncer/without-data-syncer.
 export * from './lib/application/data-syncer/with-syncer/data-syncer.chat';
 
 
-export * from './lib/infra/chat.infra';
+export * from './lib/infrastructure/chat.infrastructure';

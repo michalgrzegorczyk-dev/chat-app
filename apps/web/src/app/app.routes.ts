@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './layout/login/login.component';
 import { ChatComponent } from './layout/chat/chat.component';
 import { AuthGuard } from '@chat-app/web/shared/util/auth';
-import { ConversationPanelShellComponent } from '@chat-app/feature-conversation-panel';
+import { ConversationPanelLayoutComponent } from '@chat-app/feature-conversation-panel';
 import { routing } from '@chat-app/util-routing';
 
 export const appRoutes: Routes = [
@@ -22,7 +22,7 @@ export const appRoutes: Routes = [
     children: [
       {
         path: `${routing.chat.conversation.path()}`,
-        component: ConversationPanelShellComponent
+        component: ConversationPanelLayoutComponent
       }
     ]
   },

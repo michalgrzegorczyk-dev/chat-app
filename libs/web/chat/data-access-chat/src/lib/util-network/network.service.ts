@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, fromEvent, Observable } from 'rxjs';
+import { BehaviorSubject, fromEvent } from 'rxjs';
 import { NotifierService } from '@chat-app/ui-notifier';
 
 @Injectable()
@@ -9,10 +9,6 @@ export class NetworkService {
 
   constructor() {
     this.initializeNetworkListeners();
-  }
-
-  getOnlineStatus(): Observable<boolean> {
-    return this.onlineStatusSubject$$.asObservable();
   }
 
   isOnline(): boolean {

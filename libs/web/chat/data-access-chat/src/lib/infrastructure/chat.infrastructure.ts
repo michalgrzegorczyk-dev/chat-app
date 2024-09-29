@@ -13,7 +13,7 @@ import { ROUTES_PARAMS, CHAT_ROUTES } from '@chat-app/util-routing';
 //todo add readme pessimistic only
 
 @Injectable()
-export class ChatInfra {
+export class ChatInfrastructure {
   readonly messageReceived$ = new Subject<ReceivedMessage>();
   readonly loadConversationListSuccess$ = new Subject<Conversation[]>();
   readonly loadConversationListPing$ = new Subject<boolean>();

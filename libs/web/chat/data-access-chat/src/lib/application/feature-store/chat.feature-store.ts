@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { rxState } from '@rx-angular/state';
 import { Subject, switchMap, of } from 'rxjs';
 import { Router } from '@angular/router';
-import { ChatInfra } from '../../infra/chat.infra';
+import { ChatInfrastructure } from '../../infrastructure/chat.infrastructure';
 import { ChatState } from '../../models/chat-state.type';
 import { Message, ReceivedMessage } from '../../models/message.type';
 import { Conversation } from '../../models/conversation.type';
@@ -40,7 +40,7 @@ export class ChatFeatureStore {
   readonly queue$ = new Subject<MessageSend[]>();
   readonly messageReceived$ = new Subject<ReceivedMessage>();
   private readonly router = inject(Router);
-  private readonly chatInfra = inject(ChatInfra);
+  private readonly chatInfra = inject(ChatInfrastructure);
   private readonly auth = inject(AuthService);
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);

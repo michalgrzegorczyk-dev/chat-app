@@ -183,4 +183,21 @@ export class SupabaseService {
       .eq('conversation_id', conversationId);
     return data.map(item => item.user_id);
   }
+
+  async updateMessages(userId, conversationId, queue) {
+    //write subapbase query to update
+    const { data, error } = await this.supabase
+      .from('message')
+      .upsert({
+        conversation_id: conversationId,
+        local_message_id: queue.localMessageId,
+        sender_id: userId,
+        content: queue.content,
+        created_at: queue.timestamp,
+        status: 'sending'
+      })
+      .eq('conversation_id', conversationId)
+      .eq('sender_id', userId);
+    return data;
+  }
 }

@@ -1,32 +1,32 @@
-<ul class="overflow-y-auto flex-1 p-2">
+<ul class="overflow-y-auto flex-1 p-3">
   @for (conversation of conversationList(); track conversation.conversationId) {
     <li (click)="conversationClicked(conversation)"
-        class="flex items-center p-2 rounded-md mb-1 cursor-pointer transition-all duration-200 border-l-4"
+        class="flex items-center p-2 rounded-lg mb-2 cursor-pointer transition-all duration-200 border"
         [ngClass]="{
-          'bg-primary-50 border-primary-500': conversation | isActive,
-          'border-transparent hover:bg-gray-100': !(conversation | isActive)
+          'bg-primary-50 border-primary-100': conversation | isActive,
+          'bg-gray-50 border-gray-200 hover:bg-gray-100': !(conversation | isActive)
         }">
-      <img [src]="conversation.avatarUrl" [alt]="'Avatar for conversation: ' + conversation.name" class="w-8 h-8 rounded-md mr-3">
+      <img [src]="conversation.avatarUrl" [alt]="'Avatar for conversation: ' + conversation.name" class="w-8 h-8 rounded-lg mr-4">
       <div class="flex-1 overflow-hidden">
         <div class="flex flex-col">
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium truncate"
+            <span class="text-sm font-semibold truncate"
                   [ngClass]="{'text-primary-700': conversation | isActive, 'text-gray-800': !(conversation | isActive)}">
               {{ conversation.name }}
             </span>
           </div>
-          <span class="text-xs text-gray-500">
-
+          <span class="text-sm text-gray-700">
             @if(conversation.lastMessageSenderId === user().id) {
               You:
             }
             {{ conversation.lastMessageContent }}
-            <span class="mx-1">&middot;</span>
-            {{ conversation.lastMessageTimestamp | relativeTime }}
+            <span class="text-gray-500 text-xs">
+                        <span class="mx-1">&middot;</span>
+              {{ conversation.lastMessageTimestamp | relativeTime }}
+            </span>
           </span>
         </div>
       </div>
-      <mg-button-remove (click)="removedConversation(conversation)" class="ml-2"/>
     </li>
   }
 </ul>

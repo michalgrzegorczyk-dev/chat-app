@@ -86,4 +86,13 @@ export class ChatGateway implements OnGatewayConnection {
   async getAllUsers(): Promise<any> {
     return await this.supabaseService.getAllUsers();
   }
+
+  async updateMessagesFromQueue(userId, conversationId, queue) {
+    console.log('updateMessagesFromQueue');
+    console.log(queue);
+    console.log(conversationId);
+    console.log(userId);
+
+    const conversationUsers = await this.supabaseService.updateMessages(userId, conversationId, queue);
+  }
 }

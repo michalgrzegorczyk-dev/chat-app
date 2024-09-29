@@ -1,6 +1,6 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NotifierService, NotifierContainerComponent } from '@chat-app/ui-notifier';
+import { NotifierContainerComponent } from '@chat-app/ui-notifier';
 
 @Component({
   standalone: true,

@@ -15,7 +15,7 @@ export class ChatFacade {
   readonly memberIdMap = this.chatStore.memberIdMap;
 
   sendMessage(messageSend: MessageSend): void {
-    this.chatStore.sendMessage$.next(messageSend);
+    this.chatStore.sendMessageEvent$.next(messageSend);
   }
 
   loadConversationList(): void {

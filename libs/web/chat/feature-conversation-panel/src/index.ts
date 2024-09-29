@@ -1,1 +1,1 @@
-export * from './lib/shell/conversation-panel-shell.component';
+export * from './lib/conversation-panel-layout.component';

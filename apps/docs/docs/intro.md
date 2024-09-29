@@ -2,7 +2,7 @@
 sidebar_position: 1
 ---
 
-# Docs Intro
+# Introduction
 
 Let's discover **Chat App in less than 5 minutes**.
 

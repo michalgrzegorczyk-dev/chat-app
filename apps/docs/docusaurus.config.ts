@@ -78,9 +78,8 @@ const config: Config = {
           position: 'left',
           label: 'Docs',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          href: 'https://github.com/michalgrzegorczyk-dev/chat-app',
           label: 'GitHub',
           position: 'right',
         },

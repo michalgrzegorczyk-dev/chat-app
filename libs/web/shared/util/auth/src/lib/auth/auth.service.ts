@@ -42,7 +42,10 @@ export class AuthService {
 
   getAllUsers(): Observable<User[]> {
     return this.http.get<UserDto[]>(`${this.environment.apiUrl}/chat/users`).pipe(
-      map((response: UserDto[]) => {
+      map((response: UserDto[] | null) => {
+        if (!response) {
+          throw new Error('No users found. Please create Table users in your Supabase instance.');
+        }
         return response.map((userDto: UserDto) => {
           return {
             ...userDto,

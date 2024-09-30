@@ -3,7 +3,7 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/dtos/src",
   "projectType": "library",
-  "tags": [],
+  "tags": ["type:dtos", "scope:shared"],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",

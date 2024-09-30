@@ -8,12 +8,30 @@
         "@nx/enforce-module-boundaries": [
           "warn",
           {
-            "enforceBuildableLibDependency": true,
-            "allow": [],
             "depConstraints": [
               {
-                "sourceTag": "*",
-                "onlyDependOnLibsWithTags": ["*"]
+                "sourceTag": "scope:web",
+                "onlyDependOnLibsWithTags": ["type:feature", "type:utils", "scope:shared"]
+              },
+              {
+                "sourceTag": "scope:api",
+                "onlyDependOnLibsWithTags": ["type:dtos", "scope:shared"]
+              },
+              {
+                "sourceTag": "scope:docs",
+                "onlyDependOnLibsWithTags": []
+              },
+              {
+                "sourceTag": "scope:account",
+                "onlyDependOnLibsWithTags": ["scope:shared", "type:utils"]
+              },
+              {
+                "sourceTag": "scope:chat",
+                "onlyDependOnLibsWithTags":["scope:shared", "type:utils"]
+              },
+              {
+                "sourceTag": "scope:shared",
+                "onlyDependOnLibsWithTags": []
               }
             ]
           }

@@ -4,7 +4,7 @@
   "sourceRoot": "libs/web/shared/design-system/ui-dropdown/src",
   "prefix": "mg",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:shared", "type:ui"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",

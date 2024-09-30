@@ -4,7 +4,7 @@
   "sourceRoot": "libs/web/chat/data-access-chat/src",
   "prefix": "mg",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:chat", "type:data-access"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",

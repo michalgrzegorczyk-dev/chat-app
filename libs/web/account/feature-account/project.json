@@ -4,7 +4,7 @@
   "sourceRoot": "libs/web/account/feature-account/src",
   "prefix": "mg",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:account", "type:feature"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",

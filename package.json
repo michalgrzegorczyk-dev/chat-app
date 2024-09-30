@@ -53,7 +53,7 @@
     "@docusaurus/module-type-aliases": "3.5.2",
     "@docusaurus/preset-classic": "3.5.2",
     "@docusaurus/tsconfig": "3.5.2",
-    "@docusaurus/types": "3.5.2", 
+    "@docusaurus/types": "3.5.2",
     "@mdx-js/react": "^3.0.0",
     "@nestjs/common": "^10.0.2",
     "@nestjs/config": "^3.2.3",
@@ -121,9 +121,9 @@
     ]
   },
   "engines": {
-    "node": ">=18.0",
-    "pnpm": ">9.0.0", 
+    "node": ">=20.12.2",
     "yarn": "Please use pnpm instead of yarn to install dependencies",
-    "npm": "Please use pnpm instead of npm to install dependencies"
+    "npm": "Please use pnpm instead of npm to install dependencies",
+    "pnpm": ">=8.6.3"
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { TemplateRef } from '@angular/core';
 
 import { NotifierNotificationComponent } from '../components/notifier-notification.component';

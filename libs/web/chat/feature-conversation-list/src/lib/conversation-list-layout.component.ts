@@ -1,8 +1,9 @@
-import {Component, inject, OnInit, ChangeDetectionStrategy} from "@angular/core";
-import {ConversationListLoadingComponent} from "./conversation-list-loading/conversation-list-loading.component";
-import {ConversationsComponent} from "./conversation-list/converstaion-list.component";
 import {JsonPipe} from "@angular/common";
-import { ChatFeatureStore, Conversation, ChatFacade } from '@chat-app/domain';
+import {ChangeDetectionStrategy,Component, inject, OnInit} from "@angular/core";
+import { ChatFacade, Conversation } from '@chat-app/domain';
+
+import {ConversationsComponent} from "./conversation-list/converstaion-list.component";
+import {ConversationListLoadingComponent} from "./conversation-list-loading/conversation-list-loading.component";
 import { RelativeTimePipe } from './relative-time.pipe';
 
 @Component({
@@ -26,6 +27,7 @@ export class ConversationListLayoutComponent implements OnInit {
     this.chatStore.selectConversation(conversation);
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   deleteConversation(conversation: Conversation): void {
     // todo: implement :)
   }

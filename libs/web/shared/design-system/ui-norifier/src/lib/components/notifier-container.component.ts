@@ -6,8 +6,8 @@ import { NotifierConfig } from '../models/notifier-config.model';
 import { NotifierNotification } from '../models/notifier-notification.model';
 import { NotifierService } from '../services/notifier.service';
 import { NotifierQueueService } from '../services/notifier-queue.service';
+
 import { NotifierNotificationComponent } from './notifier-notification.component';
-import { CommonModule } from '@angular/common';
 
 /**
  * Notifier container component
@@ -27,10 +27,11 @@ import { CommonModule } from '@angular/common';
   host: {
     class: 'notifier__container'
   },
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'notifier-container',
   templateUrl: './notifier-container.component.html',
   standalone: true,
-  imports: [CommonModule, NotifierNotificationComponent],
+  imports: [NotifierNotificationComponent],
 
 })
 export class NotifierContainerComponent implements OnDestroy {
@@ -95,16 +96,7 @@ export class NotifierContainerComponent implements OnDestroy {
     }
   }
 
-  /**
-   * Notification identifier, used as the ngFor trackby function
-   *
-   * @param   index        Index
-   * @param   notification Notifier notification
-   * @returns Notification ID as the unique identnfier
-   */
-  public identifyNotification(index: number, notification: NotifierNotification): string {
-    return notification.id;
-  }
+
 
   /**
    * Event handler, handles clicks on notification dismiss buttons
@@ -256,7 +248,7 @@ export class NotifierContainerComponent implements OnDestroy {
         }
 
         Promise.all(stepPromises).then(() => {
-          //@ts-ignore
+          //@ts-expect-error : issue
           if (numberOfNotifications > this.config.behaviour.stacking) {
             this.removeNotificationFromList(this.notifications[0]);
           }

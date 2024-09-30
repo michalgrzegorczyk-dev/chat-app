@@ -1,20 +1,20 @@
-import { Injectable, inject } from '@angular/core';
-import { rxState } from '@rx-angular/state';
-import { Subject, switchMap, of } from 'rxjs';
+import { inject,Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageStatus } from '@chat-app/dtos';
+import { routing } from '@chat-app/util-routing';
+import { AuthService } from '@chat-app/web/shared/util/auth';
+import { rxState } from '@rx-angular/state';
+import { rxEffects } from '@rx-angular/state/effects';
+import {Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
+
 import { ChatInfrastructure } from '../../infrastructure/chat.infrastructure';
 import { ChatState } from '../../models/chat-state.type';
-import { Message, ReceivedMessage } from '../../models/message.type';
 import { Conversation } from '../../models/conversation.type';
+import { ConversationDetails } from '../../models/conversation-details.type';
+import { Message, ReceivedMessage } from '../../models/message.type';
 import { MessageSend } from '../../models/message-send.type';
 import { User } from '../../models/user.type';
-import { rxEffects } from '@rx-angular/state/effects';
-import { ConversationDetails } from '../../models/conversation-details.type';
-import { routing } from '@chat-app/util-routing';
-import { take } from 'rxjs/operators';
-import { DATA_SYNC_STRATEGY_TOKEN } from '../data-syncer/strategy/data-sync-strategy.token';
-import { MessageStatus } from '@chat-app/dtos';
-import { AuthService } from '@chat-app/web/shared/util/auth';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],

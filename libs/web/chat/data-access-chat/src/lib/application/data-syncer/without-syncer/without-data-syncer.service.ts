@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { DataSyncStrategy } from '../strategy/data-sync.strategy';
+
 import { MessageSend } from '../../../models/message-send.type';
+import { DataSyncStrategy } from '../strategy/data-sync.strategy';
 
 @Injectable({
   providedIn: 'root'

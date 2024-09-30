@@ -1,5 +1,6 @@
 import { NotifierAnimationPresetKeyframes } from '../models/notifier-animation.model';
 import { NotifierConfig } from '../models/notifier-config.model';
+
 import { slide } from './slide.animation-preset';
 
 /**

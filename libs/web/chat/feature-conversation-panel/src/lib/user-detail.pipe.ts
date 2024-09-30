@@ -1,5 +1,5 @@
-import {Pipe, inject, PipeTransform} from "@angular/core";
-import { ChatFeatureStore, UserKeys, ChatFacade } from '@chat-app/domain';
+import {inject, Pipe, PipeTransform} from "@angular/core";
+import { ChatFacade, UserKeys } from '@chat-app/domain';
 
 
 //todo prefix

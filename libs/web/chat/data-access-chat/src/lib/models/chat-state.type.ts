@@ -1,6 +1,6 @@
 import { Conversation } from './conversation.type';
-import { User } from './user.type';
 import { Message } from './message.type';
+import { User } from './user.type';
 
 export interface ChatState {
   messageList: Message[];

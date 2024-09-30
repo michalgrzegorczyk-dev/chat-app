@@ -1,15 +1,15 @@
-import {
-  WebSocketGateway,
-  SubscribeMessage,
-  MessageBody,
-  WebSocketServer,
-  OnGatewayConnection,
-  ConnectedSocket
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
-import { SupabaseService } from './supabase.service';
+import { ConversationDetailsDto, ConversationListElementDto,SendMessageRequestDto } from '@chat-app/dtos';
 import { Logger } from '@nestjs/common';
-import { SendMessageRequestDto, ConversationDetailsDto, ConversationListElementDto } from '@chat-app/dtos';
+import {
+  ConnectedSocket,
+  MessageBody,
+  OnGatewayConnection,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer} from '@nestjs/websockets';
+import { Server, Socket } from 'socket.io';
+
+import { SupabaseService } from './supabase.service';
 
 // TODO: implement disconnect
 // TODO: implement error handling

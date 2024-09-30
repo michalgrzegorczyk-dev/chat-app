@@ -1,16 +1,17 @@
+import { DatePipe,NgClass, NgForOf, NgIf } from '@angular/common';
 import {
-  Component,
   ChangeDetectionStrategy,
+  Component,
+  ElementRef,
   inject,
   ViewChild,
-  ElementRef,
 } from '@angular/core';
-import { NgForOf, NgClass, NgIf, DatePipe } from '@angular/common';
+import { ChatFacade } from '@chat-app/domain';
+import { AuthService } from '@chat-app/web/shared/util/auth';
+
+import { ScrollToBottomDirective } from '../../scroll-bottom.directive';
 import { UserDetailPipe } from '../../user-detail.pipe';
 import { SingleMessageComponent } from '../single/single-message.component';
-import { ScrollToBottomDirective } from '../../scroll-bottom.directive';
-import { AuthService } from '@chat-app/web/shared/util/auth';
-import { ChatFeatureStore, ChatFacade } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-message-list',

@@ -1,8 +1,9 @@
 import {Module} from '@nestjs/common';
+import {ConfigModule} from "@nestjs/config";
+
+import {ChatController} from "./chat/chat.controller";
 import {ChatGateway} from './chat/chat.gateway';
 import {SupabaseService} from "./chat/supabase.service";
-import {ConfigModule} from "@nestjs/config";
-import {ChatController} from "./chat/chat.controller";
 
 @Module({
     imports: [ConfigModule.forRoot({
@@ -13,3 +14,4 @@ import {ChatController} from "./chat/chat.controller";
 })
 export class AppModule {
 }
+ 

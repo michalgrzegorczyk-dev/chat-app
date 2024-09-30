@@ -1,7 +1,9 @@
-import { ChatFeatureStore } from './chat.feature-store';
-import { MessageSend } from '../../models/message-send.type';
-import { Conversation } from '../../models/conversation.type';
 import { inject, Injectable } from '@angular/core';
+
+import { Conversation } from '../../models/conversation.type';
+import { MessageSend } from '../../models/message-send.type';
+
+import { ChatFeatureStore } from './chat.feature-store';
 
 @Injectable()
 export class ChatFacade {

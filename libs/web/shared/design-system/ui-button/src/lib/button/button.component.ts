@@ -1,5 +1,5 @@
-import {Component, input, output, ChangeDetectionStrategy} from "@angular/core";
 import { NgClass } from '@angular/common';
+import {ChangeDetectionStrategy,Component, input, output} from "@angular/core";
 
 @Component({
   selector: 'mg-button',
@@ -26,5 +26,5 @@ export class ButtonComponent {
   buttonText = input('');
   outlined = input(false);
 
-  click = output<void>();
+  readonly click = output<void>();
 }

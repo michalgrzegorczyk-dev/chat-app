@@ -1,12 +1,13 @@
-import {Component, Input} from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {UserDetailPipe} from "../../user-detail.pipe";
+import { NgClass } from '@angular/common';
+import {ChangeDetectionStrategy,Component, Input} from '@angular/core';
 import { Message } from '@chat-app/domain';
+
+import {UserDetailPipe} from "../../user-detail.pipe";
 
 @Component({
   selector: 'mg-message',
   standalone: true,
-  imports: [CommonModule, UserDetailPipe],
+  imports: [NgClass, UserDetailPipe],
   templateUrl: './single-message.component.html',
   styles: [
     `
@@ -14,7 +15,8 @@ import { Message } from '@chat-app/domain';
         display: block;
       }
     `
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SingleMessageComponent {
   @Input() message!: Message;

@@ -1,9 +1,10 @@
-import { Inject, Injectable, InjectionToken } from '@angular/core';
+import { Injectable, InjectionToken } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { NotifierAction } from '../models/notifier-action.model';
 import { NotifierConfig } from '../models/notifier-config.model';
 import { NotifierNotificationOptions } from '../models/notifier-notification.model';
+
 import { NotifierQueueService } from './notifier-queue.service';
 
 

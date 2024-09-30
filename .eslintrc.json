@@ -1,13 +1,12 @@
 {
   "root": true,
-  "ignorePatterns": ["**/*"],
   "plugins": ["@nx"],
   "overrides": [
     {
-      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "files": ["*.ts"],
       "rules": {
         "@nx/enforce-module-boundaries": [
-          "error",
+          "warn",
           {
             "enforceBuildableLibDependency": true,
             "allow": [],
@@ -18,7 +17,51 @@
               }
             ]
           }
+        ],
+        "@angular-eslint/no-attribute-decorator": "error",
+        "@angular-eslint/no-lifecycle-call": "error",
+        "@angular-eslint/no-queries-metadata-property": "error",
+        "@angular-eslint/prefer-output-readonly": "error",
+        "@angular-eslint/relative-url-prefix": "error",
+        "@angular-eslint/use-component-selector": "off",
+        "@angular-eslint/use-component-view-encapsulation": "error",
+        "@angular-eslint/prefer-on-push-component-change-detection": "error",
+        "@typescript-eslint/no-unused-vars": "error",
+        "@typescript-eslint/ban-ts-comment": "warn",
+        "unused-imports/no-unused-imports": "error",
+        "import/no-duplicates":["error", { "prefer-inline":true}],
+        "simple-import-sort/imports": [
+          "error",
+          {
+            "groups": [
+              ["^@|angular", "^@?\\w"],
+              ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
+              ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"]
+            ]
+          } 
         ]
+      
+      },
+      "plugins": [
+        "eslint-plugin-import",
+        "@angular-eslint/eslint-plugin",
+        "@typescript-eslint",
+        "simple-import-sort",
+        "unused-imports"
+       
+     ]
+    },
+    {
+      "files": ["*.html"],
+      "extends": ["plugin:@nx/angular-template"],
+      "rules": {
+        "@angular-eslint/template/no-duplicate-attributes": "error",
+        "@angular-eslint/template/no-call-expression": ["off"],
+        "@angular-eslint/template/no-any": "error",
+        "@angular-eslint/template/banana-in-box": "error",
+        "@angular-eslint/template/eqeqeq": "error",
+        "@angular-eslint/template/no-autofocus": "error",
+        "@angular-eslint/template/prefer-control-flow": "error"
       }
     },
     {

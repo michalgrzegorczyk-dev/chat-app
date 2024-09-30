@@ -1,7 +1,7 @@
-import { Component, ChangeDetectionStrategy, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy, Component, EventEmitter,Input, OnInit,Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ButtonRemoveComponent, ButtonComponent } from '@chat-app/ui-button';
+import { ButtonComponent,ButtonRemoveComponent } from '@chat-app/ui-button';
 import { UiDropdownComponent } from '@chat-app/ui-dropdown';
 
 @Component({
@@ -113,14 +113,14 @@ import { UiDropdownComponent } from '@chat-app/ui-dropdown';
     </div>
   `
 })
-export class ConversationDetailsComponent {
-  @Input() conversationName: string = 'Conversation';
-  @Output() closeDetails = new EventEmitter<void>();
+export class ConversationDetailsComponent implements OnInit {
+  @Input() conversationName = 'Conversation';
+  @Output() readonly closeDetails = new EventEmitter<void>();
 
-  editedName: string = '';
-  isMuted: boolean = false;
-  selectedTheme: string = 'System';
-  searchQuery: string = '';
+  editedName = '';
+  isMuted = false;
+  selectedTheme = 'System';
+  searchQuery = '';
 
   themeOptions: Array<{ type: 'link' | 'button', text: string, href?: string }>  = [
     { type: 'button', text: 'Light' },

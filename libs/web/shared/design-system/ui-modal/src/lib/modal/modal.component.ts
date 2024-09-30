@@ -1,16 +1,16 @@
-import {
-  Component,
-  ViewChild,
-  ViewContainerRef,
-  Type,
-  ComponentRef,
-  AfterViewInit,
-  signal,
-  ChangeDetectionStrategy
-} from '@angular/core';
 import { CommonModule } from '@angular/common';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ComponentRef,
+  signal,
+  Type,
+  ViewChild,
+  ViewContainerRef} from '@angular/core';
 import { ButtonComponent } from '@chat-app/ui-button';
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ModalContentComponent {
   // Add any common properties or methods that all modal content components should have
 }
@@ -37,6 +37,7 @@ export class ModalComponent implements AfterViewInit {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   createContent<T extends ModalContentComponent>(contentComponent: Type<ModalContentComponent>): ComponentRef<ModalContentComponent> | null {
     if (!this.contentViewContainer) {
       this.pendingContentComponent = contentComponent;

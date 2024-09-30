@@ -1,4 +1,4 @@
-import {Component, output, ChangeDetectionStrategy} from "@angular/core";
+import {ChangeDetectionStrategy,Component, output} from "@angular/core";
 
 @Component({
   selector: 'mg-button-remove',
@@ -16,5 +16,5 @@ import {Component, output, ChangeDetectionStrategy} from "@angular/core";
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ButtonRemoveComponent {
-  click = output<void>();
+  readonly click = output<void>();
 }

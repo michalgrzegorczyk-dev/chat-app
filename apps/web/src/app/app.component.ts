@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
+import { ChangeDetectionStrategy,Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { NotifierContainerComponent } from '@chat-app/ui-notifier';
 

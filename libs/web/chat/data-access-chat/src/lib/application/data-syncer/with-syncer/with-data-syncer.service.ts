@@ -1,7 +1,9 @@
-import { Injectable, inject } from '@angular/core';
-import { DataSyncer } from './data-syncer.chat';
-import { DataSyncStrategy } from '../strategy/data-sync.strategy';
+import { inject,Injectable } from '@angular/core';
+
 import { MessageSend } from '../../../models/message-send.type';
+import { DataSyncStrategy } from '../strategy/data-sync.strategy';
+
+import { DataSyncer } from './data-syncer.chat';
 
 @Injectable()
 export class WithDataSync implements DataSyncStrategy {

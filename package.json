@@ -16,7 +16,9 @@
     "typecheck:docs": "nx run docs:typecheck",
     "dev-all": "nx run-many --target=serve",
     "lint-all": "nx lint api --fix & nx lint web --fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "build:stats":"nx run web:build -c=production --source-map=false --stats-json",
+    "analyze:stats": "echo 'open https://esbuild.github.io/analyze/ and upload the stats.json file from (dist/apps/web/stats.json)'"
   },
   "dependencies": {
     "@angular/animations": "~18.2.0",

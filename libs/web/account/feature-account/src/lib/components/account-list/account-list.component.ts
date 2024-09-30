@@ -1,12 +1,10 @@
 import {Component, ChangeDetectionStrategy, input, output} from "@angular/core";
-import {JsonPipe, NgClass} from "@angular/common";
 import { User } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-account-list',
   templateUrl: './account-list.component.html',
   standalone: true,
-  imports: [JsonPipe, NgClass],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AccountListComponent {

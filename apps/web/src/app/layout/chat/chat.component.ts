@@ -4,6 +4,9 @@ import { ChatFacade, ChatFeatureStore, ChatInfrastructure,DATA_SYNC_STRATEGY_TOK
 import { AccountWidgetComponent } from '@chat-app/feature-account';
 import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-list';
 import { AuthService } from '@chat-app/web/shared/util/auth';
+import { RouterOutlet } from '@angular/router';
+import { DataSyncer, WithDataSync, ChatFacade, ChatFeatureStore, DATA_SYNC_STRATEGY_TOKEN, ChatInfrastructure } from '@chat-app/domain';
+import { NetworkService } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-chat',

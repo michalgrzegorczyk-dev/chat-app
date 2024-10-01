@@ -1,6 +1,6 @@
 import { AsyncPipe, DatePipe,JsonPipe, NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, input, output, Pipe, PipeTransform } from '@angular/core';
-import { ChatFacade, Conversation } from '@chat-app/domain';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { Conversation } from '@chat-app/domain';
 import { ButtonComponent, ButtonRemoveComponent } from '@chat-app/ui-button';
 import { ModalService } from '@chat-app/ui-modal';
 import { AuthService } from '@chat-app/web/shared/util/auth';
@@ -9,19 +9,7 @@ import { ConversationAddComponent } from '../conversation-add/conversation-add.c
 import { ConversationRemoveComponent } from '../conversation-remove/conversation-remove.component';
 import { RelativeTimePipe } from '../relative-time.pipe';
 
-
-@Pipe({
-  standalone: true,
-  name: 'isActive'
-})
-export class IsActivePipe implements PipeTransform {
-
-  private readonly selectedConversation = inject(ChatFacade).selectedConversation;
-
-  transform(conversation: Conversation): boolean {
-    return conversation.conversationId === this.selectedConversation()?.conversationId;
-  }
-}
+import { IsActivePipe } from './is-active.pipe';
 
 
 @Component({

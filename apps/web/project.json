@@ -4,7 +4,7 @@
   "projectType": "application",
   "prefix": "mg",
   "sourceRoot": "apps/web/src",
-  "tags": [],
+  "tags": ["scope:web", "type:app"],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",

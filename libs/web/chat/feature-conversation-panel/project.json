@@ -4,7 +4,7 @@
   "sourceRoot": "libs/web/chat/feature-conversation-panel/src",
   "prefix": "mg",
   "projectType": "library",
-  "tags": [],
+  "tags": ["scope:chat", "type:feature"],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",

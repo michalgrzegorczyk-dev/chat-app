@@ -1,12 +1,12 @@
-import { Injectable } from '@nestjs/common';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import {
-  SendMessageRequestDto,
   ConversationDetailsDto,
+  ConversationListElementDto,
   MemberDto,
   MessageDto,
-  ConversationListElementDto
-} from '@chat-app/dtos';
+  SendMessageRequestDto} from '@chat-app/dtos';
+import { Injectable } from '@nestjs/common';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
 import { MessageDbModel } from './model/conversation.model';
 
 @Injectable()

@@ -1,11 +1,13 @@
-import {Component, ChangeDetectionStrategy} from "@angular/core";
-import {DatePipe, NgForOf, NgClass, NgIf, JsonPipe} from "@angular/common";
+import {DatePipe,NgClass, NgForOf, NgIf} from "@angular/common";
+import {ChangeDetectionStrategy,Component} from "@angular/core";
 import {FormsModule} from "@angular/forms";
-import { ConversationHeaderComponent } from './header/conversation-header.component';
+import { ButtonRemoveComponent } from '@chat-app/ui-button';
+
 import { MessageListComponent } from '../message/list/message-list.component';
 import { SendMessageInputComponent } from '../message/send/send-message-input.component';
-import { ButtonRemoveComponent } from '@chat-app/ui-button';
+
 import { ConversationDetailsComponent } from './details/conversation-details.component';
+import { ConversationHeaderComponent } from './header/conversation-header.component';
 
 @Component({
   selector: 'mg-conversation',

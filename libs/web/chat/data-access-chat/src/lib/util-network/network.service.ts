@@ -1,6 +1,6 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, fromEvent } from 'rxjs';
+import { inject,Injectable } from '@angular/core';
 import { NotifierService } from '@chat-app/ui-notifier';
+import { BehaviorSubject, fromEvent } from 'rxjs';
 
 @Injectable()
 export class NetworkService {

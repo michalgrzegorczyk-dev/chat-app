@@ -1,12 +1,13 @@
-import { Component, ChangeDetectionStrategy, input, output, inject, Pipe, PipeTransform } from '@angular/core';
-import { NgClass, JsonPipe, AsyncPipe, DatePipe } from '@angular/common';
-import { RelativeTimePipe } from '../relative-time.pipe';
+import { AsyncPipe, DatePipe,JsonPipe, NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject, input, output, Pipe, PipeTransform } from '@angular/core';
+import { ChatFacade, Conversation } from '@chat-app/domain';
 import { ButtonComponent, ButtonRemoveComponent } from '@chat-app/ui-button';
-import { AuthService } from '@chat-app/web/shared/util/auth';
 import { ModalService } from '@chat-app/ui-modal';
-import { Conversation, ChatFeatureStore, ChatFacade } from '@chat-app/domain';
+import { AuthService } from '@chat-app/web/shared/util/auth';
+
 import { ConversationAddComponent } from '../conversation-add/conversation-add.component';
 import { ConversationRemoveComponent } from '../conversation-remove/conversation-remove.component';
+import { RelativeTimePipe } from '../relative-time.pipe';
 
 
 @Pipe({

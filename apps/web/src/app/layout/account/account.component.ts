@@ -1,8 +1,8 @@
-import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy,Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { AccountWidgetComponent, AccountListComponent } from '@chat-app/feature-account';
 import { RouterOutlet } from '@angular/router';
+import { AccountListComponent,AccountWidgetComponent } from '@chat-app/feature-account';
 
 @Component({
   selector: 'mg-account-layout',

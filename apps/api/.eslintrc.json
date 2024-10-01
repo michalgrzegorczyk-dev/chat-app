@@ -4,7 +4,16 @@
   "overrides": [
     {
       "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
-      "rules": {}
+      "rules": {
+        "@angular-eslint/no-attribute-decorator": "off",
+        "@angular-eslint/no-lifecycle-call": "off",
+        "@angular-eslint/no-queries-metadata-property": "off",
+        "@angular-eslint/prefer-output-readonly": "off",
+        "@angular-eslint/relative-url-prefix": "off",
+        "@angular-eslint/use-component-selector": "off",
+        "@angular-eslint/use-component-view-encapsulation": "off",
+        "@angular-eslint/prefer-on-push-component-change-detection": "off"
+      }
     },
     {
       "files": ["*.ts", "*.tsx"],

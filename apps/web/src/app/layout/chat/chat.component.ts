@@ -1,7 +1,9 @@
-import { Component, inject, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { AuthService } from '@chat-app/web/shared/util/auth';
+import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { ChatFacade, ChatFeatureStore, ChatInfrastructure,DATA_SYNC_STRATEGY_TOKEN, DataSyncer, NetworkService,WithDataSync  } from '@chat-app/domain';
 import { AccountWidgetComponent } from '@chat-app/feature-account';
 import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-list';
+import { AuthService } from '@chat-app/web/shared/util/auth';
 import { RouterOutlet } from '@angular/router';
 import { DataSyncer, WithDataSync, ChatFacade, ChatFeatureStore, DATA_SYNC_STRATEGY_TOKEN, ChatInfrastructure } from '@chat-app/domain';
 import { NetworkService } from '@chat-app/domain';

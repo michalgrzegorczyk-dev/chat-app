@@ -28,6 +28,12 @@
       }
     },
     {
+      "files":["*.tsx"],
+      "rules": {
+        "@typescript-eslint/no-var-requires":"warn"
+      }
+    },
+    {
       "files": ["*.html"],
       "extends": ["plugin:@nx/angular-template"],
       "rules": {}

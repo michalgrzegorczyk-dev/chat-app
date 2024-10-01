@@ -1,12 +1,13 @@
-import { Component, inject, HostListener } from '@angular/core';
-import {ConversationLoadingComponent} from "./conversation/loading/conversation-loading.component";
-import { ChatFeatureStore, ChatFacade } from '@chat-app/domain';
-import { ConversationHeaderComponent } from './conversation/header/conversation-header.component';
-import { MessageListComponent } from './message/list/message-list.component';
-import { SendMessageInputComponent } from './message/send/send-message-input.component';
+import { ChangeDetectionStrategy,Component,inject } from '@angular/core';
+import { ChatFacade } from '@chat-app/domain';
 import { ButtonRemoveComponent } from '@chat-app/ui-button';
+
 import { ConversationComponent } from './conversation/conversation.component';
 import { ConversationDetailsComponent } from './conversation/details/conversation-details.component';
+import { ConversationHeaderComponent } from './conversation/header/conversation-header.component';
+import {ConversationLoadingComponent} from "./conversation/loading/conversation-loading.component";
+import { MessageListComponent } from './message/list/message-list.component';
+import { SendMessageInputComponent } from './message/send/send-message-input.component';
 
 @Component({
   selector: 'mg-conversation-panel-shell',
@@ -21,9 +22,9 @@ import { ConversationDetailsComponent } from './conversation/details/conversatio
         height: 100%;
       }
     `
-  ]
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationPanelLayoutComponent {
-  private readonly chatFacade = inject(ChatFacade);
-  readonly messageListLoading = this.chatFacade.messageListLoading;
+  readonly messageListLoading = inject(ChatFacade).messageListLoading;
 }

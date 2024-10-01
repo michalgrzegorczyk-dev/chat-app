@@ -1,12 +1,12 @@
-import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { NgFor, NgIf } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { AccountWidgetComponent, AccountListComponent } from '@chat-app/feature-account';
-import { User } from '@chat-app/domain';
-import { AuthService } from '@chat-app/web/shared/util/auth';
-import { Router } from '@angular/router';
-import { routing } from '@chat-app/util-routing';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+import { User } from '@chat-app/domain';
+import { AccountListComponent,AccountWidgetComponent } from '@chat-app/feature-account';
+import { routing } from '@chat-app/util-routing';
+import { AuthService } from '@chat-app/web/shared/util/auth';
 
 @Component({
   selector: 'mg-login',

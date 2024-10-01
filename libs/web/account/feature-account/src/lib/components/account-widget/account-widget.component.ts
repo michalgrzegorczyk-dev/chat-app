@@ -1,10 +1,9 @@
-import { Component, ChangeDetectionStrategy, inject, HostListener, ElementRef } from '@angular/core';
 import { NgClass } from '@angular/common';
-import { AuthService } from '@chat-app/web/shared/util/auth';
-import { ButtonComponent } from '@chat-app/ui-button';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { routing } from '@chat-app/util-routing';
+import { ButtonComponent } from '@chat-app/ui-button';
 import { UiDropdownComponent } from '@chat-app/ui-dropdown';
+import { AuthService } from '@chat-app/web/shared/util/auth';
 
 @Component({
   selector: 'mg-account-widget',

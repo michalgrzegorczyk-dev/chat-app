@@ -3,7 +3,7 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/docs",
-  "tags": [],
+  "tags": ["scope:docs", "type:app"],
   "targets": {
     "build": {
       "executor": "@nx-plus/docusaurus:browser",
@@ -14,7 +14,7 @@
     "serve": {
       "executor": "@nx-plus/docusaurus:dev-server",
       "options": {
-        "port": 3000
+        "port": 3001
       }
     },
     "lint": {

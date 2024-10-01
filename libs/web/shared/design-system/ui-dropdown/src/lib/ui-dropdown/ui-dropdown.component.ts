@@ -1,18 +1,21 @@
-import { Component, EventEmitter, Input, Output, HostListener, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ChangeDetectionStrategy,Component, ElementRef,EventEmitter, HostListener, Input, Output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
+  // TODO based on rule prefix should be lib here 
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'mg-ui-dropdown',
   standalone: true,
   imports: [CommonModule, RouterLink],
   templateUrl: './ui-dropdown.component.html',
   styleUrl: './ui-dropdown.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UiDropdownComponent {
-  @Input() buttonText: string = 'Options';
+  @Input() buttonText = 'Options';
   @Input() items: Array<{ type: 'link' | 'button', text: string, href?: string }> = [];
-  @Output() itemClick = new EventEmitter<any>();
+  @Output() readonly itemClick = new EventEmitter<any>();
 
   constructor(private elementRef: ElementRef) {
   }

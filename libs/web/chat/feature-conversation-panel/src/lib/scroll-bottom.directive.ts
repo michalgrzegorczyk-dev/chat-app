@@ -1,4 +1,4 @@
-import {Directive, ElementRef, AfterViewInit, NgZone, inject, OnInit} from '@angular/core';
+import {AfterViewInit, Directive, ElementRef, inject, NgZone, OnInit} from '@angular/core';
 
 @Directive({
   selector: '[mgScrollToBottom]',

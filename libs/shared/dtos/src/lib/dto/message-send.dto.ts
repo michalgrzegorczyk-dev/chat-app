@@ -1,4 +1,3 @@
-import { MessageStatus } from '../types-make-separate-lib/shared-types';
 
 export type SendMessageRequestDto = {
   conversationId: string,

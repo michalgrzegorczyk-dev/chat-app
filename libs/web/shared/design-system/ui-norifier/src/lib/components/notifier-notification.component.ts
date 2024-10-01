@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+import { CommonModule } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, Renderer2 } from '@angular/core';
 
 import { NotifierAnimationData } from '../models/notifier-animation.model';
@@ -6,7 +8,6 @@ import { NotifierNotification } from '../models/notifier-notification.model';
 import { NotifierService } from '../services/notifier.service';
 import { NotifierAnimationService } from '../services/notifier-animation.service';
 import { NotifierTimerService } from '../services/notifier-timer.service';
-import { CommonModule } from '@angular/common';
 
 /**
  * Notifier notification component
@@ -29,6 +30,7 @@ import { CommonModule } from '@angular/common';
     // instance of the timer service, thus running their timers independently from each other
     NotifierTimerService,
   ],
+  // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'notifier-notification',
   templateUrl: './notifier-notification.component.html',
   standalone: true,
@@ -48,14 +50,14 @@ export class NotifierNotificationComponent implements AfterViewInit {
    */
     //@ts-ignore
   @Output()
-  public ready: EventEmitter<NotifierNotificationComponent>;
+  public readonly ready: EventEmitter<NotifierNotificationComponent>;
 
   /**
    * Output: Dismiss event, handles the click on the dismiss button by emitting the notification ID of this notification component
    */
     //@ts-ignore
   @Output()
-  public dismiss: EventEmitter<string>;
+  public readonly dismiss: EventEmitter<string>;
 
   /**
    * Notifier configuration

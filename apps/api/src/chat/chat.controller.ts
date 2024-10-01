@@ -1,7 +1,8 @@
-import { Controller, Get, Headers, Param, Post, Body } from '@nestjs/common';
-import { ChatGateway } from './chat.gateway';
-import { ConversationListElementDto } from '@chat-app/dtos';
 import { MessageSend } from '@chat-app/domain';
+import { ConversationListElementDto } from '@chat-app/dtos';
+import { Body,Controller, Get, Headers, Param, Post } from '@nestjs/common';
+
+import { ChatGateway } from './chat.gateway';
 
 // TODO: implement routes object
 @Controller('chat')

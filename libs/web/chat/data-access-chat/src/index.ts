@@ -16,3 +16,4 @@ export * from './lib/application/data-syncer/with-syncer/data-syncer.chat';
 
 
 export * from './lib/infrastructure/chat.infrastructure';
+export * from './lib/util-network/network.service';

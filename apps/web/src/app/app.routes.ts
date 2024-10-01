@@ -1,9 +1,10 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './layout/login/login.component';
-import { ChatComponent } from './layout/chat/chat.component';
-import { AuthGuard } from '@chat-app/web/shared/util/auth';
 import { ConversationPanelLayoutComponent } from '@chat-app/feature-conversation-panel';
 import { routing } from '@chat-app/util-routing';
+import { AuthGuard } from '@chat-app/web/shared/util/auth';
+
+import { ChatComponent } from './layout/chat/chat.component';
+import { LoginComponent } from './layout/login/login.component';
 
 export const appRoutes: Routes = [
   {

@@ -1,14 +1,15 @@
-import { Injectable, inject } from '@angular/core';
-import { Subject, map, Observable, tap } from 'rxjs';
-import { ReceivedMessage } from '../models/message.type';
-import { Conversation } from '../models/conversation.type';
-import { MessageSend } from '../models/message-send.type';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { AuthService } from '@chat-app/web/shared/util/auth';
-import { io } from 'socket.io-client';
+import { inject,Injectable } from '@angular/core';
 import { ConversationDetailsDto, ConversationListElementDto } from '@chat-app/dtos';
 import { ENVIRONMENT } from '@chat-app/environment';
-import { ROUTES_PARAMS, CHAT_ROUTES } from '@chat-app/util-routing';
+import { CHAT_ROUTES,ROUTES_PARAMS } from '@chat-app/util-routing';
+import { AuthService } from '@chat-app/web/shared/util/auth';
+import { map, Observable, Subject, tap } from 'rxjs';
+import { io } from 'socket.io-client';
+
+import { Conversation } from '../models/conversation.type';
+import { ReceivedMessage } from '../models/message.type';
+import { MessageSend } from '../models/message-send.type';
 
 //todo add readme pessimistic only
 

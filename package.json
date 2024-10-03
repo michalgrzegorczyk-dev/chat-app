@@ -18,7 +18,9 @@
     "lint-all": "nx lint api --fix & nx lint web --fix",
     "prepare": "husky",
     "build:stats": "nx run web:build -c=production --source-map=false --stats-json",
-    "analyze:stats": "echo 'open https://esbuild.github.io/analyze/ and upload the stats.json file from (dist/apps/web/stats.json)'"
+    "analyze:stats": "echo 'open https://esbuild.github.io/analyze/ and upload the stats.json file from (dist/apps/web/stats.json)'",
+    "serve:compodoc": "pnpx compodoc -s -o -p tsconfig.doc.json -a apps/web/public --disableGraph",
+    "build:compodoc": "pnpx compodoc -t -p tsconfig.doc.json -a apps/web/public --disableGraph"
   },
   "dependencies": {
     "@angular/animations": "~18.2.0",
@@ -49,6 +51,7 @@
     "@angular/cli": "~18.2.0",
     "@angular/compiler-cli": "~18.2.0",
     "@angular/language-service": "~18.2.0",
+    "@compodoc/compodoc": "^1.1.25",
     "@docusaurus/core": "3.5.2",
     "@docusaurus/eslint-plugin": "^3.5.2",
     "@docusaurus/module-type-aliases": "3.5.2",

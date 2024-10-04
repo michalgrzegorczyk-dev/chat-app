@@ -65,8 +65,7 @@ export class ChatFeatureStore {
 
     connect('conversationListLoading', this.setConversationListLoading$);
     connect('messageList', this.chatInfra.messageReceived$, (state, message) => {
-      if (state.selectedConversation?.conversationId === message.conversationId &&
-        message.senderId !== this.auth.user().id) {
+      if (state.selectedConversation?.conversationId === message.conversationId) {
         return [...state.messageList, message];
       }
       return state.messageList;
@@ -95,17 +94,6 @@ export class ChatFeatureStore {
       return state.messageList;
     });
 
-    connect('messageList', this.sendMessageEvent$, (state, message) => {
-      // optimistic update
-      return [...state.messageList, {
-        localMessageId: message.localMessageId,
-        messageId: '', //todo
-        senderId: message.userId,
-        content: message.content,
-        createdAt: new Date().toISOString(),
-        status: 'sending'
-      }];
-    });
     connect('conversationList', this.setConversationList$);
     connect('conversationList', this.chatInfra.loadConversationListSuccess$);
     connect('messageListLoading', this.setMessageListLoading$);

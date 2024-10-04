@@ -92,24 +92,24 @@ export class ChatInfrastructure {
 
   sendMessageWebSocket(messageSend: MessageSend): void {
     this.socket.emit('sendMessage', messageSend, ((error: any) => {
-      console.log('error');
+      if (error) {
+        console.error('Error sending message:', error);
+      }
     }));
   }
 
   private setupSocketListeners(): void {
     this.socket.on('sendMessageSuccess', (message: any) => {
-      console.log('xxRRRRxx');
-        this.messageReceived$.next({
-          conversationId: message.conversation_id,
-          localMessageId: message.local_message_id,
-          content: message.content,
-          createdAt: message.created_at,
-          messageId: message.id,
-          senderId: message.sender_id,
-          status: 'sent'
-        });
-      }
-    );
+      this.messageReceived$.next({
+        conversationId: message.conversation_id,
+        localMessageId: message.local_message_id,
+        content: message.content,
+        createdAt: message.created_at,
+        messageId: message.id,
+        senderId: message.sender_id,
+        status: 'sent'
+      });
+    });
 
     this.socket.on('loadConversationListSuccess', (x: any) => {
       this.loadConversationListSuccess$.next(x);
@@ -132,7 +132,7 @@ export class ChatInfrastructure {
           `${this.environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}`,
           { queue, conversationId: selectedConversation.conversationId },
           { params, headers }
-        ).pipe(tap(x => console.log('eeee:)')))
+        );
 
   }
 }

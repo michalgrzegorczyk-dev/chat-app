@@ -5,6 +5,7 @@ import { BehaviorSubject, fromEvent } from 'rxjs';
 @Injectable()
 export class NetworkService {
   private readonly onlineStatusSubject$$ = new BehaviorSubject<boolean>(navigator.onLine);
+  readonly onlineStatus$ = this.onlineStatusSubject$$.asObservable();
   private readonly notifier = inject(NotifierService);
 
   constructor() {

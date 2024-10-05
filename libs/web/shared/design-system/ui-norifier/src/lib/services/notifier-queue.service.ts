@@ -29,20 +29,20 @@ export class NotifierQueueService {
   /**
    * Queue of actions
    */
-  private actionQueue: Array<NotifierAction>;
+  #actionQueue: Array<NotifierAction>;
 
   /**
    * Flag, true if some action is currently in progress
    */
-  private isActionInProgress: boolean;
+  #isActionInProgress: boolean;
 
   /**
    * Constructor
    */
   public constructor() {
     this.actionStream = new Subject<NotifierAction>();
-    this.actionQueue = [];
-    this.isActionInProgress = false;
+    this.#actionQueue = [];
+    this.#isActionInProgress = false;
   }
 
   /**
@@ -51,7 +51,7 @@ export class NotifierQueueService {
    * @param action Action object
    */
   public push(action: NotifierAction): void {
-    this.actionQueue.push(action);
+    this.#actionQueue.push(action);
     this.tryToRunNextAction();
   }
 
@@ -59,7 +59,7 @@ export class NotifierQueueService {
    * Continue with the next action (called when the current action is finished)
    */
   public continue(): void {
-    this.isActionInProgress = false;
+    this.#isActionInProgress = false;
     this.tryToRunNextAction();
   }
 
@@ -67,11 +67,11 @@ export class NotifierQueueService {
    * Try to run the next action in the queue; we skip if there already is some action in progress, or if there is no action left
    */
   private tryToRunNextAction(): void {
-    if (this.isActionInProgress || this.actionQueue.length === 0) {
+    if (this.#isActionInProgress || this.#actionQueue.length === 0) {
       return; // Skip (the queue can now go drink a coffee as it has nothing to do anymore)
     }
-    this.isActionInProgress = true;
+    this.#isActionInProgress = true;
     //@ts-ignore
-    this.actionStream.next(this.actionQueue.shift()); // Push next action to the stream, and remove the current action from the queue
+    this.actionStream.next(this.#actionQueue.shift()); // Push next action to the stream, and remove the current action from the queue
   }
 }

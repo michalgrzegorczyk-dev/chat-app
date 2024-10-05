@@ -40,7 +40,7 @@ import { SingleMessageComponent } from '../single/single-message.component';
 })
 export class MessageListComponent {
   readonly user = inject(AuthService).user;
-  @ViewChild('messageContainer') private messageContainer!: ElementRef;
-  private readonly chatStore = inject(ChatFacade);
-  readonly messages = this.chatStore.messageList;
+  @ViewChild('messageContainer') #messageContainer!: ElementRef;
+  readonly #chatStore = inject(ChatFacade);
+  readonly messages = this.#chatStore.messageList;
 }

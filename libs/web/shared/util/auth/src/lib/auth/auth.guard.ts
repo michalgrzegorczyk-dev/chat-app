@@ -14,8 +14,8 @@ import { AuthService } from './auth.service';
   providedIn: 'root',
 })
 export class AuthGuard implements CanActivate {
-  private readonly auth = inject(AuthService);
-  private readonly router = inject(Router);
+  readonly #auth = inject(AuthService);
+  readonly #router = inject(Router);
 
   canActivate(
     route: ActivatedRouteSnapshot,
@@ -25,9 +25,9 @@ export class AuthGuard implements CanActivate {
     | Promise<boolean | UrlTree>
     | boolean
     | UrlTree {
-    if (this.auth.isUserLoggedIn()) {
+    if (this.#auth.isUserLoggedIn()) {
       return true;
     }
-    return this.router.createUrlTree(['/auth']);
+    return this.#router.createUrlTree(['/auth']);
   }
 }

@@ -19,14 +19,14 @@ export class ChatInfrastructure {
   readonly loadConversationListSuccess$ = new Subject<Conversation[]>();
   readonly loadConversationListPing$ = new Subject<boolean>();
 
-  private readonly environment = inject(ENVIRONMENT);
-  private readonly socket = io(this.environment.apiUrl, {
+  readonly #environment = inject(ENVIRONMENT);
+  readonly #socket = io(this.#environment.apiUrl, {
     query: { userId: inject(AuthService).user().id },
     transports: ['websocket'],
     withCredentials: true
   });
-  private readonly http = inject(HttpClient);
-  private readonly authService = inject(AuthService);
+  readonly #http = inject(HttpClient);
+  readonly #authService = inject(AuthService);
 
   constructor() {
     this.setupSocketListeners();
@@ -35,15 +35,15 @@ export class ChatInfrastructure {
   getConversationContent(conversation: Conversation) {
     const headers = new HttpHeaders().set(
       'X-User-Id',
-      this.authService.user().id
+      this.#authService.user().id
     );
     const params = new HttpParams()
-      .set(ROUTES_PARAMS.USER_ID, this.authService.user().id)
+      .set(ROUTES_PARAMS.USER_ID, this.#authService.user().id)
       .set(ROUTES_PARAMS.CONVERSATION_ID, conversation.conversationId);
 
-    return this.http
+    return this.#http
       .get<ConversationDetailsDto>(
-        `${this.environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}/${conversation.conversationId}`,
+        `${this.#environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}/${conversation.conversationId}`,
         { params, headers }
       )
       .pipe(
@@ -73,10 +73,10 @@ export class ChatInfrastructure {
   fetchConversations(): Observable<Conversation[]> {
     const headers = new HttpHeaders().set(
       'X-User-Id',
-      this.authService.user().id
+      this.#authService.user().id
     );
-    return this.http
-      .get<ConversationListElementDto[]>(`${this.environment.apiUrl}/chat/conversations`, {
+    return this.#http
+      .get<ConversationListElementDto[]>(`${this.#environment.apiUrl}/chat/conversations`, {
         headers
       })
       .pipe(
@@ -91,7 +91,7 @@ export class ChatInfrastructure {
   }
 
   sendMessageWebSocket(messageSend: MessageSend): void {
-    this.socket.emit('sendMessage', messageSend, ((error: any) => {
+    this.#socket.emit('sendMessage', messageSend, ((error: any) => {
       if (error) {
         console.error('Error sending message:', error);
       }
@@ -99,7 +99,7 @@ export class ChatInfrastructure {
   }
 
   private setupSocketListeners(): void {
-    this.socket.on('sendMessageSuccess', (message: any) => {
+    this.#socket.on('sendMessageSuccess', (message: any) => {
       this.messageReceived$.next({
         conversationId: message.conversation_id,
         localMessageId: message.local_message_id,
@@ -111,7 +111,7 @@ export class ChatInfrastructure {
       });
     });
 
-    this.socket.on('loadConversationListSuccess', (x: any) => {
+    this.#socket.on('loadConversationListSuccess', (x: any) => {
       this.loadConversationListSuccess$.next(x);
     });
   }
@@ -120,16 +120,16 @@ export class ChatInfrastructure {
     console.log('sele', selectedConversation);
     const headers = new HttpHeaders().set(
       'X-User-Id',
-      this.authService.user().id
+      this.#authService.user().id
     );
 
       const params = new HttpParams()
-        .set(ROUTES_PARAMS.USER_ID, this.authService.user().id)
+        .set(ROUTES_PARAMS.USER_ID, this.#authService.user().id)
         .set(ROUTES_PARAMS.CONVERSATION_ID, selectedConversation.conversationId);
 
-      return this.http
+      return this.#http
         .post<ConversationDetailsDto>(
-          `${this.environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}`,
+          `${this.#environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}`,
           { queue, conversationId: selectedConversation.conversationId },
           { params, headers }
         );

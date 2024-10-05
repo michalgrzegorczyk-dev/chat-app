@@ -8,11 +8,11 @@ import { ChatFacade, UserKeys } from '@chat-app/domain';
   standalone: true
 })
 export class UserDetailPipe implements PipeTransform {
-  private readonly members = inject(ChatFacade).memberIdMap;
+  readonly #members = inject(ChatFacade).memberIdMap;
 
   transform(userId: string, detailKey: UserKeys): string {
-    if (this.members() && userId) {
-      const result = this.members().get(userId);
+    if (this.#members() && userId) {
+      const result = this.#members().get(userId);
       if (result) {
         return result[detailKey] ?? '';
       }

@@ -30,12 +30,12 @@ export class NotifierService {
   /**
    * Notifier queue service
    */
-  private readonly queueService: NotifierQueueService;
+  readonly #queueService: NotifierQueueService;
 
   /**
    * Notifier configuration
    */
-  private readonly config: NotifierConfig;
+  readonly #config: NotifierConfig;
 
   /**
    * Constructor
@@ -44,8 +44,8 @@ export class NotifierService {
    * @param config               Notifier configuration, optionally injected as a dependency
    */
   public constructor(notifierQueueService: NotifierQueueService) {
-    this.queueService = notifierQueueService;
-    this.config = new NotifierConfig({});
+    this.#queueService = notifierQueueService;
+    this.#config = new NotifierConfig({});
   }
 
   /**
@@ -54,7 +54,7 @@ export class NotifierService {
    * @returns Notifier configuration
    */
   public getConfig(): NotifierConfig {
-    return this.config;
+    return this.#config;
   }
 
   /**
@@ -63,7 +63,7 @@ export class NotifierService {
    * @returns Observable of NotifierAction
    */
   public get actionStream(): Observable<NotifierAction> {
-    return this.queueService.actionStream.asObservable();
+    return this.#queueService.actionStream.asObservable();
   }
 
   /**
@@ -72,7 +72,7 @@ export class NotifierService {
    * @param notificationOptions Notification options
    */
   public show(notificationOptions: NotifierNotificationOptions): void {
-    this.queueService.push({
+    this.#queueService.push({
       payload: notificationOptions,
       type: 'SHOW',
     });
@@ -84,7 +84,7 @@ export class NotifierService {
    * @param notificationId ID of the notification to hide
    */
   public hide(notificationId: string): void {
-    this.queueService.push({
+    this.#queueService.push({
       payload: notificationId,
       type: 'HIDE',
     });
@@ -94,7 +94,7 @@ export class NotifierService {
    * API: Hide the newest notification
    */
   public hideNewest(): void {
-    this.queueService.push({
+    this.#queueService.push({
       type: 'HIDE_NEWEST',
     });
   }
@@ -103,7 +103,7 @@ export class NotifierService {
    * API: Hide the oldest notification
    */
   public hideOldest(): void {
-    this.queueService.push({
+    this.#queueService.push({
       type: 'HIDE_OLDEST',
     });
   }
@@ -112,7 +112,7 @@ export class NotifierService {
    * API: Hide all notifications at once
    */
   public hideAll(): void {
-    this.queueService.push({
+    this.#queueService.push({
       type: 'HIDE_ALL',
     });
   }

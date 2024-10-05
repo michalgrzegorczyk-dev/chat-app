@@ -39,7 +39,7 @@ export class ChatFeatureStore {
   readonly setMemberIdMap$ = new Subject<Map<string, User>>();
   readonly loadConversationList$ = new Subject<void>();
   readonly messageReceived$ = new Subject<ReceivedMessage>();
-  private readonly router = inject(Router);
+  readonly #router = inject(Router);
   readonly #chatInfrastructure = inject(ChatInfrastructure);
   readonly #network = inject(NetworkService);
 
@@ -55,13 +55,12 @@ export class ChatFeatureStore {
     });
   }
 
-
   effects = rxEffects(({ register }) => {
     register(this.#chatInfrastructure.messageReceived$, (message) => {
       return this.messageReceived$.next(message);
     });
 
-    register(this.sendMessageEvent$, (messageSend) => {
+    register(this.sendMessageEvent$.pipe(), (messageSend) => {
       if (this.#network.isOnline()) {
         this.#chatInfrastructure.sendMessageWebSocket(messageSend);
       } else {
@@ -76,7 +75,7 @@ export class ChatFeatureStore {
       if (!selectedConversation) {
         return;
       }
-      this.router.navigate([`${routing.chat.url()}`, selectedConversation.conversationId]);
+      this.#router.navigate([`${routing.chat.url()}`, selectedConversation.conversationId]);
 
       this.setMessageListLoading$.next(true);
       return this.#chatInfrastructure
@@ -120,7 +119,8 @@ export class ChatFeatureStore {
         });
     });
   });
-  private readonly rxState = rxState<ChatState>(({ set, connect }) => {
+
+  readonly #rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
     connect('messageList', this.messageReceived$, (state: ChatState, receivedMessage: ReceivedMessage) => {
@@ -159,7 +159,6 @@ export class ChatFeatureStore {
     connect('messageList', this.setMessageList$);
     connect('messageList', this.addMessageOptimistic$, (state, message) => {
       console.log(message);
-
       const newMessage: Message = {
         createdAt: new Date().toISOString(),
         localMessageId: message.localMessageId,
@@ -193,10 +192,10 @@ export class ChatFeatureStore {
     });
   });
   // READ
-  readonly messageList = this.rxState.signal('messageList');
-  readonly messageListLoading = this.rxState.signal('messageListLoading');
-  readonly conversationList = this.rxState.signal('conversationList');
-  readonly conversationListLoading = this.rxState.signal('conversationListLoading');
-  readonly selectedConversation = this.rxState.signal('selectedConversation');
-  readonly memberIdMap = this.rxState.signal('memberIdMap');
+  readonly messageList = this.#rxState.signal('messageList');
+  readonly messageListLoading = this.#rxState.signal('messageListLoading');
+  readonly conversationList = this.#rxState.signal('conversationList');
+  readonly conversationListLoading = this.#rxState.signal('conversationListLoading');
+  readonly selectedConversation = this.#rxState.signal('selectedConversation');
+  readonly memberIdMap = this.#rxState.signal('memberIdMap');
 }

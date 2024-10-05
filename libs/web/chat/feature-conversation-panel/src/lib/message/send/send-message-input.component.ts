@@ -14,8 +14,8 @@ import { v4 as uuidv4 } from 'uuid';
 export class SendMessageInputComponent {
   readonly user = inject(AuthService).user;
   protected inputMessage = '';
-  private readonly chatStore = inject(ChatFacade);
-  readonly selectedConversation = this.chatStore.selectedConversation;
+  readonly #chatStore = inject(ChatFacade);
+  readonly selectedConversation = this.#chatStore.selectedConversation;
 
   sendMessage(): void {
     const selectedConversation = this.selectedConversation();
@@ -29,7 +29,7 @@ export class SendMessageInputComponent {
         timestamp: new Date().toISOString(),
         status: 'sending'
       };
-      this.chatStore.sendMessage(messageToSend);
+      this.#chatStore.sendMessage(messageToSend);
       this.inputMessage = '';
     }
   }

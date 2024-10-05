@@ -13,17 +13,17 @@ export class NotifierTimerService {
   /**
    * Timestamp (in ms), created in the moment the timer starts
    */
-  private now: number;
+  #now: number;
 
   /**
    * Remaining time (in ms)
    */
-  private remaining: number;
+  #remaining: number;
 
   /**
    * Timeout ID, used for clearing the timeout later on
    */
-  private timerId!: number;
+  #timerId!: number;
 
   /**
    * Promise resolve function, eventually getting called once the timer finishes
@@ -34,8 +34,8 @@ export class NotifierTimerService {
    * Constructor
    */
   public constructor() {
-    this.now = 0;
-    this.remaining = 0;
+    this.#now = 0;
+    this.#remaining = 0;
   }
 
   /**
@@ -47,7 +47,7 @@ export class NotifierTimerService {
   public start(duration: number): Promise<void> {
     return new Promise<void>((resolve: () => void) => {
       // For the first run ...
-      this.remaining = duration;
+      this.#remaining = duration;
 
       // Setup, then start the timer
       this.finishPromiseResolver = resolve;
@@ -59,26 +59,26 @@ export class NotifierTimerService {
    * Pause the timer
    */
   public pause(): void {
-    clearTimeout(this.timerId);
-    this.remaining -= new Date().getTime() - this.now;
+    clearTimeout(this.#timerId);
+    this.#remaining -= new Date().getTime() - this.#now;
   }
 
   /**
    * Continue the timer
    */
   public continue(): void {
-    this.now = new Date().getTime();
-    this.timerId = window.setTimeout(() => {
+    this.#now = new Date().getTime();
+    this.#timerId = window.setTimeout(() => {
       this.finish();
-    }, this.remaining);
+    }, this.#remaining);
   }
 
   /**
    * Stop the timer
    */
   public stop(): void {
-    clearTimeout(this.timerId);
-    this.remaining = 0;
+    clearTimeout(this.#timerId);
+    this.#remaining = 0;
   }
 
   /**

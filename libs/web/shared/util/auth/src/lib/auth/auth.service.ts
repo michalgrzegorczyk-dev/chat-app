@@ -18,9 +18,9 @@ const USER_PLACEHOLDER = {
 })
 export class AuthService {
   readonly user = signal<User>(USER_PLACEHOLDER);
-  private readonly router = inject(Router);
-  private readonly http = inject(HttpClient);
-  private readonly environment = inject(ENVIRONMENT);
+  readonly #router = inject(Router);
+  readonly #http = inject(HttpClient);
+  readonly #environment = inject(ENVIRONMENT);
 
   setUser(user: User) {
     this.user.update(() => user);
@@ -36,11 +36,11 @@ export class AuthService {
 
   async logOut(): Promise<void> {
     this.setUser(USER_PLACEHOLDER);
-    await this.router.navigate([routing.auth.url()]);
+    await this.#router.navigate([routing.auth.url()]);
   }
 
   getAllUsers(): Observable<User[]> {
-    return this.http.get<UserDto[]>(`${this.environment.apiUrl}/chat/users`).pipe(
+    return this.#http.get<UserDto[]>(`${this.#environment.apiUrl}/chat/users`).pipe(
       map((response: UserDto[] | null) => {
         if (!response) {
           throw new Error('No users found. Please create Table users in your Supabase instance.');

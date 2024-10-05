@@ -14,17 +14,17 @@ import { RelativeTimePipe } from './relative-time.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationListLayoutComponent implements OnInit {
-  private readonly chatStore = inject(ChatFacade);
-  readonly conversationListLoading = this.chatStore.conversationListLoading;
-  readonly conversationList = this.chatStore.conversationList;
-  readonly selectedConversation = this.chatStore.selectedConversation;
+  readonly #chatStore = inject(ChatFacade);
+  readonly conversationListLoading = this.#chatStore.conversationListLoading;
+  readonly conversationList = this.#chatStore.conversationList;
+  readonly selectedConversation = this.#chatStore.selectedConversation;
 
   ngOnInit(): void {
-    this.chatStore.loadConversationList();
+    this.#chatStore.loadConversationList();
   }
 
   clickedConversation(conversation: Conversation): void {
-    this.chatStore.selectConversation(conversation);
+    this.#chatStore.selectConversation(conversation);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

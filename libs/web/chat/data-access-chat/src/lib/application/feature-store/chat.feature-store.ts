@@ -14,6 +14,7 @@ import { ConversationDetails } from '../../models/conversation-details.type';
 import { Message, ReceivedMessage } from '../../models/message.type';
 import { MessageSend } from '../../models/message-send.type';
 import { User } from '../../models/user.type';
+import { NetworkService } from '../../util-network/network.service';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -29,6 +30,7 @@ const INITIAL_STATE: ChatState = {
 export class ChatFeatureStore {
   // EVENTS
   readonly sendMessageEvent$ = new Subject<MessageSend>();
+  readonly addMessageOptimistic$ = new Subject<MessageSend>();
   readonly setMessageList$ = new Subject<Message[]>();
   readonly setMessageListLoading$ = new Subject<boolean>();
   readonly setConversationList$ = new Subject<Conversation[]>();
@@ -38,14 +40,36 @@ export class ChatFeatureStore {
   readonly loadConversationList$ = new Subject<void>();
   readonly messageReceived$ = new Subject<ReceivedMessage>();
   private readonly router = inject(Router);
-  private readonly chatInfra = inject(ChatInfrastructure);
+  readonly #chatInfrastructure = inject(ChatInfrastructure);
+  readonly #network = inject(NetworkService);
+
+  constructor() {
+    this.#network.onlineStatus$.subscribe((isOnline) => {
+      if (isOnline) {
+        const array: MessageSend[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
+        array.forEach((message) => {
+          this.sendMessageEvent$.next(message);
+        });
+        localStorage.setItem('offlineMessage', '[]');
+      }
+    });
+  }
+
+
   effects = rxEffects(({ register }) => {
-    register(this.chatInfra.messageReceived$, (message) => {
+    register(this.#chatInfrastructure.messageReceived$, (message) => {
       return this.messageReceived$.next(message);
     });
 
     register(this.sendMessageEvent$, (messageSend) => {
-      this.chatInfra.sendMessageWebSocket(messageSend);
+      if (this.#network.isOnline()) {
+        this.#chatInfrastructure.sendMessageWebSocket(messageSend);
+      } else {
+        const array: MessageSend[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
+        array.push(messageSend);
+        localStorage.setItem('offlineMessage', JSON.stringify(array));
+        this.addMessageOptimistic$.next(messageSend);
+      }
     });
 
     register(this.selectConversation$, (selectedConversation) => {
@@ -55,7 +79,7 @@ export class ChatFeatureStore {
       this.router.navigate([`${routing.chat.url()}`, selectedConversation.conversationId]);
 
       this.setMessageListLoading$.next(true);
-      return this.chatInfra
+      return this.#chatInfrastructure
         .getConversationContent(selectedConversation)
         .subscribe((conversationDetails: ConversationDetails) => {
           this.setMessageList$.next(conversationDetails.messageList);
@@ -71,9 +95,9 @@ export class ChatFeatureStore {
         });
     });
 
-    register(this.chatInfra.loadConversationListPing$, () => {
+    register(this.#chatInfrastructure.loadConversationListPing$, () => {
       this.setConversationList$.next([]);
-      this.chatInfra
+      this.#chatInfrastructure
         .fetchConversations()
         .pipe(take(1))
         .subscribe((conversationList) => {
@@ -84,7 +108,7 @@ export class ChatFeatureStore {
     register(this.loadConversationList$, () => {
       this.setConversationListLoading$.next(true);
       this.setConversationList$.next([]);
-      this.chatInfra
+      this.#chatInfrastructure
         .fetchConversations()
         .pipe(take(1))
         .subscribe((conversationList) => {
@@ -118,18 +142,36 @@ export class ChatFeatureStore {
     });
 
     connect('conversationListLoading', this.setConversationListLoading$);
-    connect('messageList', this.chatInfra.messageReceived$, (state, message) => {
+    connect('messageList', this.#chatInfrastructure.messageReceived$, (state, message) => {
+
       if (state.selectedConversation?.conversationId === message.conversationId) {
+
+        for (const msg of state.messageList) {
+          if (msg.localMessageId === message.localMessageId) {
+            return state.messageList;
+          }
+        }
         return [...state.messageList, message];
       }
+
       return state.messageList;
     });
-    connect('messageList', this.setMessageList$, (state, messageList) => {
-      return messageList;
-    });
+    connect('messageList', this.setMessageList$);
+    connect('messageList', this.addMessageOptimistic$, (state, message) => {
+      console.log(message);
 
+      const newMessage: Message = {
+        createdAt: new Date().toISOString(),
+        localMessageId: message.localMessageId,
+        messageId: '',
+        content: message.content,
+        status: 'sending',
+        senderId: message.userId
+      };
+      return [...state.messageList, newMessage];
+    });
     connect('conversationList', this.setConversationList$);
-    connect('conversationList', this.chatInfra.loadConversationListSuccess$);
+    connect('conversationList', this.#chatInfrastructure.loadConversationListSuccess$);
     connect('messageListLoading', this.setMessageListLoading$);
     connect('memberIdMap', this.setMemberIdMap$);
     connect(this.selectConversation$, (state, conversation) => {

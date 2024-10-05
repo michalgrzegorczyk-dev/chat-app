@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject,Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { User } from '@chat-app/domain';
 import { UserDto } from '@chat-app/dtos';
 import { ENVIRONMENT } from '@chat-app/environment';
 import { routing } from '@chat-app/util-routing';
 import { map, Observable } from 'rxjs';
+import { User } from './user.type';
 
 const USER_PLACEHOLDER = {
   id: '',

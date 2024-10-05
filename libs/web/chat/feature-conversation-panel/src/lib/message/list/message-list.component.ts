@@ -1,16 +1,10 @@
-import { DatePipe,NgClass, NgForOf, NgIf } from '@angular/common';
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  inject,
-  ViewChild,
-} from '@angular/core';
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { ChatFacade } from '@chat-app/domain';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 
 import { ScrollToBottomDirective } from '../../scroll-bottom.directive';
-import { UserDetailPipe } from '../../user-detail.pipe';
+import { MgUserDetailsPipe } from '../../user-details.pipe';
 import { SingleMessageComponent } from '../single/single-message.component';
 
 @Component({
@@ -22,10 +16,10 @@ import { SingleMessageComponent } from '../single/single-message.component';
     NgForOf,
     NgClass,
     NgIf,
-    UserDetailPipe,
+    MgUserDetailsPipe,
     DatePipe,
     SingleMessageComponent,
-    ScrollToBottomDirective,
+    ScrollToBottomDirective
   ],
   styles: [
     `
@@ -35,12 +29,12 @@ import { SingleMessageComponent } from '../single/single-message.component';
         flex-grow: 1;
         overflow-y: auto;
       }
-    `,
-  ],
+    `
+  ]
 })
 export class MessageListComponent {
   @ViewChild('messageContainer') messageContainer!: ElementRef;
   readonly user = inject(AuthService).user;
   readonly #chatStore = inject(ChatFacade);
-  readonly messages = this.#chatStore.messageList;
+  readonly messageList = this.#chatStore.messageList;
 }

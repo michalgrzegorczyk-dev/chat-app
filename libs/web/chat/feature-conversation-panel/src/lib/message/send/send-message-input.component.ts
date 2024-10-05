@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
   standalone: true,
   templateUrl: './send-message-input.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [FormsModule],
+  imports: [FormsModule]
 })
 export class SendMessageInputComponent {
   readonly user = inject(AuthService).user;

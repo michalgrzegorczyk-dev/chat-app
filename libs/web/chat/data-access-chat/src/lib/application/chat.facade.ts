@@ -1,7 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 
-import { Conversation } from '../models/conversation.type';
-import { MessageSend } from '../models/message-send.type';
+import { Conversation, MessageSend } from '../models';
 
 import { ChatFeatureStore } from './feature-store/chat.feature-store';
 

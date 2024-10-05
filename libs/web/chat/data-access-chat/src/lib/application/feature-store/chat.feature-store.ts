@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { MessageStatus } from '@chat-app/dtos';
 import { NetworkService } from '@chat-app/network';
 import { routing } from '@chat-app/util-routing';
+import { User } from '@chat-app/web/shared/util/auth';
 import { rxState } from '@rx-angular/state';
 import { rxEffects } from '@rx-angular/state/effects';
-import { Subject } from 'rxjs';
+import { Subject, first } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ChatInfrastructure } from '../../infrastructure/chat.infrastructure';
@@ -16,7 +17,7 @@ import {
   Message,
   MessageSend,
   ReceivedMessage,
-  User} from '../../models';
+} from '../../models';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -41,9 +42,11 @@ export class ChatFeatureStore {
   readonly setMemberIdMap$ = new Subject<Map<string, User>>();
   readonly loadConversationList$ = new Subject<void>();
   readonly messageReceived$ = new Subject<ReceivedMessage>();
+
   readonly #router = inject(Router);
   readonly #chatInfrastructure = inject(ChatInfrastructure);
   readonly #network = inject(NetworkService);
+
   effects = rxEffects(({ register }) => {
     register(this.#chatInfrastructure.messageReceived$, (message) => {
       return this.messageReceived$.next(message);
@@ -60,15 +63,16 @@ export class ChatFeatureStore {
       }
     });
 
-    register(this.selectConversation$, (selectedConversation) => {
+    register(this.selectConversation$, async (selectedConversation) => {
       if (!selectedConversation) {
         return;
       }
-      this.#router.navigate([`${routing.chat.url()}`, selectedConversation.conversationId]);
+      await this.#router.navigate([`${routing.chat.url()}`, selectedConversation.conversationId]);
 
       this.setMessageListLoading$.next(true);
       return this.#chatInfrastructure
         .getConversationContent(selectedConversation)
+        .pipe(first())
         .subscribe((conversationDetails: ConversationDetails) => {
           this.setMessageList$.next(conversationDetails.messageList);
           this.setMemberIdMap$.next(
@@ -87,7 +91,7 @@ export class ChatFeatureStore {
       this.setConversationList$.next([]);
       this.#chatInfrastructure
         .fetchConversations()
-        .pipe(take(1))
+        .pipe(first())
         .subscribe((conversationList) => {
           this.setConversationList$.next(conversationList);
         });
@@ -108,6 +112,7 @@ export class ChatFeatureStore {
         });
     });
   });
+
   readonly #rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
@@ -179,6 +184,7 @@ export class ChatFeatureStore {
       };
     });
   });
+
   // READ
   readonly messageList = this.#rxState.signal('messageList');
   readonly messageListLoading = this.#rxState.signal('messageListLoading');

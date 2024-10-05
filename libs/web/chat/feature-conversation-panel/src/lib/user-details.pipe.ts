@@ -1,13 +1,14 @@
-import {inject, Pipe, PipeTransform} from "@angular/core";
-import { ChatFacade, UserKeys } from '@chat-app/domain';
+import { inject, Pipe, PipeTransform } from '@angular/core';
+import { ChatFacade } from '@chat-app/domain';
+import { User } from '@chat-app/web/shared/util/auth';
 
+type UserKeys = keyof User;
 
-//todo prefix
 @Pipe({
-  name: 'userDetail',
+  name: 'mgUserDetails',
   standalone: true
 })
-export class UserDetailPipe implements PipeTransform {
+export class MgUserDetailsPipe implements PipeTransform {
   readonly #members = inject(ChatFacade).memberIdMap;
 
   transform(userId: string, detailKey: UserKeys): string {

@@ -1,17 +1,13 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { inject,Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { ConversationDetailsDto, ConversationListElementDto } from '@chat-app/dtos';
 import { ENVIRONMENT } from '@chat-app/environment';
-import { CHAT_ROUTES,ROUTES_PARAMS } from '@chat-app/util-routing';
+import { CHAT_ROUTES, ROUTES_PARAMS } from '@chat-app/util-routing';
 import { AuthService } from '@chat-app/web/shared/util/auth';
-import { map, Observable, Subject, tap } from 'rxjs';
+import { map, Observable, Subject } from 'rxjs';
 import { io } from 'socket.io-client';
 
-import { Conversation } from '../models/conversation.type';
-import { ReceivedMessage } from '../models/message.type';
-import { MessageSend } from '../models/message-send.type';
-
-//todo add readme pessimistic only
+import { Conversation, MessageSend, ReceivedMessage } from '../models';
 
 @Injectable()
 export class ChatInfrastructure {
@@ -58,7 +54,7 @@ export class ChatInfrastructure {
                 createdAt: message.created_at
               };
             }),
-            memberList: convDetailsDto.memberList.map((member:any) => {
+            memberList: convDetailsDto.memberList.map((member: any) => {
               return {
                 id: member.id,
                 name: member.name,
@@ -71,10 +67,8 @@ export class ChatInfrastructure {
   }
 
   fetchConversations(): Observable<Conversation[]> {
-    const headers = new HttpHeaders().set(
-      'X-User-Id',
-      this.#authService.user().id
-    );
+    const headers = new HttpHeaders().set('X-User-Id', this.#authService.user().id);
+
     return this.#http
       .get<ConversationListElementDto[]>(`${this.#environment.apiUrl}/chat/conversations`, {
         headers
@@ -83,7 +77,7 @@ export class ChatInfrastructure {
         map((conversationDtoList: ConversationListElementDto[]) => {
           return conversationDtoList.map((conversationDto: ConversationListElementDto) => {
             return {
-              ...conversationDto,
+              ...conversationDto
             };
           });
         })
@@ -111,28 +105,8 @@ export class ChatInfrastructure {
       });
     });
 
-    this.#socket.on('loadConversationListSuccess', (x: any) => {
-      this.loadConversationListSuccess$.next(x);
+    this.#socket.on('loadConversationListSuccess', (conversationList: Conversation[]) => {
+      this.loadConversationListSuccess$.next(conversationList);
     });
-  }
-
-  updateMessages(queue: MessageSend[], selectedConversation: Conversation):Observable<any> {
-    console.log('sele', selectedConversation);
-    const headers = new HttpHeaders().set(
-      'X-User-Id',
-      this.#authService.user().id
-    );
-
-      const params = new HttpParams()
-        .set(ROUTES_PARAMS.USER_ID, this.#authService.user().id)
-        .set(ROUTES_PARAMS.CONVERSATION_ID, selectedConversation.conversationId);
-
-      return this.#http
-        .post<ConversationDetailsDto>(
-          `${this.#environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}`,
-          { queue, conversationId: selectedConversation.conversationId },
-          { params, headers }
-        );
-
   }
 }

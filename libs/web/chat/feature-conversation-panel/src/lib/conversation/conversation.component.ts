@@ -1,6 +1,6 @@
-import {DatePipe,NgClass, NgForOf, NgIf} from "@angular/common";
-import {ChangeDetectionStrategy,Component} from "@angular/core";
-import {FormsModule} from "@angular/forms";
+import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ButtonRemoveComponent } from '@chat-app/ui-button';
 
 import { MessageListComponent } from '../message/list/message-list.component';
@@ -35,8 +35,7 @@ import { ConversationHeaderComponent } from './header/conversation-header.compon
       }
     `
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConversationComponent {
-
 }

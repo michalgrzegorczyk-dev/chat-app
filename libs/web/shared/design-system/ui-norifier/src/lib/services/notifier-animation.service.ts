@@ -15,7 +15,7 @@ export class NotifierAnimationService {
   /**
    * List of animation presets (currently static)
    */
-  private readonly animationPresets: {
+  readonly #animationPresets: {
     [animationPresetName: string]: NotifierAnimationPreset;
   };
 
@@ -23,7 +23,7 @@ export class NotifierAnimationService {
    * Constructor
    */
   public constructor() {
-    this.animationPresets = {
+    this.#animationPresets = {
       fade,
       slide,
     };
@@ -45,11 +45,11 @@ export class NotifierAnimationService {
     let duration: number;
     let easing: string;
     if (direction === 'show') {
-      keyframes = this.animationPresets[notification.component.getConfig().animations.show.preset].show(notification);
+      keyframes = this.#animationPresets[notification.component.getConfig().animations.show.preset].show(notification);
       duration = notification.component.getConfig().animations.show.speed;
       easing = notification.component.getConfig().animations.show.easing;
     } else {
-      keyframes = this.animationPresets[notification.component.getConfig().animations.hide.preset].hide(notification);
+      keyframes = this.#animationPresets[notification.component.getConfig().animations.hide.preset].hide(notification);
       duration = notification.component.getConfig().animations.hide.speed;
       easing = notification.component.getConfig().animations.hide.easing;
     }

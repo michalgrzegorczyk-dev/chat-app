@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy,Component,inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ChatFacade } from '@chat-app/domain';
 import { ButtonRemoveComponent } from '@chat-app/ui-button';
 
 import { ConversationComponent } from './conversation/conversation.component';
 import { ConversationDetailsComponent } from './conversation/details/conversation-details.component';
 import { ConversationHeaderComponent } from './conversation/header/conversation-header.component';
-import {ConversationLoadingComponent} from "./conversation/loading/conversation-loading.component";
+import { ConversationLoadingComponent } from './conversation/loading/conversation-loading.component';
 import { MessageListComponent } from './message/list/message-list.component';
 import { SendMessageInputComponent } from './message/send/send-message-input.component';
 
@@ -23,7 +23,7 @@ import { SendMessageInputComponent } from './message/send/send-message-input.com
       }
     `
   ],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConversationPanelLayoutComponent {
   readonly messageListLoading = inject(ChatFacade).messageListLoading;

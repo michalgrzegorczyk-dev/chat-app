@@ -1,20 +1,23 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageStatus } from '@chat-app/dtos';
+import { NetworkService } from '@chat-app/network';
 import { routing } from '@chat-app/util-routing';
+import { User } from '@chat-app/web/shared/util/auth';
 import { rxState } from '@rx-angular/state';
 import { rxEffects } from '@rx-angular/state/effects';
-import { Subject } from 'rxjs';
+import { Subject, first } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ChatInfrastructure } from '../../infrastructure/chat.infrastructure';
-import { ChatState } from '../../models/chat-state.type';
-import { Conversation } from '../../models/conversation.type';
-import { ConversationDetails } from '../../models/conversation-details.type';
-import { Message, ReceivedMessage } from '../../models/message.type';
-import { MessageSend } from '../../models/message-send.type';
-import { User } from '../../models/user.type';
-import { NetworkService } from '../../util-network/network.service';
+import {
+  ChatState,
+  Conversation,
+  ConversationDetails,
+  Message,
+  MessageSend,
+  ReceivedMessage,
+} from '../../models';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -39,29 +42,17 @@ export class ChatFeatureStore {
   readonly setMemberIdMap$ = new Subject<Map<string, User>>();
   readonly loadConversationList$ = new Subject<void>();
   readonly messageReceived$ = new Subject<ReceivedMessage>();
-  private readonly router = inject(Router);
+
+  readonly #router = inject(Router);
   readonly #chatInfrastructure = inject(ChatInfrastructure);
   readonly #network = inject(NetworkService);
-
-  constructor() {
-    this.#network.onlineStatus$.subscribe((isOnline) => {
-      if (isOnline) {
-        const array: MessageSend[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
-        array.forEach((message) => {
-          this.sendMessageEvent$.next(message);
-        });
-        localStorage.setItem('offlineMessage', '[]');
-      }
-    });
-  }
-
 
   effects = rxEffects(({ register }) => {
     register(this.#chatInfrastructure.messageReceived$, (message) => {
       return this.messageReceived$.next(message);
     });
 
-    register(this.sendMessageEvent$, (messageSend) => {
+    register(this.sendMessageEvent$.pipe(), (messageSend) => {
       if (this.#network.isOnline()) {
         this.#chatInfrastructure.sendMessageWebSocket(messageSend);
       } else {
@@ -72,15 +63,16 @@ export class ChatFeatureStore {
       }
     });
 
-    register(this.selectConversation$, (selectedConversation) => {
+    register(this.selectConversation$, async (selectedConversation) => {
       if (!selectedConversation) {
         return;
       }
-      this.router.navigate([`${routing.chat.url()}`, selectedConversation.conversationId]);
+      await this.#router.navigate([`${routing.chat.url()}`, selectedConversation.conversationId]);
 
       this.setMessageListLoading$.next(true);
       return this.#chatInfrastructure
         .getConversationContent(selectedConversation)
+        .pipe(first())
         .subscribe((conversationDetails: ConversationDetails) => {
           this.setMessageList$.next(conversationDetails.messageList);
           this.setMemberIdMap$.next(
@@ -99,7 +91,7 @@ export class ChatFeatureStore {
       this.setConversationList$.next([]);
       this.#chatInfrastructure
         .fetchConversations()
-        .pipe(take(1))
+        .pipe(first())
         .subscribe((conversationList) => {
           this.setConversationList$.next(conversationList);
         });
@@ -120,7 +112,8 @@ export class ChatFeatureStore {
         });
     });
   });
-  private readonly rxState = rxState<ChatState>(({ set, connect }) => {
+
+  readonly #rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
     connect('messageList', this.messageReceived$, (state: ChatState, receivedMessage: ReceivedMessage) => {
@@ -159,7 +152,6 @@ export class ChatFeatureStore {
     connect('messageList', this.setMessageList$);
     connect('messageList', this.addMessageOptimistic$, (state, message) => {
       console.log(message);
-
       const newMessage: Message = {
         createdAt: new Date().toISOString(),
         localMessageId: message.localMessageId,
@@ -192,11 +184,24 @@ export class ChatFeatureStore {
       };
     });
   });
+
   // READ
-  readonly messageList = this.rxState.signal('messageList');
-  readonly messageListLoading = this.rxState.signal('messageListLoading');
-  readonly conversationList = this.rxState.signal('conversationList');
-  readonly conversationListLoading = this.rxState.signal('conversationListLoading');
-  readonly selectedConversation = this.rxState.signal('selectedConversation');
-  readonly memberIdMap = this.rxState.signal('memberIdMap');
+  readonly messageList = this.#rxState.signal('messageList');
+  readonly messageListLoading = this.#rxState.signal('messageListLoading');
+  readonly conversationList = this.#rxState.signal('conversationList');
+  readonly conversationListLoading = this.#rxState.signal('conversationListLoading');
+  readonly selectedConversation = this.#rxState.signal('selectedConversation');
+  readonly memberIdMap = this.#rxState.signal('memberIdMap');
+
+  constructor() {
+    this.#network.onlineStatus$.subscribe((isOnline) => {
+      if (isOnline) {
+        const array: MessageSend[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
+        array.forEach((message) => {
+          this.sendMessageEvent$.next(message);
+        });
+        localStorage.setItem('offlineMessage', '[]');
+      }
+    });
+  }
 }

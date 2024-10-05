@@ -10,20 +10,13 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": [
-      "es2020",
-      "dom"
-    ],
+    "lib": ["es2020", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@chat-app/domain": [
-        "libs/web/chat/data-access-chat/src/index.ts"
-      ],
-      "@chat-app/dtos": [
-        "libs/shared/dtos/src/index.ts"
-      ],
+      "@chat-app/domain": ["libs/web/chat/data-access-chat/src/index.ts"],
+      "@chat-app/dtos": ["libs/shared/dtos/src/index.ts"],
       "@chat-app/environment": [
         "libs/web/shared/util/environment/src/index.ts"
       ],
@@ -36,6 +29,7 @@
       "@chat-app/feature-conversation-panel": [
         "libs/web/chat/feature-conversation-panel/src/index.ts"
       ],
+      "@chat-app/network": ["libs/web/shared/util/network/src/index.ts"],
       "@chat-app/ui-button": [
         "libs/web/shared/design-system/ui-button/src/index.ts"
       ],
@@ -48,16 +42,11 @@
       "@chat-app/ui-notifier": [
         "libs/web/shared/design-system/ui-norifier/src/index.ts"
       ],
-      "@chat-app/util-routing": [
-        "libs/web/shared/util/routing/src/index.ts"
-      ],
+      "@chat-app/util-routing": ["libs/web/shared/util/routing/src/index.ts"],
       "@chat-app/web/shared/util/auth": [
         "libs/web/shared/util/auth/src/index.ts"
       ]
     }
   },
-  "exclude": [
-    "node_modules",
-    "tmp"
-  ]
+  "exclude": ["node_modules", "tmp"]
 }

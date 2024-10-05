@@ -69,42 +69,42 @@ export class NotifierNotificationComponent implements AfterViewInit {
    * Notifier timer service
    */
     //@ts-ignore
-  private readonly timerService: NotifierTimerService;
+  readonly #timerService: NotifierTimerService;
 
   /**
    * Notifier animation service
    */
     //@ts-ignore
-  private readonly animationService: NotifierAnimationService;
+  readonly #animationService: NotifierAnimationService;
 
   /**
    * Angular renderer, used to preserve the overall DOM abstraction & independence
    */
     //@ts-ignore
-  private readonly renderer: Renderer2;
+  readonly #renderer: Renderer2;
 
   /**
    * Native element reference, used for manipulating DOM properties
    */
     //@ts-ignore
-  private readonly element: HTMLElement;
+  readonly #element: HTMLElement;
 
   /**
    * Current notification height, calculated and cached here (#perfmatters)
    */
     //@ts-ignore
-  private elementHeight: number;
+  #elementHeight: number;
 
   /**
    * Current notification width, calculated and cached here (#perfmatters)
    */
     //@ts-ignore
-  private elementWidth: number;
+  #elementWidth: number;
 
   /**
    * Current notification shift, calculated and cached here (#perfmatters)
    */
-  private elementShift: number;
+  #elementShift: number;
 
   /**
    * Constructor
@@ -125,11 +125,11 @@ export class NotifierNotificationComponent implements AfterViewInit {
     this.config = notifierService.getConfig();
     this.ready = new EventEmitter<NotifierNotificationComponent>();
     this.dismiss = new EventEmitter<string>();
-    this.timerService = notifierTimerService;
-    this.animationService = notifierAnimationService;
-    this.renderer = renderer;
-    this.element = elementRef.nativeElement;
-    this.elementShift = 0;
+    this.#timerService = notifierTimerService;
+    this.#animationService = notifierAnimationService;
+    this.#renderer = renderer;
+    this.#element = elementRef.nativeElement;
+    this.#elementShift = 0;
   }
 
   /**
@@ -137,8 +137,8 @@ export class NotifierNotificationComponent implements AfterViewInit {
    */
   public ngAfterViewInit(): void {
     this.setup();
-    this.elementHeight = this.element.offsetHeight;
-    this.elementWidth = this.element.offsetWidth;
+    this.#elementHeight = this.#element.offsetHeight;
+    this.#elementWidth = this.#element.offsetWidth;
     this.ready.emit(this);
   }
 
@@ -157,7 +157,7 @@ export class NotifierNotificationComponent implements AfterViewInit {
    * @returns Notification element height (in px)
    */
   public getHeight(): number {
-    return this.elementHeight;
+    return this.#elementHeight;
   }
 
   /**
@@ -166,7 +166,7 @@ export class NotifierNotificationComponent implements AfterViewInit {
    * @returns Notification element height (in px)
    */
   public getWidth(): number {
-    return this.elementWidth;
+    return this.#elementWidth;
   }
 
   /**
@@ -175,7 +175,7 @@ export class NotifierNotificationComponent implements AfterViewInit {
    * @returns Notification element shift offset (in px)
    */
   public getShift(): number {
-    return this.elementShift;
+    return this.#elementShift;
   }
 
   /**
@@ -188,24 +188,24 @@ export class NotifierNotificationComponent implements AfterViewInit {
       // Are animations enabled?
       if (this.config.animations.enabled && this.config.animations.show.speed > 0) {
         // Get animation data
-        const animationData: NotifierAnimationData = this.animationService.getAnimationData('show', this.notification);
+        const animationData: NotifierAnimationData = this.#animationService.getAnimationData('show', this.notification);
 
         // Set initial styles (styles before animation), prevents quick flicker when animation starts
         const animatedProperties: Array<string> = Object.keys(animationData.keyframes[0]);
         for (let i: number = animatedProperties.length - 1; i >= 0; i--) {
-          this.renderer.setStyle(this.element, animatedProperties[i], animationData.keyframes[0][animatedProperties[i]]);
+          this.#renderer.setStyle(this.#element, animatedProperties[i], animationData.keyframes[0][animatedProperties[i]]);
         }
 
         // Animate notification in
-        this.renderer.setStyle(this.element, 'visibility', 'visible');
-        const animation: Animation = this.element.animate(animationData.keyframes, animationData.options);
+        this.#renderer.setStyle(this.#element, 'visibility', 'visible');
+        const animation: Animation = this.#element.animate(animationData.keyframes, animationData.options);
         animation.onfinish = () => {
           this.startAutoHideTimer();
           resolve(); // Done
         };
       } else {
         // Show notification
-        this.renderer.setStyle(this.element, 'visibility', 'visible');
+        this.#renderer.setStyle(this.#element, 'visibility', 'visible');
         this.startAutoHideTimer();
         resolve(); // Done
       }
@@ -223,8 +223,8 @@ export class NotifierNotificationComponent implements AfterViewInit {
 
       // Are animations enabled?
       if (this.config.animations.enabled && this.config.animations.hide.speed > 0) {
-        const animationData: NotifierAnimationData = this.animationService.getAnimationData('hide', this.notification);
-        const animation: Animation = this.element.animate(animationData.keyframes, animationData.options);
+        const animationData: NotifierAnimationData = this.#animationService.getAnimationData('hide', this.notification);
+        const animation: Animation = this.#element.animate(animationData.keyframes, animationData.options);
         animation.onfinish = () => {
           resolve(); // Done
         };
@@ -249,9 +249,9 @@ export class NotifierNotificationComponent implements AfterViewInit {
         (this.config.position.vertical.position === 'top' && shiftToMakePlace) ||
         (this.config.position.vertical.position === 'bottom' && !shiftToMakePlace)
       ) {
-        newElementShift = this.elementShift + distance + this.config.position.vertical.gap;
+        newElementShift = this.#elementShift + distance + this.config.position.vertical.gap;
       } else {
-        newElementShift = this.elementShift - distance - this.config.position.vertical.gap;
+        newElementShift = this.#elementShift - distance - this.config.position.vertical.gap;
       }
       const horizontalPosition: string = this.config.position.horizontal.position === 'middle' ? '-50%' : '0';
 
@@ -261,7 +261,7 @@ export class NotifierNotificationComponent implements AfterViewInit {
           // TODO: Extract into animation service
           keyframes: [
             {
-              transform: `translate3d( ${horizontalPosition}, ${this.elementShift}px, 0 )`,
+              transform: `translate3d( ${horizontalPosition}, ${this.#elementShift}px, 0 )`,
             },
             {
               transform: `translate3d( ${horizontalPosition}, ${newElementShift}px, 0 )`,
@@ -273,14 +273,14 @@ export class NotifierNotificationComponent implements AfterViewInit {
             fill: 'forwards',
           },
         };
-        this.elementShift = newElementShift;
-        const animation: Animation = this.element.animate(animationData.keyframes, animationData.options);
+        this.#elementShift = newElementShift;
+        const animation: Animation = this.#element.animate(animationData.keyframes, animationData.options);
         animation.onfinish = () => {
           resolve(); // Done
         };
       } else {
-        this.renderer.setStyle(this.element, 'transform', `translate3d( ${horizontalPosition}, ${newElementShift}px, 0 )`);
-        this.elementShift = newElementShift;
+        this.#renderer.setStyle(this.#element, 'transform', `translate3d( ${horizontalPosition}, ${newElementShift}px, 0 )`);
+        this.#elementShift = newElementShift;
         resolve(); // Done
       }
     });
@@ -329,7 +329,7 @@ export class NotifierNotificationComponent implements AfterViewInit {
    */
   private startAutoHideTimer(): void {
     if (this.config.behaviour.autoHide !== false && this.config.behaviour.autoHide > 0) {
-      this.timerService.start(this.config.behaviour.autoHide).then(() => {
+      this.#timerService.start(this.config.behaviour.autoHide).then(() => {
         this.onClickDismiss();
       });
     }
@@ -340,7 +340,7 @@ export class NotifierNotificationComponent implements AfterViewInit {
    */
   private pauseAutoHideTimer(): void {
     if (this.config.behaviour.autoHide !== false && this.config.behaviour.autoHide > 0) {
-      this.timerService.pause();
+      this.#timerService.pause();
     }
   }
 
@@ -349,7 +349,7 @@ export class NotifierNotificationComponent implements AfterViewInit {
    */
   private continueAutoHideTimer(): void {
     if (this.config.behaviour.autoHide !== false && this.config.behaviour.autoHide > 0) {
-      this.timerService.continue();
+      this.#timerService.continue();
     }
   }
 
@@ -358,7 +358,7 @@ export class NotifierNotificationComponent implements AfterViewInit {
    */
   private stopAutoHideTimer(): void {
     if (this.config.behaviour.autoHide !== false && this.config.behaviour.autoHide > 0) {
-      this.timerService.stop();
+      this.#timerService.stop();
     }
   }
 
@@ -368,22 +368,22 @@ export class NotifierNotificationComponent implements AfterViewInit {
   private setup(): void {
     // Set start position (initially the exact same for every new notification)
     if (this.config.position.horizontal.position === 'left') {
-      this.renderer.setStyle(this.element, 'left', `${this.config.position.horizontal.distance}px`);
+      this.#renderer.setStyle(this.#element, 'left', `${this.config.position.horizontal.distance}px`);
     } else if (this.config.position.horizontal.position === 'right') {
-      this.renderer.setStyle(this.element, 'right', `${this.config.position.horizontal.distance}px`);
+      this.#renderer.setStyle(this.#element, 'right', `${this.config.position.horizontal.distance}px`);
     } else {
-      this.renderer.setStyle(this.element, 'left', '50%');
+      this.#renderer.setStyle(this.#element, 'left', '50%');
       // Let's get the GPU handle some work as well (#perfmatters)
-      this.renderer.setStyle(this.element, 'transform', 'translate3d( -50%, 0, 0 )');
+      this.#renderer.setStyle(this.#element, 'transform', 'translate3d( -50%, 0, 0 )');
     }
     if (this.config.position.vertical.position === 'top') {
-      this.renderer.setStyle(this.element, 'top', `${this.config.position.vertical.distance}px`);
+      this.#renderer.setStyle(this.#element, 'top', `${this.config.position.vertical.distance}px`);
     } else {
-      this.renderer.setStyle(this.element, 'bottom', `${this.config.position.vertical.distance}px`);
+      this.#renderer.setStyle(this.#element, 'bottom', `${this.config.position.vertical.distance}px`);
     }
 
     // Add classes (responsible for visual design)
-    this.renderer.addClass(this.element, `notifier__notification--${this.notification.type}`);
-    this.renderer.addClass(this.element, `notifier__notification--${this.config.theme}`);
+    this.#renderer.addClass(this.#element, `notifier__notification--${this.notification.type}`);
+    this.#renderer.addClass(this.#element, `notifier__notification--${this.config.theme}`);
   }
 }

@@ -3,5 +3,3 @@ export interface User {
   avatarUrl: string;
   name?: string;
 }
-
-export type UserKeys = keyof User;

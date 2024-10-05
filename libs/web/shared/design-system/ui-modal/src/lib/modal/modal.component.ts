@@ -27,26 +27,26 @@ export class ModalComponent implements AfterViewInit {
   readonly isOpen = signal(false);
   readonly title = signal('title');
 
-  private contentComponentRef: ComponentRef<ModalContentComponent> | null = null;
-  private pendingContentComponent: Type<ModalContentComponent> | null = null;
+  #contentComponentRef: ComponentRef<ModalContentComponent> | null = null;
+  #pendingContentComponent: Type<ModalContentComponent> | null = null;
 
   ngAfterViewInit(): void {
-    if (this.pendingContentComponent) {
-      this.createContent(this.pendingContentComponent);
-      this.pendingContentComponent = null;
+    if (this.#pendingContentComponent) {
+      this.createContent(this.#pendingContentComponent);
+      this.#pendingContentComponent = null;
     }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   createContent<T extends ModalContentComponent>(contentComponent: Type<ModalContentComponent>): ComponentRef<ModalContentComponent> | null {
     if (!this.contentViewContainer) {
-      this.pendingContentComponent = contentComponent;
+      this.#pendingContentComponent = contentComponent;
       return null;
     }
 
     this.contentViewContainer.clear();
-    this.contentComponentRef = this.contentViewContainer.createComponent(contentComponent);
-    return this.contentComponentRef;
+    this.#contentComponentRef = this.contentViewContainer.createComponent(contentComponent);
+    return this.#contentComponentRef;
   }
 
   open(): void {
@@ -56,9 +56,9 @@ export class ModalComponent implements AfterViewInit {
   close(): void {
     this.isOpen.set(false);
 
-    if (this.contentComponentRef) {
-      this.contentComponentRef.destroy();
-      this.contentComponentRef = null;
+    if (this.#contentComponentRef) {
+      this.#contentComponentRef.destroy();
+      this.#contentComponentRef = null;
     }
   }
 

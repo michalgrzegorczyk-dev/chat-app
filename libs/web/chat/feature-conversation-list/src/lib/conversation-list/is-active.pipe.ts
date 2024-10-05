@@ -6,11 +6,10 @@ import { ChatFacade, Conversation } from "@chat-app/domain";
     name: 'isActive'
   })
   export class IsActivePipe implements PipeTransform {
-  
-    private readonly selectedConversation = inject(ChatFacade).selectedConversation;
-  
+
+    readonly #selectedConversation = inject(ChatFacade).selectedConversation;
+
     transform(conversation: Conversation): boolean {
-      return conversation.conversationId === this.selectedConversation()?.conversationId;
+      return conversation.conversationId === this.#selectedConversation()?.conversationId;
     }
   }
-  

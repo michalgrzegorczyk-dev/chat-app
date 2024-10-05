@@ -8,7 +8,3 @@ export interface Message {
   content: string;
   status?: MessageStatus;
 }
-
-export interface ReceivedMessage extends Message {
-  conversationId: string;
-}

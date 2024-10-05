@@ -16,13 +16,13 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LoginComponent {
-  private readonly authService = inject(AuthService);
+  readonly #authService = inject(AuthService);
   //todo check leaks with tosignal approach
-  readonly users = toSignal(this.authService.getAllUsers(), { initialValue: [] });
-  private readonly router = inject(Router);
+  readonly users = toSignal(this.#authService.getAllUsers(), { initialValue: [] });
+  readonly #router = inject(Router);
 
   async onSelectUser(user: User): Promise<void> {
-    this.authService.setUser(user);
-    await this.router.navigate([`${routing.chat.url()}`]);
+    this.#authService.setUser(user);
+    await this.#router.navigate([`${routing.chat.url()}`]);
   }
 }

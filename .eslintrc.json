@@ -27,7 +27,7 @@
               },
               {
                 "sourceTag": "scope:chat",
-                "onlyDependOnLibsWithTags":["scope:shared", "type:utils"]
+                "onlyDependOnLibsWithTags":["scope:shared", "type:utils", "type:data-access"]
               },
               {
                 "sourceTag": "scope:shared",
@@ -56,9 +56,9 @@
               ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
               ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"]
             ]
-          } 
+          }
         ]
-      
+
       },
       "plugins": [
         "eslint-plugin-import",
@@ -66,7 +66,7 @@
         "@typescript-eslint",
         "simple-import-sort",
         "unused-imports"
-       
+
      ]
     },
     {

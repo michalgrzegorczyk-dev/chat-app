@@ -34,18 +34,18 @@ export class ConversationsComponent {
 
   readonly clickConversation = output<Conversation>();
   readonly user = inject(AuthService).user;
-  private readonly modalService = inject(ModalService);
+  readonly #modalService = inject(ModalService);
 
   conversationClicked(conversation: Conversation): void {
     this.clickConversation.emit(conversation);
   }
 
   removedConversation(conversation: Conversation): void {
-    this.modalService.open(ConversationRemoveComponent, `Remove Conversation: ${conversation.name}`);
+    this.#modalService.open(ConversationRemoveComponent, `Remove Conversation: ${conversation.name}`);
   }
 
   addNewConversation(): void {
-    this.modalService.open(ConversationAddComponent, 'Add New Conversation');
+    this.#modalService.open(ConversationAddComponent, 'Add New Conversation');
   }
 }
 

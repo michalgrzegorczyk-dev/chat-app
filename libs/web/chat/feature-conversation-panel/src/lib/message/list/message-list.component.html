@@ -1,7 +1,7 @@
-<div #messageContainer mgScrollToBottom
-     class="flex-1 overflow-y-auto p-6 space-y-4 border-b border-gray-200">
-  @for (message of messages(); track message.messageId) {
-    <mg-message [message]="message" [currentUserId]="user().id"/>
+<div #messageContainer class="flex-1 overflow-y-auto p-6 space-y-4 border-b border-gray-200"
+     mgScrollToBottom>
+  @for (message of messageList(); track message.messageId) {
+    <mg-message [message]="message" [currentUserId]="user().id" />
   }
 </div>
 

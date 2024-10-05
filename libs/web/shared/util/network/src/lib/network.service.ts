@@ -4,9 +4,9 @@ import { BehaviorSubject, fromEvent } from 'rxjs';
 
 @Injectable()
 export class NetworkService {
-  private readonly onlineStatusSubject$$ = new BehaviorSubject<boolean>(navigator.onLine);
-  readonly onlineStatus$ = this.onlineStatusSubject$$.asObservable();
-  private readonly notifier = inject(NotifierService);
+  readonly #onlineStatusSubject$$ = new BehaviorSubject<boolean>(navigator.onLine);
+  readonly onlineStatus$ = this.#onlineStatusSubject$$.asObservable();
+  readonly #notifier = inject(NotifierService);
 
   constructor() {
     this.initializeNetworkListeners();
@@ -18,16 +18,16 @@ export class NetworkService {
 
   private initializeNetworkListeners(): void {
     fromEvent(window, 'online').subscribe(() => {
-      this.notifier.notify('success','You are online');
+      this.#notifier.notify('success','You are online');
       this.updateOnlineStatus(true);
     });
     fromEvent(window, 'offline').subscribe(() => {
-      this.notifier.notify('error','You are offline');
+      this.#notifier.notify('error','You are offline');
       this.updateOnlineStatus(false);
     });
   }
 
   private updateOnlineStatus(isOnline: boolean): void {
-    this.onlineStatusSubject$$.next(isOnline);
+    this.#onlineStatusSubject$$.next(isOnline);
   }
 }

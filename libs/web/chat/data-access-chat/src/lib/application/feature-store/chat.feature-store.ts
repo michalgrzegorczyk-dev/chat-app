@@ -41,7 +41,6 @@ export class ChatFeatureStore {
   readonly messageReceived$ = new Subject<ReceivedMessage>();
   private readonly router = inject(Router);
   private readonly chatInfra = inject(ChatInfrastructure);
-  private readonly auth = inject(AuthService);
   private readonly rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 

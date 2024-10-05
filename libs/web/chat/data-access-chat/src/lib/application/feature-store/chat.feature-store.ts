@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageStatus } from '@chat-app/dtos';
+import { NetworkService } from '@chat-app/network';
 import { routing } from '@chat-app/util-routing';
 import { rxState } from '@rx-angular/state';
 import { rxEffects } from '@rx-angular/state/effects';
@@ -8,13 +9,14 @@ import { Subject } from 'rxjs';
 import { take } from 'rxjs/operators';
 
 import { ChatInfrastructure } from '../../infrastructure/chat.infrastructure';
-import { ChatState } from '../../models/chat-state.type';
-import { Conversation } from '../../models/conversation.type';
-import { ConversationDetails } from '../../models/conversation-details.type';
-import { Message, ReceivedMessage } from '../../models/message.type';
-import { MessageSend } from '../../models/message-send.type';
-import { User } from '../../models/user.type';
-import { NetworkService } from '../../util-network/network.service';
+import {
+  ChatState,
+  Conversation,
+  ConversationDetails,
+  Message,
+  MessageSend,
+  ReceivedMessage,
+  User} from '../../models';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -42,19 +44,6 @@ export class ChatFeatureStore {
   readonly #router = inject(Router);
   readonly #chatInfrastructure = inject(ChatInfrastructure);
   readonly #network = inject(NetworkService);
-
-  constructor() {
-    this.#network.onlineStatus$.subscribe((isOnline) => {
-      if (isOnline) {
-        const array: MessageSend[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
-        array.forEach((message) => {
-          this.sendMessageEvent$.next(message);
-        });
-        localStorage.setItem('offlineMessage', '[]');
-      }
-    });
-  }
-
   effects = rxEffects(({ register }) => {
     register(this.#chatInfrastructure.messageReceived$, (message) => {
       return this.messageReceived$.next(message);
@@ -119,7 +108,6 @@ export class ChatFeatureStore {
         });
     });
   });
-
   readonly #rxState = rxState<ChatState>(({ set, connect }) => {
     set(INITIAL_STATE);
 
@@ -198,4 +186,16 @@ export class ChatFeatureStore {
   readonly conversationListLoading = this.#rxState.signal('conversationListLoading');
   readonly selectedConversation = this.#rxState.signal('selectedConversation');
   readonly memberIdMap = this.#rxState.signal('memberIdMap');
+
+  constructor() {
+    this.#network.onlineStatus$.subscribe((isOnline) => {
+      if (isOnline) {
+        const array: MessageSend[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
+        array.forEach((message) => {
+          this.sendMessageEvent$.next(message);
+        });
+        localStorage.setItem('offlineMessage', '[]');
+      }
+    });
+  }
 }

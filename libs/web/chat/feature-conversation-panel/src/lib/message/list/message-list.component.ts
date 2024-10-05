@@ -39,8 +39,8 @@ import { SingleMessageComponent } from '../single/single-message.component';
   ],
 })
 export class MessageListComponent {
+  @ViewChild('messageContainer') messageContainer!: ElementRef;
   readonly user = inject(AuthService).user;
-  @ViewChild('messageContainer') #messageContainer!: ElementRef;
   readonly #chatStore = inject(ChatFacade);
   readonly messages = this.#chatStore.messageList;
 }

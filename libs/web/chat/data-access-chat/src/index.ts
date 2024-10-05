@@ -10,4 +10,4 @@ export * from './lib/application/feature-store/chat.feature-store';
 export * from './lib/application/chat.facade';
 
 export * from './lib/infrastructure/chat.infrastructure';
-export * from './lib/util-network/network.service';
+export * from '../../../shared/util/network/src/lib/network.service';

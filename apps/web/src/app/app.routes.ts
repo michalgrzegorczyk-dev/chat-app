@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { ConversationPanelLayoutComponent } from '@chat-app/feature-conversation-panel';
-import { routing } from '@chat-app/util-routing';
+import { routes } from '@chat-app/util-routing';
 import { AuthGuard } from '@chat-app/web/shared/util/auth';
 
 import { ChatComponent } from './layout/chat/chat.component';
@@ -9,26 +9,26 @@ import { LoginComponent } from './layout/login/login.component';
 export const appRoutes: Routes = [
   {
     path: '',
-    redirectTo: `${routing.auth.path()}`,
+    redirectTo: `${routes.auth.path}`,
     pathMatch: 'full'
   },
   {
-    path: `${routing.auth.path()}`,
+    path: `${routes.auth.path}`,
     component: LoginComponent
   },
   {
-    path: `${routing.chat.path()}`,
+    path: `${routes.chat.path}`,
     canActivate: [AuthGuard],
     component: ChatComponent,
     children: [
       {
-        path: `${routing.chat.conversation.path()}`,
+        path: `${routes.chat.conversation.path}`,
         component: ConversationPanelLayoutComponent
       }
     ]
   },
   {
-    path: `${routing.account.path()}`,
+    path: `${routes.account.path}`,
     loadComponent: () => import('../app/layout/account/account.component').then(c => c.AccountComponent)
   }
 ];

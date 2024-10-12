@@ -2,37 +2,40 @@ export const ROUTES = {
   AUTH: 'auth',
   CHAT: 'chat',
   USERS: 'users',
-  ACCOUNT: 'account'
-};
+  ACCOUNT: 'account',
+  CONVERSATIONS: 'conversations'
+} as const;
 
-export const ROUTES_PARAMS = {
+export const ROUTE_PARAMS = {
   CONVERSATION_ID: 'conversationId',
   USER_ID: 'userId'
-};
+} as const;
 
-const CHAT_ROOT = '/chat';
+const createUrl = (...segments: string[]) => `/${segments.join('/')}`;
 
-export const CHAT_ROUTES = {
-  root: CHAT_ROOT,
-  CONVERSATION_DETAILS: {
-    GET: `${CHAT_ROOT}/conversations`
-  }
-};
-
-export const routing = {
+export const routes = {
+  auth: {
+    path: ROUTES.AUTH,
+    url: () => createUrl(ROUTES.AUTH)
+  },
   chat: {
-    path: () => ROUTES.CHAT,
-    url: () => `/${ROUTES.CHAT}`,
+    path: ROUTES.CHAT,
+    url: () => createUrl(ROUTES.CHAT),
     conversation: {
-      path: () => `:${ROUTES_PARAMS.CONVERSATION_ID}`
+      path: `:${ROUTE_PARAMS.CONVERSATION_ID}`,
+      content: {
+        url: (id: string) => createUrl(ROUTES.CHAT, ROUTES.CONVERSATIONS, id)
+      }
+    },
+    conversations: {
+      url: () => createUrl(ROUTES.CHAT, ROUTES.CONVERSATIONS)
+    },
+    users: {
+      url: () => createUrl(ROUTES.CHAT, ROUTES.USERS)
     }
   },
-  auth: {
-    path: () => ROUTES.AUTH,
-    url: () => `/${ROUTES.AUTH}`
-  },
   account: {
-    path: () => ROUTES.ACCOUNT,
-    url: () => `/${ROUTES.ACCOUNT}`,
+    path: ROUTES.ACCOUNT,
+    url: () => createUrl(ROUTES.ACCOUNT)
   }
 };

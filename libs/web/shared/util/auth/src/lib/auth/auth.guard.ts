@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-
+import { routes } from '@chat-app/util-routing';
 import { AuthService } from './auth.service';
 
 @Injectable({
@@ -15,6 +15,6 @@ export class AuthGuard implements CanActivate {
     if (this.#auth.isUserLoggedIn()) {
       return true;
     }
-    return this.#router.createUrlTree(['/auth']);
+    return this.#router.navigate([routes.auth.url()]);
   }
 }

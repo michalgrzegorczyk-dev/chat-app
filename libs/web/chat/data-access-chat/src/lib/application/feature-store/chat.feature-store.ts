@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageStatus } from '@chat-app/dtos';
 import { NetworkService } from '@chat-app/network';
-import { routing } from '@chat-app/util-routing';
+import { routes } from '@chat-app/util-routing';
 import { User } from '@chat-app/web/shared/util/auth';
 import { rxState } from '@rx-angular/state';
 import { rxEffects } from '@rx-angular/state/effects';
@@ -67,7 +67,7 @@ export class ChatFeatureStore {
       if (!selectedConversation) {
         return;
       }
-      await this.#router.navigate([`${routing.chat.url()}`, selectedConversation.conversationId]);
+      await this.#router.navigate([`${routes.chat.url()}`, selectedConversation.conversationId]);
 
       this.setMessageListLoading$.next(true);
       return this.#chatInfrastructure

@@ -3,7 +3,7 @@ import { inject,Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserDto } from '@chat-app/dtos';
 import { ENVIRONMENT } from '@chat-app/environment';
-import { routing } from '@chat-app/util-routing';
+import { routes } from '@chat-app/util-routing';
 import { map, Observable } from 'rxjs';
 import { User } from './user.type';
 
@@ -36,11 +36,12 @@ export class AuthService {
 
   async logOut(): Promise<void> {
     this.setUser(USER_PLACEHOLDER);
-    await this.#router.navigate([routing.auth.url()]);
+    await this.#router.navigate([routes.auth.url()]);
   }
 
+  // from chat
   getAllUsers(): Observable<User[]> {
-    return this.#http.get<UserDto[]>(`${this.#environment.apiUrl}/chat/users`).pipe(
+    return this.#http.get<UserDto[]>(`${this.#environment.apiUrl}${routes.chat.users.url()}`).pipe(
       map((response: UserDto[] | null) => {
         if (!response) {
           throw new Error('No users found. Please create Table users in your Supabase instance.');

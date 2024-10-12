@@ -2,8 +2,6 @@ export interface ConversationListElementDto {
   conversationId: string;
   avatarUrl: string;
   name: string;
-  chatType: string;
-
   lastMessageTimestamp: string;
   lastMessageContent: string;
   lastMessageSenderId: string;

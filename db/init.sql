@@ -17,7 +17,6 @@ CREATE TABLE IF NOT EXISTS public.conversation (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT,
     avatar_url TEXT,
-    chat_type TEXT NOT NULL,
     last_message TEXT,
     last_message_timestamp TIMESTAMPTZ,
     last_message_sender_id UUID
@@ -65,11 +64,11 @@ INSERT INTO public.users (name, profile_photo_url) VALUES
 ('Gizmo', 'https://api.dicebear.com/9.x/adventurer/svg?seed=George'),
 ('Bob', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Brian&skinColor=ecad80,f2d3b1');
 
-INSERT INTO public.conversation (name, avatar_url, chat_type) VALUES
-('David and Bob', '', 'single'),
-('David and Frank', '', 'single'),
-('Bob and Frank', '', 'single'),
-('Gizmo and David', '', 'single');
+INSERT INTO public.conversation (name, avatar_url) VALUES
+('David and Bob', ''),
+('David and Frank', ''),
+('Bob and Frank', ''),
+('Gizmo and David', '');
 
 WITH user_ids AS (
     SELECT id, name FROM public.users

@@ -54,7 +54,6 @@ export class SupabaseService {
         conversation:conversation_id(
           name,
           avatar_url,
-          chat_type,
           last_message,
           last_message_timestamp
         ),
@@ -67,7 +66,6 @@ export class SupabaseService {
         .neq('other_user.users.id', userId)
         .order('conversation(last_message_timestamp)', { ascending: false });
 
-      // console.log(data);
 
       if (error) {
         return [];
@@ -79,22 +77,18 @@ export class SupabaseService {
 
 
       const conversations: ConversationListElementDto[] = data.map((item: any) => {
-        const isOneOnOne = item.conversation.chat_type === 'single';
-        const otherUser = item.other_user.users[0]; // Assuming there's always at least one other user
-        const lastMessage = item.last_message.message[0]; // Get the last message
+        const otherUser = item.other_user.users[0];
+        const lastMessage = item.last_message.message[0];
 
         return {
           conversationId: item.conversation_id,
-          avatarUrl: isOneOnOne ? otherUser?.profile_photo_url : item.conversation.avatar_url,
-          name: isOneOnOne ? otherUser?.name : item.conversation.name,
-          chatType: item.conversation.chat_type,
+          avatarUrl: otherUser?.profile_photo_url,
+          name: otherUser?.name,
           lastMessageContent: item.conversation.last_message || '',
           lastMessageTimestamp: item.conversation.last_message_timestamp || '',
           lastMessageSenderId: lastMessage?.sender_id || ''
         };
       });
-
-
       return conversations;
     } catch (error) {
       return [];

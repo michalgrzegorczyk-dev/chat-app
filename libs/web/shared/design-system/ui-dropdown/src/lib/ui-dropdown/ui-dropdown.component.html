@@ -6,7 +6,7 @@
     id="options-menu"
     [attr.aria-expanded]="isOpen"
   >
-    {{ buttonText }}
+    {{ buttonText() }}
     <svg
       class="-mr-1 ml-2 h-5 w-5"
       xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +30,7 @@
     [attr.aria-labelledby]="'options-menu'"
   >
     <div class="py-1" role="none">
-      @for(item of items; track $index){ @if(item.type === 'link' && item.href){
+      @for(item of items(); track $index){ @if(item.type === 'link' && item.href){
       <a
         [routerLink]="['/', item.href]"
         class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter,Input, OnInit,Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent,ButtonRemoveComponent } from '@chat-app/ui-button';
 import { UiDropdownComponent } from '@chat-app/ui-dropdown';
@@ -12,8 +12,8 @@ import { UiDropdownComponent } from '@chat-app/ui-dropdown';
   templateUrl: './conversation-details.component.html',
 })
 export class ConversationDetailsComponent implements OnInit {
-  @Input() conversationName = 'Conversation';
-  @Output() readonly closeDetails = new EventEmitter<void>();
+  readonly conversationName = input<string>('Conversation');
+  readonly closeDetails = output<void>();
 
   editedName = '';
   isMuted = false;
@@ -27,7 +27,7 @@ export class ConversationDetailsComponent implements OnInit {
   ];
 
   ngOnInit() {
-    this.editedName = this.conversationName;
+    this.editedName = this.conversationName();
   }
 
   updateConversationName() {

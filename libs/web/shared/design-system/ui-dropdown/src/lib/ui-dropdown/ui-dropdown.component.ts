@@ -1,9 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy,Component, ElementRef,EventEmitter, HostListener, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, input, output } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
-  // TODO based on rule prefix should be lib here 
+  // TODO based on rule prefix should be lib here
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'mg-ui-dropdown',
   standalone: true,
@@ -13,15 +13,14 @@ import { RouterLink } from '@angular/router';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class UiDropdownComponent {
-  @Input() buttonText = 'Options';
-  @Input() items: Array<{ type: 'link' | 'button', text: string, href?: string }> = [];
-  @Output() readonly itemClick = new EventEmitter<any>();
-
-  constructor(private elementRef: ElementRef) {
-  }
+  readonly buttonText = input('Options');
+  readonly items = input.required<{ type: 'link' | 'button', text: string, href?: string }[]>();
+  readonly itemClick = output();
 
   isOpen = false;
 
+  constructor(private elementRef: ElementRef) {
+  }
 
   //todo not optimal? :)
   @HostListener('document:click', ['$event'])
@@ -34,7 +33,6 @@ export class UiDropdownComponent {
   toggleDropdown() {
     this.isOpen = !this.isOpen;
   }
-
 
 
   onItemClick(item: any) {

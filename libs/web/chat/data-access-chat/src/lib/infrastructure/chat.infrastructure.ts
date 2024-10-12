@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ConversationDetailsDto, ConversationListElementDto } from '@chat-app/dtos';
 import { ENVIRONMENT } from '@chat-app/environment';
-import { CHAT_ROUTES, ROUTES_PARAMS } from '@chat-app/util-routing';
+import { routes, ROUTE_PARAMS } from '@chat-app/util-routing';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { map, Observable, Subject } from 'rxjs';
 import { io } from 'socket.io-client';
@@ -34,12 +34,12 @@ export class ChatInfrastructure {
       this.#authService.user().id
     );
     const params = new HttpParams()
-      .set(ROUTES_PARAMS.USER_ID, this.#authService.user().id)
-      .set(ROUTES_PARAMS.CONVERSATION_ID, conversation.conversationId);
+      .set(ROUTE_PARAMS.USER_ID, this.#authService.user().id)
+      .set(ROUTE_PARAMS.CONVERSATION_ID, conversation.conversationId);
 
     return this.#http
       .get<ConversationDetailsDto>(
-        `${this.#environment.apiUrl}${CHAT_ROUTES.CONVERSATION_DETAILS.GET}/${conversation.conversationId}`,
+        `${this.#environment.apiUrl}${routes.chat.conversation.content.url(conversation.conversationId)}`,
         { params, headers }
       )
       .pipe(
@@ -70,7 +70,7 @@ export class ChatInfrastructure {
     const headers = new HttpHeaders().set('X-User-Id', this.#authService.user().id);
 
     return this.#http
-      .get<ConversationListElementDto[]>(`${this.#environment.apiUrl}/chat/conversations`, {
+      .get<ConversationListElementDto[]>(`${this.#environment.apiUrl}${routes.chat.conversations.url()}`, {
         headers
       })
       .pipe(

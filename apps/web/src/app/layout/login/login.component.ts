@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '@chat-app/domain';
 import { AccountListComponent,AccountWidgetComponent } from '@chat-app/feature-account';
-import { routing } from '@chat-app/util-routing';
+import { routes } from '@chat-app/util-routing';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 
 @Component({
@@ -23,6 +23,6 @@ export class LoginComponent {
 
   async onSelectUser(user: User): Promise<void> {
     this.#authService.setUser(user);
-    await this.#router.navigate([`${routing.chat.url()}`]);
+    await this.#router.navigate([`${routes.chat.url()}`]);
   }
 }

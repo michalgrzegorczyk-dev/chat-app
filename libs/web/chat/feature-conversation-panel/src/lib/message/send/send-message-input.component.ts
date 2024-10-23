@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ChatFacade, MessageSend } from '@chat-app/domain';
+import { ChatFacade, MessageSendDto } from '@chat-app/domain';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -21,7 +21,7 @@ export class SendMessageInputComponent {
     const selectedConversation = this.selectedConversation();
 
     if (this.inputMessage.trim() !== '' && selectedConversation) {
-      const messageToSend: MessageSend = {
+      const messageToSend: MessageSendDto = {
         localMessageId: uuidv4(),
         conversationId: selectedConversation.conversationId,
         userId: this.user().id,

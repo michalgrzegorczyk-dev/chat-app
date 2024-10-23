@@ -1,6 +1,5 @@
 import { NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
 import { ButtonComponent } from '@chat-app/ui-button';
 import { UiDropdownComponent } from '@chat-app/ui-dropdown';
 import { AuthService } from '@chat-app/web/shared/util/auth';

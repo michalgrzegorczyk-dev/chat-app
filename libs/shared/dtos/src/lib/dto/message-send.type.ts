@@ -1,6 +1,6 @@
-import { MessageStatus } from '@chat-app/dtos';
+import { MessageStatus } from './shared-types';
 
-export interface MessageSend {
+export interface MessageSendDto {
   localMessageId: string; // local_message_id
   conversationId: string; // conversation_id
   userId: string; // sender_id

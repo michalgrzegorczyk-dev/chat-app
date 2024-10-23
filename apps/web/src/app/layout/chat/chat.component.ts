@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ChatInfrastructureRest,ChatInfrastructureWebSockets } from '@chat-app/domain';
-import { ChatFacade, ChatFeatureStore, NetworkService } from '@chat-app/domain';
+import { ChatFacade, ChatFeatureStore, ChatInfrastructureRest,ChatInfrastructureWebSockets , NetworkService } from '@chat-app/domain';
 import { AccountWidgetComponent } from '@chat-app/feature-account';
 import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-list';
 import { AuthService } from '@chat-app/web/shared/util/auth';

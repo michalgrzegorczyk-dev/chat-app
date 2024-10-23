@@ -1,5 +1,4 @@
-import { MessageSend } from '@chat-app/domain';
-import { ConversationListElementDto } from '@chat-app/dtos';
+import { ConversationListElementDto,MessageSendDto } from '@chat-app/dtos';
 import { Body,Controller, Get, Headers, Param, Post } from '@nestjs/common';
 
 import { ChatGateway } from './chat.gateway';
@@ -24,7 +23,7 @@ export class ChatController {
   @Post('conversations')
   async updateMessagesFromQueue(
     @Headers('X-User-Id') userId: string,
-    @Body('queue') queue: MessageSend[],
+    @Body('queue') queue: MessageSendDto[],
     @Body('conversationId') conversationId: string
     ): Promise<any> {
     return await this.chatGateway.updateMessagesFromQueue(userId, conversationId, queue);

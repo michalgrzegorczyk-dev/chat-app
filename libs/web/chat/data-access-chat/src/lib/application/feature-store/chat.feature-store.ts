@@ -9,15 +9,16 @@ import { rxEffects } from '@rx-angular/state/effects';
 import { Subject, first } from 'rxjs';
 import { take } from 'rxjs/operators';
 
-import { ChatInfrastructure } from '../../infrastructure/chat.infrastructure';
 import {
   ChatState,
   Conversation,
   ConversationDetails,
   Message,
-  MessageSend,
+  MessageSendDto,
   ReceivedMessage,
 } from '../../models';
+import { ChatInfrastructureRest } from '../../infrastructure/chat.infrastructure-rest';
+import { ChatInfrastructureWebSockets } from '../../infrastructure/chat.infrastructure-ws';
 
 const INITIAL_STATE: ChatState = {
   messageList: [],
@@ -32,8 +33,8 @@ const INITIAL_STATE: ChatState = {
 @Injectable()
 export class ChatFeatureStore {
   // EVENTS
-  readonly sendMessageEvent$ = new Subject<MessageSend>();
-  readonly addMessageOptimistic$ = new Subject<MessageSend>();
+  readonly sendMessageEvent$ = new Subject<MessageSendDto>();
+  readonly addMessageOptimistic$ = new Subject<MessageSendDto>();
   readonly setMessageList$ = new Subject<Message[]>();
   readonly setMessageListLoading$ = new Subject<boolean>();
   readonly setConversationList$ = new Subject<Conversation[]>();
@@ -44,19 +45,20 @@ export class ChatFeatureStore {
   readonly messageReceived$ = new Subject<ReceivedMessage>();
 
   readonly #router = inject(Router);
-  readonly #chatInfrastructure = inject(ChatInfrastructure);
+  readonly #chatInfrastructureRest = inject(ChatInfrastructureRest);
+  readonly #chatInfrastructureWebSockets = inject(ChatInfrastructureWebSockets);
   readonly #network = inject(NetworkService);
 
   effects = rxEffects(({ register }) => {
-    register(this.#chatInfrastructure.messageReceived$, (message) => {
+    register(this.#chatInfrastructureWebSockets.messageReceived$, (message) => {
       return this.messageReceived$.next(message);
     });
 
     register(this.sendMessageEvent$.pipe(), (messageSend) => {
       if (this.#network.isOnline()) {
-        this.#chatInfrastructure.sendMessageWebSocket(messageSend);
+        this.#chatInfrastructureWebSockets.sendMessageWebSocket(messageSend);
       } else {
-        const array: MessageSend[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
+        const array: MessageSendDto[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
         array.push(messageSend);
         localStorage.setItem('offlineMessage', JSON.stringify(array));
         this.addMessageOptimistic$.next(messageSend);
@@ -70,7 +72,7 @@ export class ChatFeatureStore {
       await this.#router.navigate([`${routes.chat.url()}`, selectedConversation.conversationId]);
 
       this.setMessageListLoading$.next(true);
-      return this.#chatInfrastructure
+      return this.#chatInfrastructureRest
         .getConversationContent(selectedConversation)
         .pipe(first())
         .subscribe((conversationDetails: ConversationDetails) => {
@@ -87,20 +89,20 @@ export class ChatFeatureStore {
         });
     });
 
-    register(this.#chatInfrastructure.loadConversationListPing$, () => {
-      this.setConversationList$.next([]);
-      this.#chatInfrastructure
-        .fetchConversations()
-        .pipe(first())
-        .subscribe((conversationList) => {
-          this.setConversationList$.next(conversationList);
-        });
-    });
+    // register(this.#chatInfrastructureWebSockets.loadConversationListPing$, () => {
+    //   this.setConversationList$.next([]);
+    //   this.#chatInfrastructure
+    //     .fetchConversations()
+    //     .pipe(first())
+    //     .subscribe((conversationList) => {
+    //       this.setConversationList$.next(conversationList);
+    //     });
+    // });
 
     register(this.loadConversationList$, () => {
       this.setConversationListLoading$.next(true);
       this.setConversationList$.next([]);
-      this.#chatInfrastructure
+      this.#chatInfrastructureRest
         .fetchConversations()
         .pipe(take(1))
         .subscribe((conversationList) => {
@@ -135,7 +137,7 @@ export class ChatFeatureStore {
     });
 
     connect('conversationListLoading', this.setConversationListLoading$);
-    connect('messageList', this.#chatInfrastructure.messageReceived$, (state, message) => {
+    connect('messageList', this.#chatInfrastructureWebSockets.messageReceived$, (state, message) => {
 
       if (state.selectedConversation?.conversationId === message.conversationId) {
 
@@ -163,7 +165,7 @@ export class ChatFeatureStore {
       return [...state.messageList, newMessage];
     });
     connect('conversationList', this.setConversationList$);
-    connect('conversationList', this.#chatInfrastructure.loadConversationListSuccess$);
+    connect('conversationList', this.#chatInfrastructureWebSockets.loadConversationListSuccess$);
     connect('messageListLoading', this.setMessageListLoading$);
     connect('memberIdMap', this.setMemberIdMap$);
     connect(this.selectConversation$, (state, conversation) => {
@@ -196,7 +198,7 @@ export class ChatFeatureStore {
   constructor() {
     this.#network.onlineStatus$.subscribe((isOnline) => {
       if (isOnline) {
-        const array: MessageSend[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
+        const array: MessageSendDto[] = JSON.parse(localStorage.getItem('offlineMessage') ?? '[]');
         array.forEach((message) => {
           this.sendMessageEvent$.next(message);
         });

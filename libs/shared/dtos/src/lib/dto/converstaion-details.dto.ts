@@ -1,4 +1,4 @@
-import { MessageStatus } from '../types-make-separate-lib/shared-types';
+import { MessageStatus } from './shared-types';
 
 export interface ConversationDetailsDto {
     conversationId: string;

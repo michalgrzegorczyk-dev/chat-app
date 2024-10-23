@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 
-import { Conversation, MessageSend } from '../models';
+import { Conversation, MessageSendDto } from '../models';
 
 import { ChatFeatureStore } from './feature-store/chat.feature-store';
 
@@ -15,7 +15,7 @@ export class ChatFacade {
   readonly selectedConversation = this.#chatStore.selectedConversation;
   readonly memberIdMap = this.#chatStore.memberIdMap;
 
-  sendMessage(messageSend: MessageSend): void {
+  sendMessage(messageSend: MessageSendDto): void {
     this.#chatStore.sendMessageEvent$.next(messageSend);
   }
 

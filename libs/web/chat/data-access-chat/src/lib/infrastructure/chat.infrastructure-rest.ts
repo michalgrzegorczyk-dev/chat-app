@@ -1,32 +1,17 @@
-import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { Conversation } from '@chat-app/domain';
+import { HttpHeaders, HttpParams, HttpClient } from '@angular/common/http';
+import { ROUTE_PARAMS, routes } from '@chat-app/util-routing';
 import { ConversationDetailsDto, ConversationListElementDto } from '@chat-app/dtos';
-import { ENVIRONMENT } from '@chat-app/environment';
-import { routes, ROUTE_PARAMS } from '@chat-app/util-routing';
+import { map, Observable } from 'rxjs';
 import { AuthService } from '@chat-app/web/shared/util/auth';
-import { map, Observable, Subject } from 'rxjs';
-import { io } from 'socket.io-client';
-
-import { Conversation, MessageSend, ReceivedMessage } from '../models';
+import { ENVIRONMENT } from '@chat-app/environment';
 
 @Injectable()
-export class ChatInfrastructure {
-  readonly messageReceived$ = new Subject<ReceivedMessage>();
-  readonly loadConversationListSuccess$ = new Subject<Conversation[]>();
-  readonly loadConversationListPing$ = new Subject<boolean>();
-
-  readonly #environment = inject(ENVIRONMENT);
-  readonly #socket = io(this.#environment.apiUrl, {
-    query: { userId: inject(AuthService).user().id },
-    transports: ['websocket'],
-    withCredentials: true
-  });
+export class ChatInfrastructureRest {
   readonly #http = inject(HttpClient);
   readonly #authService = inject(AuthService);
-
-  constructor() {
-    this.setupSocketListeners();
-  }
+  readonly #environment = inject(ENVIRONMENT);
 
   getConversationContent(conversation: Conversation) {
     const headers = new HttpHeaders().set(
@@ -66,6 +51,7 @@ export class ChatInfrastructure {
       );
   }
 
+
   fetchConversations(): Observable<Conversation[]> {
     const headers = new HttpHeaders().set('X-User-Id', this.#authService.user().id);
 
@@ -82,31 +68,5 @@ export class ChatInfrastructure {
           });
         })
       );
-  }
-
-  sendMessageWebSocket(messageSend: MessageSend): void {
-    this.#socket.emit('sendMessage', messageSend, ((error: any) => {
-      if (error) {
-        console.error('Error sending message:', error);
-      }
-    }));
-  }
-
-  private setupSocketListeners(): void {
-    this.#socket.on('sendMessageSuccess', (message: any) => {
-      this.messageReceived$.next({
-        conversationId: message.conversation_id,
-        localMessageId: message.local_message_id,
-        content: message.content,
-        createdAt: message.created_at,
-        messageId: message.id,
-        senderId: message.sender_id,
-        status: 'sent'
-      });
-    });
-
-    this.#socket.on('loadConversationListSuccess', (conversationList: Conversation[]) => {
-      this.loadConversationListSuccess$.next(conversationList);
-    });
   }
 }

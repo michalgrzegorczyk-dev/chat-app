@@ -10,7 +10,6 @@ export class ModalService {
   #rootViewContainer!: ViewContainerRef;
 
   open(contentComponent: Type<ModalContentComponent>, title: string): void {
-    console.log('ModalService: Attempting to open modal');
     if (!this.#rootViewContainer) {
       console.error('ModalService: Root view container not set');
       return;

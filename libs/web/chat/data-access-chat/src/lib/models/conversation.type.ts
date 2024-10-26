@@ -1,4 +1,4 @@
-export interface Conversation {
+export type Conversation = {
   conversationId: string;
   avatarUrl: string;
   name: string;

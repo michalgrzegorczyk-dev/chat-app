@@ -1,5 +1,5 @@
 import { Message } from './message.type';
 
-export interface ReceivedMessage extends Message {
+export type ReceivedMessage = Message & {
   conversationId: string;
 }

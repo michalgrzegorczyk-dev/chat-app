@@ -1,6 +1,6 @@
 import { MessageStatus } from '@chat-app/dtos';
 
-export interface Message {
+export type Message = {
   createdAt: string;
   localMessageId?: string;
   messageId: string;

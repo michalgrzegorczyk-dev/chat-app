@@ -4,13 +4,13 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
 import { Subject } from 'rxjs';
 import { io } from 'socket.io-client';
 
-import { Conversation, MessageSendDto, ReceivedMessage } from '../models';
+import { Conversation, ReceivedMessage } from '../models';
+import { MessageSendDto } from '@chat-app/dtos';
 
 @Injectable()
 export class ChatInfrastructureWebSockets {
   readonly messageReceived$ = new Subject<ReceivedMessage>();
   readonly loadConversationListSuccess$ = new Subject<Conversation[]>();
-
   readonly #environment = inject(ENVIRONMENT);
   readonly #socket = io(this.#environment.apiUrl, {
     query: { userId: inject(AuthService).user().id },

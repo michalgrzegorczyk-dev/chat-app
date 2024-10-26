@@ -1,7 +1,6 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { ChatInfrastructureRest,ChatInfrastructureWebSockets } from '@chat-app/domain';
-import { ChatFacade, ChatFeatureStore, NetworkService } from '@chat-app/domain';
+import { ChatInfrastructureRest, ChatInfrastructureWebSockets, ChatStore, NetworkService } from '@chat-app/domain';
 import { AccountWidgetComponent } from '@chat-app/feature-account';
 import { ConversationListLayoutComponent } from '@chat-app/feature-conversation-list';
 import { AuthService } from '@chat-app/web/shared/util/auth';
@@ -13,17 +12,13 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
   templateUrl: './chat.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
-    ChatInfrastructureWebSockets,
+    ChatStore,
     ChatInfrastructureRest,
-    ChatFacade,
-    ChatFeatureStore,
-    NetworkService
+    ChatInfrastructureWebSockets,
+    NetworkService,
   ]
 })
-export class ChatComponent implements OnInit {
+export class ChatComponent {
   readonly user = inject(AuthService).user;
 
-  ngOnInit(): void {
-    console.log('CHAT NG ON INIT', this.user().name);
-  }
 }

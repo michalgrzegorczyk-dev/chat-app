@@ -1,4 +1,4 @@
-import {AsyncPipe, JsonPipe, NgClass} from "@angular/common";
+import {AsyncPipe, NgClass} from "@angular/common";
 import {ChangeDetectionStrategy,Component} from "@angular/core";
 import { ModalContentComponent } from '@chat-app/ui-modal';
 
@@ -7,7 +7,7 @@ import { ModalContentComponent } from '@chat-app/ui-modal';
   templateUrl: './conversation-remove.component.html',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, JsonPipe, AsyncPipe]
+  imports: [NgClass, AsyncPipe]
 })
 export class ConversationRemoveComponent implements ModalContentComponent{
 }

@@ -1,4 +1,4 @@
-import { inject,Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { NotifierService } from '@chat-app/ui-notifier';
 import { BehaviorSubject, fromEvent } from 'rxjs';
 
@@ -18,11 +18,11 @@ export class NetworkService {
 
   private initializeNetworkListeners(): void {
     fromEvent(window, 'online').subscribe(() => {
-      this.#notifier.notify('success','You are online');
+      this.#notifier.notify('success', 'You are online');
       this.updateOnlineStatus(true);
     });
     fromEvent(window, 'offline').subscribe(() => {
-      this.#notifier.notify('error','You are offline');
+      this.#notifier.notify('error', 'You are offline');
       this.updateOnlineStatus(false);
     });
   }

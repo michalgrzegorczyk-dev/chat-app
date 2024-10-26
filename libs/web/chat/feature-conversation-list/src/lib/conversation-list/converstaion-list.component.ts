@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe,JsonPipe, NgClass } from '@angular/common';
+import { AsyncPipe, DatePipe, JsonPipe, NgClass } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { Conversation } from '@chat-app/domain';
 import { ButtonComponent, ButtonRemoveComponent } from '@chat-app/ui-button';

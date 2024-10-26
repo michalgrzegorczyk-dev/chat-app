@@ -20,17 +20,17 @@ export const slide: NotifierAnimationPreset = {
     // Configure variables, depending on configuration and component
     if (config.position.horizontal.position === 'left') {
       from = {
-        transform: `translate3d( 0, ${shift}px, 0 )`,
+        transform: `translate3d( 0, ${shift}px, 0 )`
       };
       to = {
-        transform: `translate3d( calc( -100% - ${config.position.horizontal.distance}px - 10px ), ${shift}px, 0 )`,
+        transform: `translate3d( calc( -100% - ${config.position.horizontal.distance}px - 10px ), ${shift}px, 0 )`
       };
     } else if (config.position.horizontal.position === 'right') {
       from = {
-        transform: `translate3d( 0, ${shift}px, 0 )`,
+        transform: `translate3d( 0, ${shift}px, 0 )`
       };
       to = {
-        transform: `translate3d( calc( 100% + ${config.position.horizontal.distance}px + 10px ), ${shift}px, 0 )`,
+        transform: `translate3d( calc( 100% + ${config.position.horizontal.distance}px + 10px ), ${shift}px, 0 )`
       };
     } else {
       let horizontalPosition: string;
@@ -40,17 +40,17 @@ export const slide: NotifierAnimationPreset = {
         horizontalPosition = `calc( 100% + ${config.position.horizontal.distance}px + 10px )`;
       }
       from = {
-        transform: `translate3d( -50%, ${shift}px, 0 )`,
+        transform: `translate3d( -50%, ${shift}px, 0 )`
       };
       to = {
-        transform: `translate3d( -50%, ${horizontalPosition}, 0 )`,
+        transform: `translate3d( -50%, ${horizontalPosition}, 0 )`
       };
     }
 
     // Done
     return {
       from,
-      to,
+      to
     };
   },
   show: (notification: NotifierNotification): NotifierAnimationPresetKeyframes => {
@@ -66,17 +66,17 @@ export const slide: NotifierAnimationPreset = {
     // Configure variables, depending on configuration and component
     if (config.position.horizontal.position === 'left') {
       from = {
-        transform: `translate3d( calc( -100% - ${config.position.horizontal.distance}px - 10px ), 0, 0 )`,
+        transform: `translate3d( calc( -100% - ${config.position.horizontal.distance}px - 10px ), 0, 0 )`
       };
       to = {
-        transform: 'translate3d( 0, 0, 0 )',
+        transform: 'translate3d( 0, 0, 0 )'
       };
     } else if (config.position.horizontal.position === 'right') {
       from = {
-        transform: `translate3d( calc( 100% + ${config.position.horizontal.distance}px + 10px ), 0, 0 )`,
+        transform: `translate3d( calc( 100% + ${config.position.horizontal.distance}px + 10px ), 0, 0 )`
       };
       to = {
-        transform: 'translate3d( 0, 0, 0 )',
+        transform: 'translate3d( 0, 0, 0 )'
       };
     } else {
       let horizontalPosition: string;
@@ -86,17 +86,17 @@ export const slide: NotifierAnimationPreset = {
         horizontalPosition = `calc( 100% + ${config.position.horizontal.distance}px + 10px )`;
       }
       from = {
-        transform: `translate3d( -50%, ${horizontalPosition}, 0 )`,
+        transform: `translate3d( -50%, ${horizontalPosition}, 0 )`
       };
       to = {
-        transform: 'translate3d( -50%, 0, 0 )',
+        transform: 'translate3d( -50%, 0, 0 )'
       };
     }
 
     // Done
     return {
       from,
-      to,
+      to
     };
-  },
+  }
 };

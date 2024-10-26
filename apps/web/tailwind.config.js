@@ -11,7 +11,7 @@ module.exports = {
     join(__dirname, 'src/**/!(*.stories|*.spec).{ts,html}'), //todo is it useful?
     join('web/**/!(*.stories|*.spec).{ts,html}'), //todo added this line
     join('libs/**/!(*.stories|*.spec).{ts,html}'), //todo added this line
-    ...createGlobPatternsForDependencies(__dirname),
+    ...createGlobPatternsForDependencies(__dirname)
   ],
   theme: {
     extend: {
@@ -22,15 +22,15 @@ module.exports = {
           200: '#9370DB',
           500: '#7B68EE',
           600: '#6A5ACD',
-          700: '#6050CB',
+          700: '#6050CB'
         },
         danger: {
           100: '#FFA8A3',
           200: '#FF7066',
-          300: '#FF5A5F',
-        },
-      },
-    },
+          300: '#FF5A5F'
+        }
+      }
+    }
   },
-  plugins: [],
+  plugins: []
 };

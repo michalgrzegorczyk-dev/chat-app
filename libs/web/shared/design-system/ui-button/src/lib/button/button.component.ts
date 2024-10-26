@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import {ChangeDetectionStrategy,Component, input, output} from "@angular/core";
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 @Component({
   selector: 'mg-button',

@@ -23,7 +23,7 @@ export class AccountWidgetComponent {
   ];
 
   async onItemClick($event: any): Promise<void> {
-    if($event.text === 'Change Account') {
+    if ($event.text === 'Change Account') {
       await this.#authService.logOut();
     }
   }

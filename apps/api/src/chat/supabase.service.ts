@@ -3,7 +3,8 @@ import {
   ConversationListElementDto,
   MemberDto,
   MessageDto,
-  SendMessageRequestDto} from '@chat-app/dtos';
+  SendMessageRequestDto
+} from '@chat-app/dtos';
 import { Injectable } from '@nestjs/common';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
@@ -96,20 +97,20 @@ export class SupabaseService {
   }
 
   async saveMessage(message: SendMessageRequestDto): Promise<MessageDto> {
-      const { data } = await this.supabase
-        .from('message')
-        .insert({
-          conversation_id: message.conversationId,
-          local_message_id: message.localMessageId,
-          sender_id: message.userId,
-          content: message.content,
-          created_at: message.timestamp,
-          status: 'sent'
-        })
-        .select()
-        .single();
+    const { data } = await this.supabase
+      .from('message')
+      .insert({
+        conversation_id: message.conversationId,
+        local_message_id: message.localMessageId,
+        sender_id: message.userId,
+        content: message.content,
+        created_at: message.timestamp,
+        status: 'sent'
+      })
+      .select()
+      .single();
 
-      return data;
+    return data;
   }
 
   async getConversation(userId: string, conversationId: string): Promise<ConversationDetailsDto> {
@@ -136,7 +137,7 @@ export class SupabaseService {
         content: msg.content,
         created_at: msg.created_at,
         sender_id: String(msg.sender.id),
-        status: 'sent', //todo
+        status: 'sent' //todo
       })),
       memberList: this.getUniqueSenders(messageListDb)
     };
@@ -152,10 +153,10 @@ export class SupabaseService {
 
   //todo remove after auth implementation
   async getAllUsers() {
-      const {data} = await this.supabase
-        .from('users')
-        .select('*');
-      return data;
+    const { data } = await this.supabase
+      .from('users')
+      .select('*');
+    return data;
   }
 
   async updateConversationList(sendMessageDto: SendMessageRequestDto): Promise<void> {

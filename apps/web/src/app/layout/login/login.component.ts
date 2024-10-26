@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AccountListComponent,AccountWidgetComponent } from '@chat-app/feature-account';
+import { AccountListComponent, AccountWidgetComponent } from '@chat-app/feature-account';
 import { routes } from '@chat-app/util-routing';
 import { AuthService, User } from '@chat-app/web/shared/util/auth';
 

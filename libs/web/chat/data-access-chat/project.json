@@ -4,11 +4,16 @@
   "sourceRoot": "libs/web/chat/data-access-chat/src",
   "prefix": "mg",
   "projectType": "library",
-  "tags": ["scope:chat", "type:data-access"],
+  "tags": [
+    "scope:chat",
+    "type:data-access"
+  ],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "libs/web/chat/data-access-chat/jest.config.ts"
       }

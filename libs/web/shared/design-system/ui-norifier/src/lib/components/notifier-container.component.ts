@@ -31,7 +31,7 @@ import { NotifierNotificationComponent } from './notifier-notification.component
   selector: 'notifier-container',
   templateUrl: './notifier-container.component.html',
   standalone: true,
-  imports: [NotifierNotificationComponent],
+  imports: [NotifierNotificationComponent]
 
 })
 export class NotifierContainerComponent implements OnDestroy {
@@ -95,7 +95,6 @@ export class NotifierContainerComponent implements OnDestroy {
       this.#queueServiceSubscription.unsubscribe();
     }
   }
-
 
 
   /**

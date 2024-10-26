@@ -1,4 +1,4 @@
-import {ComponentRef, Injectable, Type,ViewContainerRef } from '@angular/core';
+import { ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
 
 import { ModalComponent, ModalContentComponent } from './modal.component';
 
@@ -19,7 +19,7 @@ export class ModalService {
 
     this.#modalComponentRef = this.#rootViewContainer.createComponent(ModalComponent);
     this.#modalComponentRef.instance.setTitle(title);
-    this.#modalComponentRef.instance.open()
+    this.#modalComponentRef.instance.open();
     this.#modalComponentRef.instance.createContent(contentComponent);
   }
 

@@ -1,5 +1,5 @@
-import {AsyncPipe, JsonPipe, NgClass} from "@angular/common";
-import {ChangeDetectionStrategy,Component} from "@angular/core";
+import { AsyncPipe, JsonPipe, NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'mg-conversation-add',

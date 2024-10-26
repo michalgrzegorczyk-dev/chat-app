@@ -13,22 +13,22 @@ describe('Slide Animation Preset', () => {
         position: {
           horizontal: {
             distance: 50,
-            position: 'left',
+            position: 'left'
           },
           vertical: {
             distance: 100,
-            position: 'top',
-          },
-        },
+            position: 'top'
+          }
+        }
       });
       const testNotification: MockNotification = new MockNotification(testConfig);
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          transform: `translate3d( calc( -100% - ${testConfig.position.horizontal.distance}px - 10px ), 0, 0 )`,
+          transform: `translate3d( calc( -100% - ${testConfig.position.horizontal.distance}px - 10px ), 0, 0 )`
         },
         to: {
-          transform: 'translate3d( 0, 0, 0 )',
-        },
+          transform: 'translate3d( 0, 0, 0 )'
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = slide.show(<any>testNotification);
 
@@ -40,22 +40,22 @@ describe('Slide Animation Preset', () => {
         position: {
           horizontal: {
             distance: 50,
-            position: 'right',
+            position: 'right'
           },
           vertical: {
             distance: 100,
-            position: 'top',
-          },
-        },
+            position: 'top'
+          }
+        }
       });
       const testNotification: MockNotification = new MockNotification(testConfig);
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          transform: `translate3d( calc( 100% + ${testConfig.position.horizontal.distance}px + 10px ), 0, 0 )`,
+          transform: `translate3d( calc( 100% + ${testConfig.position.horizontal.distance}px + 10px ), 0, 0 )`
         },
         to: {
-          transform: 'translate3d( 0, 0, 0 )',
-        },
+          transform: 'translate3d( 0, 0, 0 )'
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = slide.show(<any>testNotification);
 
@@ -67,22 +67,22 @@ describe('Slide Animation Preset', () => {
         position: {
           horizontal: {
             distance: 50,
-            position: 'middle',
+            position: 'middle'
           },
           vertical: {
             distance: 100,
-            position: 'top',
-          },
-        },
+            position: 'top'
+          }
+        }
       });
       const testNotification: MockNotification = new MockNotification(testConfig);
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          transform: `translate3d( -50%, calc( -100% - ${testConfig.position.horizontal.distance}px - 10px ), 0 )`,
+          transform: `translate3d( -50%, calc( -100% - ${testConfig.position.horizontal.distance}px - 10px ), 0 )`
         },
         to: {
-          transform: 'translate3d( -50%, 0, 0 )',
-        },
+          transform: 'translate3d( -50%, 0, 0 )'
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = slide.show(<any>testNotification);
 
@@ -94,22 +94,22 @@ describe('Slide Animation Preset', () => {
         position: {
           horizontal: {
             distance: 50,
-            position: 'middle',
+            position: 'middle'
           },
           vertical: {
             distance: 100,
-            position: 'bottom',
-          },
-        },
+            position: 'bottom'
+          }
+        }
       });
       const testNotification: MockNotification = new MockNotification(testConfig);
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          transform: `translate3d( -50%, calc( 100% + ${testConfig.position.horizontal.distance}px + 10px ), 0 )`,
+          transform: `translate3d( -50%, calc( 100% + ${testConfig.position.horizontal.distance}px + 10px ), 0 )`
         },
         to: {
-          transform: 'translate3d( -50%, 0, 0 )',
-        },
+          transform: 'translate3d( -50%, 0, 0 )'
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = slide.show(<any>testNotification);
 
@@ -123,24 +123,24 @@ describe('Slide Animation Preset', () => {
         position: {
           horizontal: {
             distance: 50,
-            position: 'left',
+            position: 'left'
           },
           vertical: {
             distance: 100,
-            position: 'top',
-          },
-        },
+            position: 'top'
+          }
+        }
       });
       const testNotification: MockNotification = new MockNotification(testConfig);
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          transform: `translate3d( 0, ${testNotification.component.getShift()}px, 0 )`,
+          transform: `translate3d( 0, ${testNotification.component.getShift()}px, 0 )`
         },
         to: {
           transform: `translate3d( calc( -100% - ${
             testConfig.position.horizontal.distance
-          }px - 10px ), ${testNotification.component.getShift()}px, 0 )`,
-        },
+          }px - 10px ), ${testNotification.component.getShift()}px, 0 )`
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = slide.hide(<any>testNotification);
 
@@ -152,24 +152,24 @@ describe('Slide Animation Preset', () => {
         position: {
           horizontal: {
             distance: 50,
-            position: 'right',
+            position: 'right'
           },
           vertical: {
             distance: 100,
-            position: 'top',
-          },
-        },
+            position: 'top'
+          }
+        }
       });
       const testNotification: MockNotification = new MockNotification(testConfig);
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          transform: `translate3d( 0, ${testNotification.component.getShift()}px, 0 )`,
+          transform: `translate3d( 0, ${testNotification.component.getShift()}px, 0 )`
         },
         to: {
           transform: `translate3d( calc( 100% + ${
             testConfig.position.horizontal.distance
-          }px + 10px ), ${testNotification.component.getShift()}px, 0 )`,
-        },
+          }px + 10px ), ${testNotification.component.getShift()}px, 0 )`
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = slide.hide(<any>testNotification);
 
@@ -181,22 +181,22 @@ describe('Slide Animation Preset', () => {
         position: {
           horizontal: {
             distance: 50,
-            position: 'middle',
+            position: 'middle'
           },
           vertical: {
             distance: 100,
-            position: 'top',
-          },
-        },
+            position: 'top'
+          }
+        }
       });
       const testNotification: MockNotification = new MockNotification(testConfig);
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          transform: `translate3d( -50%, ${testNotification.component.getShift()}px, 0 )`,
+          transform: `translate3d( -50%, ${testNotification.component.getShift()}px, 0 )`
         },
         to: {
-          transform: `translate3d( -50%, calc( -100% - ${testConfig.position.horizontal.distance}px - 10px ), 0 )`,
-        },
+          transform: `translate3d( -50%, calc( -100% - ${testConfig.position.horizontal.distance}px - 10px ), 0 )`
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = slide.hide(<any>testNotification);
 
@@ -208,22 +208,22 @@ describe('Slide Animation Preset', () => {
         position: {
           horizontal: {
             distance: 50,
-            position: 'middle',
+            position: 'middle'
           },
           vertical: {
             distance: 100,
-            position: 'bottom',
-          },
-        },
+            position: 'bottom'
+          }
+        }
       });
       const testNotification: MockNotification = new MockNotification(testConfig);
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          transform: `translate3d( -50%, ${testNotification.component.getShift()}px, 0 )`,
+          transform: `translate3d( -50%, ${testNotification.component.getShift()}px, 0 )`
         },
         to: {
-          transform: `translate3d( -50%, calc( 100% + ${testConfig.position.horizontal.distance}px + 10px ), 0 )`,
-        },
+          transform: `translate3d( -50%, calc( 100% + ${testConfig.position.horizontal.distance}px + 10px ), 0 )`
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = slide.hide(<any>testNotification);
 
@@ -278,7 +278,7 @@ class MockNotification {
     getConfig: () => this.config,
     getHeight: () => mockNotificationHeight,
     getShift: () => mockNotificationShift,
-    getWidth: () => mockNotificationWidth,
+    getWidth: () => mockNotificationWidth
   };
 
   /**

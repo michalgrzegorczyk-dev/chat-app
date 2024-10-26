@@ -117,36 +117,36 @@ export class NotifierConfig implements NotifierOptions {
         easing: 'ease',
         offset: 50,
         preset: 'fade',
-        speed: 300,
+        speed: 300
       },
       overlap: 150,
       shift: {
         easing: 'ease',
-        speed: 300,
+        speed: 300
       },
       show: {
         easing: 'ease',
         preset: 'slide',
-        speed: 300,
-      },
+        speed: 300
+      }
     };
     this.behaviour = {
       autoHide: 7000,
       onClick: false,
       onMouseover: 'pauseAutoHide',
       showDismissButton: true,
-      stacking: 4,
+      stacking: 4
     };
     this.position = {
       horizontal: {
         distance: 12,
-        position: 'left',
+        position: 'left'
       },
       vertical: {
         distance: 12,
         gap: 10,
-        position: 'bottom',
-      },
+        position: 'bottom'
+      }
     };
     this.theme = 'material';
 

@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject,Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { UserDto } from '@chat-app/dtos';
 import { ENVIRONMENT } from '@chat-app/environment';
@@ -10,11 +10,11 @@ import { User } from './user.type';
 const USER_PLACEHOLDER = {
   id: '',
   avatarUrl: '',
-  name: '',
+  name: ''
 };
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class AuthService {
   readonly user = signal<User>(USER_PLACEHOLDER);
@@ -49,7 +49,7 @@ export class AuthService {
         return response.map((userDto: UserDto) => {
           return {
             ...userDto,
-            avatarUrl: userDto.profile_photo_url,
+            avatarUrl: userDto.profile_photo_url
           };
         });
       })

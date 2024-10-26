@@ -1,5 +1,5 @@
-import {AsyncPipe, NgClass} from "@angular/common";
-import {ChangeDetectionStrategy,Component} from "@angular/core";
+import { AsyncPipe, NgClass } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { ModalContentComponent } from '@chat-app/ui-modal';
 
 @Component({
@@ -9,5 +9,5 @@ import { ModalContentComponent } from '@chat-app/ui-modal';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [NgClass, AsyncPipe]
 })
-export class ConversationRemoveComponent implements ModalContentComponent{
+export class ConversationRemoveComponent implements ModalContentComponent {
 }

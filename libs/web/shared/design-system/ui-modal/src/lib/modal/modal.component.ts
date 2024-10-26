@@ -7,7 +7,8 @@ import {
   signal,
   Type,
   ViewChild,
-  ViewContainerRef} from '@angular/core';
+  ViewContainerRef
+} from '@angular/core';
 import { ButtonComponent } from '@chat-app/ui-button';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
@@ -20,7 +21,7 @@ export interface ModalContentComponent {
   standalone: true,
   imports: [CommonModule, ButtonComponent],
   templateUrl: './modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ModalComponent implements AfterViewInit {
   @ViewChild('contentContainer', { read: ViewContainerRef, static: false }) contentViewContainer!: ViewContainerRef;

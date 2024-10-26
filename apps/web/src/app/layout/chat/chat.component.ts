@@ -15,7 +15,7 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
     ChatStore,
     ChatInfrastructureRest,
     ChatInfrastructureWebSockets,
-    NetworkService,
+    NetworkService
   ]
 })
 export class ChatComponent {

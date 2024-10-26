@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageSendDto,MessageStatus } from '@chat-app/dtos';
+import { MessageSendDto, MessageStatus } from '@chat-app/dtos';
 import { NetworkService } from '@chat-app/network';
 import { routes } from '@chat-app/util-routing';
 import { tapResponse } from '@ngrx/operators';

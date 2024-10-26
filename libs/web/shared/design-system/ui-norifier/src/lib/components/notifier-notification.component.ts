@@ -1,6 +1,15 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, EventEmitter, Input, Output, Renderer2 } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  Output,
+  Renderer2
+} from '@angular/core';
 
 import { NotifierAnimationData } from '../models/notifier-animation.model';
 import { NotifierConfig } from '../models/notifier-config.model';
@@ -23,12 +32,12 @@ import { NotifierTimerService } from '../services/notifier-timer.service';
     '(click)': 'onNotificationClick()',
     '(mouseout)': 'onNotificationMouseout()',
     '(mouseover)': 'onNotificationMouseover()',
-    class: 'notifier__notification',
+    class: 'notifier__notification'
   },
   providers: [
     // We provide the timer to the component's local injector, so that every notification components gets its own
     // instance of the timer service, thus running their timers independently from each other
-    NotifierTimerService,
+    NotifierTimerService
   ],
   // eslint-disable-next-line @angular-eslint/component-selector
   selector: 'notifier-notification',
@@ -120,7 +129,7 @@ export class NotifierNotificationComponent implements AfterViewInit {
     renderer: Renderer2,
     notifierService: NotifierService,
     notifierTimerService: NotifierTimerService,
-    notifierAnimationService: NotifierAnimationService,
+    notifierAnimationService: NotifierAnimationService
   ) {
     this.config = notifierService.getConfig();
     this.ready = new EventEmitter<NotifierNotificationComponent>();
@@ -261,17 +270,17 @@ export class NotifierNotificationComponent implements AfterViewInit {
           // TODO: Extract into animation service
           keyframes: [
             {
-              transform: `translate3d( ${horizontalPosition}, ${this.#elementShift}px, 0 )`,
+              transform: `translate3d( ${horizontalPosition}, ${this.#elementShift}px, 0 )`
             },
             {
-              transform: `translate3d( ${horizontalPosition}, ${newElementShift}px, 0 )`,
-            },
+              transform: `translate3d( ${horizontalPosition}, ${newElementShift}px, 0 )`
+            }
           ],
           options: {
             duration: this.config.animations.shift.speed,
             easing: this.config.animations.shift.easing,
-            fill: 'forwards',
-          },
+            fill: 'forwards'
+          }
         };
         this.#elementShift = newElementShift;
         const animation: Animation = this.#element.animate(animationData.keyframes, animationData.options);

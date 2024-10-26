@@ -6,7 +6,8 @@
           'bg-primary-50 border-primary-100': conversation | isActive,
           'bg-gray-50 border-gray-200 hover:bg-gray-100': !(conversation | isActive)
         }">
-      <img [src]="conversation.avatarUrl" [alt]="'Avatar for conversation: ' + conversation.name" class="w-8 h-8 rounded-lg mr-4">
+      <img [src]="conversation.avatarUrl" [alt]="'Avatar for conversation: ' + conversation.name"
+           class="w-8 h-8 rounded-lg mr-4">
       <div class="flex-1 overflow-hidden">
         <div class="flex flex-col">
           <div class="flex items-center justify-between">
@@ -16,7 +17,7 @@
             </span>
           </div>
           <span class="text-sm text-gray-700">
-            @if(conversation.lastMessageSenderId === user().id) {
+            @if (conversation.lastMessageSenderId === user().id) {
               You:
             }
             {{ conversation.lastMessageContent }}

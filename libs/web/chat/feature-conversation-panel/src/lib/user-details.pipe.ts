@@ -1,4 +1,4 @@
-import { inject,Pipe, PipeTransform } from '@angular/core';
+import { inject, Pipe, PipeTransform } from '@angular/core';
 import { ChatStore } from '@chat-app/domain';
 import { User } from '@chat-app/web/shared/util/auth';
 

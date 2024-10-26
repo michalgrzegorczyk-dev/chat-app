@@ -1,5 +1,5 @@
-import { NgClass,NgForOf } from '@angular/common';
-import { ChangeDetectionStrategy,Component } from '@angular/core';
+import { NgClass, NgForOf } from '@angular/common';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'mg-conversation-loading',

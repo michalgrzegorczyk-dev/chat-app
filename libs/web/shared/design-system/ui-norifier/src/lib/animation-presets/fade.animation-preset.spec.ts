@@ -12,11 +12,11 @@ describe('Fade Animation Preset', () => {
       const testNotification: MockNotification = new MockNotification(<NotifierConfig>{});
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          opacity: '0',
+          opacity: '0'
         },
         to: {
-          opacity: '1',
-        },
+          opacity: '1'
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = fade.show(<any>testNotification);
 
@@ -29,11 +29,11 @@ describe('Fade Animation Preset', () => {
       const testNotification: MockNotification = new MockNotification(<NotifierConfig>{});
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          opacity: '1',
+          opacity: '1'
         },
         to: {
-          opacity: '0',
-        },
+          opacity: '0'
+        }
       };
       const keyframes: NotifierAnimationPresetKeyframes = fade.hide(<any>testNotification);
 
@@ -88,7 +88,7 @@ class MockNotification {
     getConfig: () => this.config,
     getHeight: () => mockNotificationHeight,
     getShift: () => mockNotificationShift,
-    getWidth: () => mockNotificationWidth,
+    getWidth: () => mockNotificationWidth
   };
 
   /**

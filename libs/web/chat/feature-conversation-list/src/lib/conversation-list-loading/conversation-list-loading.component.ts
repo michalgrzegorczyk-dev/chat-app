@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component} from "@angular/core";
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 
 @Component({
   selector: 'mg-conversation-list-loading',
@@ -26,7 +26,7 @@ import {ChangeDetectionStrategy, Component} from "@angular/core";
         <button class="w-full bg-gray-200 h-10 rounded-md animate-pulse"></button>
       </div>
     `,
-    changeDetection : ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConversationListLoadingComponent {
 }

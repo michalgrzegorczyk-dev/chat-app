@@ -3,7 +3,10 @@
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/docs",
-  "tags": ["scope:docs", "type:app"],
+  "tags": [
+    "scope:docs",
+    "type:app"
+  ],
   "targets": {
     "build": {
       "executor": "@nx-plus/docusaurus:browser",
@@ -22,7 +25,9 @@
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "apps/docs/jest.config.ts"
       }

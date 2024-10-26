@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ButtonComponent,ButtonRemoveComponent } from '@chat-app/ui-button';
+import { ButtonComponent, ButtonRemoveComponent } from '@chat-app/ui-button';
 import { UiDropdownComponent } from '@chat-app/ui-dropdown';
 
 @Component({
@@ -9,7 +9,7 @@ import { UiDropdownComponent } from '@chat-app/ui-dropdown';
   standalone: true,
   imports: [CommonModule, FormsModule, ButtonRemoveComponent, UiDropdownComponent, ButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './conversation-details.component.html',
+  templateUrl: './conversation-details.component.html'
 })
 export class ConversationDetailsComponent implements OnInit {
   readonly conversationName = input<string>('Conversation');
@@ -20,7 +20,7 @@ export class ConversationDetailsComponent implements OnInit {
   selectedTheme = 'System';
   searchQuery = '';
 
-  themeOptions: Array<{ type: 'link' | 'button', text: string, href?: string }>  = [
+  themeOptions: Array<{ type: 'link' | 'button', text: string, href?: string }> = [
     { type: 'button', text: 'Light' },
     { type: 'button', text: 'Dark' },
     { type: 'button', text: 'System' }

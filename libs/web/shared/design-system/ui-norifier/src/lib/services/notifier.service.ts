@@ -22,7 +22,7 @@ export function notifierDefaultConfigFactory(): NotifierConfig {
  * actions, which then get thrown into the action queue - eventually being processed at the right moment.
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class NotifierService {
 
@@ -74,7 +74,7 @@ export class NotifierService {
   public show(notificationOptions: NotifierNotificationOptions): void {
     this.#queueService.push({
       payload: notificationOptions,
-      type: 'SHOW',
+      type: 'SHOW'
     });
   }
 
@@ -86,7 +86,7 @@ export class NotifierService {
   public hide(notificationId: string): void {
     this.#queueService.push({
       payload: notificationId,
-      type: 'HIDE',
+      type: 'HIDE'
     });
   }
 
@@ -95,7 +95,7 @@ export class NotifierService {
    */
   public hideNewest(): void {
     this.#queueService.push({
-      type: 'HIDE_NEWEST',
+      type: 'HIDE_NEWEST'
     });
   }
 
@@ -104,7 +104,7 @@ export class NotifierService {
    */
   public hideOldest(): void {
     this.#queueService.push({
-      type: 'HIDE_OLDEST',
+      type: 'HIDE_OLDEST'
     });
   }
 
@@ -113,7 +113,7 @@ export class NotifierService {
    */
   public hideAll(): void {
     this.#queueService.push({
-      type: 'HIDE_ALL',
+      type: 'HIDE_ALL'
     });
   }
 
@@ -127,7 +127,7 @@ export class NotifierService {
   public notify(type: string, message: string, notificationId?: string): void {
     const notificationOptions: NotifierNotificationOptions = {
       message,
-      type,
+      type
     };
     if (notificationId !== undefined) {
       notificationOptions.id = notificationId;

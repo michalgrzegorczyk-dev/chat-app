@@ -13,7 +13,8 @@ const delayResponse = async <T>(promise: Promise<T>): Promise<T> => {
 
 @Controller('chat')
 export class ChatController {
-  constructor(private chatGateway: ChatGateway) {}
+  constructor(private chatGateway: ChatGateway) {
+  }
 
   @Get('users')
   async getUsers(): Promise<any> {

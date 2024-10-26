@@ -2,14 +2,18 @@ import { Injectable } from '@angular/core';
 
 import { fade } from '../animation-presets/fade.animation-preset';
 import { slide } from '../animation-presets/slide.animation-preset';
-import { NotifierAnimationData, NotifierAnimationPreset, NotifierAnimationPresetKeyframes } from '../models/notifier-animation.model';
+import {
+  NotifierAnimationData,
+  NotifierAnimationPreset,
+  NotifierAnimationPresetKeyframes
+} from '../models/notifier-animation.model';
 import { NotifierNotification } from '../models/notifier-notification.model';
 
 /**
  * Notifier animation service
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class NotifierAnimationService {
   /**
@@ -25,7 +29,7 @@ export class NotifierAnimationService {
   public constructor() {
     this.#animationPresets = {
       fade,
-      slide,
+      slide
     };
   }
 
@@ -60,8 +64,8 @@ export class NotifierAnimationService {
       options: {
         duration,
         easing,
-        fill: 'forwards', // Keep the newly painted state after the animation finished
-      },
+        fill: 'forwards' // Keep the newly painted state after the animation finished
+      }
     };
   }
 }

@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-// import { ChatFacade } from '@chat-app/domain';
 import { ButtonRemoveComponent } from '@chat-app/ui-button';
 
 import { ConversationComponent } from './conversation/conversation.component';
@@ -8,7 +7,7 @@ import { ConversationHeaderComponent } from './conversation/header/conversation-
 import { ConversationLoadingComponent } from './conversation/loading/conversation-loading.component';
 import { MessageListComponent } from './message/list/message-list.component';
 import { SendMessageInputComponent } from './message/send/send-message-input.component';
-import { ChatStore } from '../../../data-access-chat/src/lib/application/store/chat.store';
+import { ChatStore } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-conversation-panel-shell',

@@ -4,7 +4,8 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
 import { Subject } from 'rxjs';
 import { io } from 'socket.io-client';
 
-import { Conversation, MessageSendDto, ReceivedMessage } from '../models';
+import { Conversation, ReceivedMessage } from '../models';
+import { MessageSendDto } from '@chat-app/dtos';
 
 @Injectable()
 export class ChatInfrastructureWebSockets {

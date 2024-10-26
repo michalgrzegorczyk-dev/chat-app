@@ -1,6 +1,6 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { MessageStatus } from '@chat-app/dtos';
+import { MessageStatus, MessageSendDto } from '@chat-app/dtos';
 import { NetworkService } from '@chat-app/network';
 import { routes } from '@chat-app/util-routing';
 import { tapResponse } from '@ngrx/operators';
@@ -10,7 +10,7 @@ import { EMPTY, from, pipe, switchMap, tap } from 'rxjs';
 
 import { ChatInfrastructureRest } from '../../infrastructure/chat.infrastructure-rest';
 import { ChatInfrastructureWebSockets } from '../../infrastructure/chat.infrastructure-ws';
-import { Conversation, ConversationDetails, Message, MessageSendDto, ReceivedMessage } from '../../models';
+import { Conversation, ConversationDetails, Message, ReceivedMessage } from '../../models';
 import { ChatState } from '../../models/chat.state';
 
 export const initialState: ChatState = {

@@ -1,13 +1,15 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { ChatInfrastructureRest, ChatInfrastructureWebSockets, NetworkService } from '@chat-app/domain';
 import { MessageStatus } from '@chat-app/dtos';
+import { NetworkService } from '@chat-app/network';
 import { routes } from '@chat-app/util-routing';
 import { tapResponse } from '@ngrx/operators';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { EMPTY, from, pipe, switchMap, tap } from 'rxjs';
 
+import { ChatInfrastructureRest } from '../../infrastructure/chat.infrastructure-rest';
+import { ChatInfrastructureWebSockets } from '../../infrastructure/chat.infrastructure-ws';
 import { Conversation, ConversationDetails, Message, MessageSendDto, ReceivedMessage } from '../../models';
 import { ChatState } from '../../models/chat.state';
 
@@ -139,7 +141,7 @@ export const ChatStore = signalStore(
               if (currentConversationId === message.conversationId) {
                 const currentMessages = store.messageList();
 
-                // todo, not performant
+                // todo, not performant, skip  for now
                 const updatedMessages = currentMessages.map((currentMessage: Message) => {
                   if (currentMessage.localMessageId === message.localMessageId) {
                     return {

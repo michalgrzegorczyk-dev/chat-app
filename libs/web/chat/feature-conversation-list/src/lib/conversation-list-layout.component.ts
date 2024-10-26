@@ -24,12 +24,12 @@ export class ConversationListLayoutComponent implements OnInit {
   ngOnInit(): void {
     console.log('INIT')
     this.#store.initializeMessageReceiving();
+    this.#store.loadConversationList();
     this.#network.onlineStatus$.subscribe(isOnline => {
       if (isOnline) {
         this.#store.syncOfflineMessages();
       }
     });
-    this.#store.loadConversationList();
   }
 
   clickedConversation(conversation: Conversation): void {

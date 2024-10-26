@@ -1,5 +1,6 @@
 import { ConversationListElementDto, MessageSendDto } from '@chat-app/dtos';
 import { Body, Controller, Get, Headers, Param, Post } from '@nestjs/common';
+
 import { ChatGateway } from './chat.gateway';
 
 const DELAY_MS = 500;

@@ -1,11 +1,11 @@
-import { inject, Injectable } from '@angular/core';
-import { ENVIRONMENT } from '@chat-app/environment';
-import { AuthService } from '@chat-app/web/shared/util/auth';
-import { Subject } from 'rxjs';
-import { io } from 'socket.io-client';
+import { inject, Injectable } from "@angular/core";
+import { ENVIRONMENT } from "@chat-app/environment";
+import { AuthService } from "@chat-app/web/shared/util/auth";
+import { Subject } from "rxjs";
+import { io } from "socket.io-client";
 
-import { Conversation, ReceivedMessage } from '../models';
-import { MessageSendDto } from '@chat-app/dtos';
+import { Conversation, ReceivedMessage } from "../models";
+import { MessageSendDto } from "@chat-app/dtos";
 
 @Injectable()
 export class ChatInfrastructureWebSockets {
@@ -14,8 +14,8 @@ export class ChatInfrastructureWebSockets {
   readonly #environment = inject(ENVIRONMENT);
   readonly #socket = io(this.#environment.apiUrl, {
     query: { userId: inject(AuthService).user().id },
-    transports: ['websocket'],
-    withCredentials: true
+    transports: ["websocket"],
+    withCredentials: true,
   });
 
   constructor() {
@@ -23,15 +23,15 @@ export class ChatInfrastructureWebSockets {
   }
 
   sendMessageWebSocket(messageSend: MessageSendDto): void {
-    this.#socket.emit('sendMessage', messageSend, ((error: any) => {
+    this.#socket.emit("sendMessage", messageSend, (error: any) => {
       if (error) {
-        console.error('Error sending message:', error);
+        console.error("Error sending message:", error);
       }
-    }));
+    });
   }
 
   private setupSocketListeners(): void {
-    this.#socket.on('sendMessageSuccess', (message: any) => {
+    this.#socket.on("sendMessageSuccess", (message: any) => {
       this.messageReceived$.next({
         conversationId: message.conversation_id,
         localMessageId: message.local_message_id,
@@ -39,12 +39,15 @@ export class ChatInfrastructureWebSockets {
         createdAt: message.created_at,
         messageId: message.id,
         senderId: message.sender_id,
-        status: 'sent'
+        status: "sent",
       });
     });
 
-    this.#socket.on('loadConversationListSuccess', (conversationList: Conversation[]) => {
-      this.loadConversationListSuccess$.next(conversationList);
-    });
+    this.#socket.on(
+      "loadConversationListSuccess",
+      (conversationList: Conversation[]) => {
+        this.loadConversationListSuccess$.next(conversationList);
+      },
+    );
   }
 }

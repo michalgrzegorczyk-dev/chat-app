@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
 /**
  * Notifier timer service
@@ -7,7 +7,7 @@ import { Injectable } from '@angular/core';
  * timer. Furthermore, it can also pause the timer at any time, and resume later on. The timer API workd promise-based.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class NotifierTimerService {
   /**

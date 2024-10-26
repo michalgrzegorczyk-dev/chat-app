@@ -1,13 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
-import { Subscription } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+} from "@angular/core";
+import { Subscription } from "rxjs";
 
-import { NotifierAction } from '../models/notifier-action.model';
-import { NotifierConfig } from '../models/notifier-config.model';
-import { NotifierNotification } from '../models/notifier-notification.model';
-import { NotifierService } from '../services/notifier.service';
-import { NotifierQueueService } from '../services/notifier-queue.service';
+import { NotifierAction } from "../models/notifier-action.model";
+import { NotifierConfig } from "../models/notifier-config.model";
+import { NotifierNotification } from "../models/notifier-notification.model";
+import { NotifierService } from "../services/notifier.service";
+import { NotifierQueueService } from "../services/notifier-queue.service";
 
-import { NotifierNotificationComponent } from './notifier-notification.component';
+import { NotifierNotificationComponent } from "./notifier-notification.component";
 
 /**
  * Notifier container component
@@ -25,17 +30,15 @@ import { NotifierNotificationComponent } from './notifier-notification.component
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush, // (#perfmatters)
   host: {
-    class: 'notifier__container'
+    class: "notifier__container",
   },
   // eslint-disable-next-line @angular-eslint/component-selector
-  selector: 'notifier-container',
-  templateUrl: './notifier-container.component.html',
+  selector: "notifier-container",
+  templateUrl: "./notifier-container.component.html",
   standalone: true,
-  imports: [NotifierNotificationComponent]
-
+  imports: [NotifierNotificationComponent],
 })
 export class NotifierContainerComponent implements OnDestroy {
-
   /**
    * List of currently somewhat active notifications
    */
@@ -73,18 +76,24 @@ export class NotifierContainerComponent implements OnDestroy {
    * @param notifierQueueService Notifier queue service
    * @param notifierService      Notifier service
    */
-  public constructor(changeDetector: ChangeDetectorRef, notifierQueueService: NotifierQueueService, notifierService: NotifierService) {
+  public constructor(
+    changeDetector: ChangeDetectorRef,
+    notifierQueueService: NotifierQueueService,
+    notifierService: NotifierService,
+  ) {
     this.#changeDetector = changeDetector;
     this.#queueService = notifierQueueService;
     this.#config = notifierService.getConfig();
     this.notifications = [];
 
     // Connects this component up to the action queue, then handle incoming actions
-    this.#queueServiceSubscription = this.#queueService.actionStream.subscribe((action: NotifierAction) => {
-      this.handleAction(action).then(() => {
-        this.#queueService.continue();
-      });
-    });
+    this.#queueServiceSubscription = this.#queueService.actionStream.subscribe(
+      (action: NotifierAction) => {
+        this.handleAction(action).then(() => {
+          this.#queueService.continue();
+        });
+      },
+    );
   }
 
   /**
@@ -96,7 +105,6 @@ export class NotifierContainerComponent implements OnDestroy {
     }
   }
 
-
   /**
    * Event handler, handles clicks on notification dismiss buttons
    *
@@ -105,7 +113,7 @@ export class NotifierContainerComponent implements OnDestroy {
   public onNotificationDismiss(notificationId: string): void {
     this.#queueService.push({
       payload: notificationId,
-      type: 'HIDE'
+      type: "HIDE",
     });
   }
 
@@ -114,8 +122,11 @@ export class NotifierContainerComponent implements OnDestroy {
    *
    * @param notificationComponent Notification component reference
    */
-  public onNotificationReady(notificationComponent: NotifierNotificationComponent): void {
-    const currentNotification: NotifierNotification = this.notifications[this.notifications.length - 1]; // Get the latest notification
+  public onNotificationReady(
+    notificationComponent: NotifierNotificationComponent,
+  ): void {
+    const currentNotification: NotifierNotification =
+      this.notifications[this.notifications.length - 1]; // Get the latest notification
     currentNotification.component = notificationComponent; // Save the new omponent reference
     this.continueHandleShowAction(currentNotification); // Continue with handling the show action
   }
@@ -129,16 +140,16 @@ export class NotifierContainerComponent implements OnDestroy {
   private handleAction(action: NotifierAction): Promise<void> {
     switch (
       action.type // TODO: Maybe a map (actionType -> class method) is a cleaner solution here?
-      ) {
-      case 'SHOW':
+    ) {
+      case "SHOW":
         return this.handleShowAction(action);
-      case 'HIDE':
+      case "HIDE":
         return this.handleHideAction(action);
-      case 'HIDE_OLDEST':
+      case "HIDE_OLDEST":
         return this.handleHideOldestAction(action);
-      case 'HIDE_NEWEST':
+      case "HIDE_NEWEST":
         return this.handleHideNewestAction(action);
-      case 'HIDE_ALL':
+      case "HIDE_ALL":
         return this.handleHideAllAction();
       default:
         return new Promise<void>((resolve: () => void) => {
@@ -181,7 +192,10 @@ export class NotifierContainerComponent implements OnDestroy {
       const implicitStackingLimit = 2;
 
       // Stacking enabled? (stacking value below 2 means stacking is disabled)
-      if (this.#config.behaviour.stacking === false || this.#config.behaviour.stacking < implicitStackingLimit) {
+      if (
+        this.#config.behaviour.stacking === false ||
+        this.#config.behaviour.stacking < implicitStackingLimit
+      ) {
         this.notifications[0].component.hide().then(() => {
           this.removeNotificationFromList(this.notifications[0]);
           notification.component.show().then(this.tempPromiseResolver); // Done
@@ -191,57 +205,102 @@ export class NotifierContainerComponent implements OnDestroy {
 
         // Are there now too many notifications?
         if (numberOfNotifications > this.#config.behaviour.stacking) {
-          const oldNotifications: Array<NotifierNotification> = this.notifications.slice(1, numberOfNotifications - 1);
+          const oldNotifications: Array<NotifierNotification> =
+            this.notifications.slice(1, numberOfNotifications - 1);
 
           // Are animations enabled?
           if (this.#config.animations.enabled) {
             // Is animation overlap enabled?
-            if (this.#config.animations.overlap !== false && this.#config.animations.overlap > 0) {
+            if (
+              this.#config.animations.overlap !== false &&
+              this.#config.animations.overlap > 0
+            ) {
               stepPromises.push(this.notifications[0].component.hide());
               setTimeout(() => {
-                stepPromises.push(this.shiftNotifications(oldNotifications, notification.component.getHeight(), true));
+                stepPromises.push(
+                  this.shiftNotifications(
+                    oldNotifications,
+                    notification.component.getHeight(),
+                    true,
+                  ),
+                );
               }, this.#config.animations.hide.speed - this.#config.animations.overlap);
-              setTimeout(() => {
-                stepPromises.push(notification.component.show());
-              }, this.#config.animations.hide.speed + this.#config.animations.shift.speed - this.#config.animations.overlap);
+              setTimeout(
+                () => {
+                  stepPromises.push(notification.component.show());
+                },
+                this.#config.animations.hide.speed +
+                  this.#config.animations.shift.speed -
+                  this.#config.animations.overlap,
+              );
             } else {
               stepPromises.push(
                 new Promise<void>((resolve: () => void) => {
                   this.notifications[0].component.hide().then(() => {
-                    this.shiftNotifications(oldNotifications, notification.component.getHeight(), true).then(() => {
+                    this.shiftNotifications(
+                      oldNotifications,
+                      notification.component.getHeight(),
+                      true,
+                    ).then(() => {
                       notification.component.show().then(resolve);
                     });
                   });
-                })
+                }),
               );
             }
           } else {
             stepPromises.push(this.notifications[0].component.hide());
-            stepPromises.push(this.shiftNotifications(oldNotifications, notification.component.getHeight(), true));
+            stepPromises.push(
+              this.shiftNotifications(
+                oldNotifications,
+                notification.component.getHeight(),
+                true,
+              ),
+            );
             stepPromises.push(notification.component.show());
           }
         } else {
-          const oldNotifications: Array<NotifierNotification> = this.notifications.slice(0, numberOfNotifications - 1);
+          const oldNotifications: Array<NotifierNotification> =
+            this.notifications.slice(0, numberOfNotifications - 1);
 
           // Are animations enabled?
           if (this.#config.animations.enabled) {
             // Is animation overlap enabled?
-            if (this.#config.animations.overlap !== false && this.#config.animations.overlap > 0) {
-              stepPromises.push(this.shiftNotifications(oldNotifications, notification.component.getHeight(), true));
+            if (
+              this.#config.animations.overlap !== false &&
+              this.#config.animations.overlap > 0
+            ) {
+              stepPromises.push(
+                this.shiftNotifications(
+                  oldNotifications,
+                  notification.component.getHeight(),
+                  true,
+                ),
+              );
               setTimeout(() => {
                 stepPromises.push(notification.component.show());
               }, this.#config.animations.shift.speed - this.#config.animations.overlap);
             } else {
               stepPromises.push(
                 new Promise<void>((resolve: () => void) => {
-                  this.shiftNotifications(oldNotifications, notification.component.getHeight(), true).then(() => {
+                  this.shiftNotifications(
+                    oldNotifications,
+                    notification.component.getHeight(),
+                    true,
+                  ).then(() => {
                     notification.component.show().then(resolve);
                   });
-                })
+                }),
               );
             }
           } else {
-            stepPromises.push(this.shiftNotifications(oldNotifications, notification.component.getHeight(), true));
+            stepPromises.push(
+              this.shiftNotifications(
+                oldNotifications,
+                notification.component.getHeight(),
+                true,
+              ),
+            );
             stepPromises.push(notification.component.show());
           }
         }
@@ -272,38 +331,65 @@ export class NotifierContainerComponent implements OnDestroy {
       const stepPromises: Array<Promise<void>> = [];
 
       // Does the notification exist / are there even any notifications? (let's prevent accidential errors)
-      const notification: NotifierNotification | undefined = this.findNotificationById(action.payload);
+      const notification: NotifierNotification | undefined =
+        this.findNotificationById(action.payload);
       if (notification === undefined) {
         resolve();
         return;
       }
 
       // Get older notifications
-      const notificationIndex: number | undefined = this.findNotificationIndexById(action.payload);
+      const notificationIndex: number | undefined =
+        this.findNotificationIndexById(action.payload);
       if (notificationIndex === undefined) {
         resolve();
         return;
       }
-      const oldNotifications: Array<NotifierNotification> = this.notifications.slice(0, notificationIndex);
+      const oldNotifications: Array<NotifierNotification> =
+        this.notifications.slice(0, notificationIndex);
 
       // Do older notifications exist, and thus do we need to shift other notifications as a consequence?
       if (oldNotifications.length > 0) {
         // Are animations enabled?
-        if (this.#config.animations.enabled && this.#config.animations.hide.speed > 0) {
+        if (
+          this.#config.animations.enabled &&
+          this.#config.animations.hide.speed > 0
+        ) {
           // Is animation overlap enabled?
-          if (this.#config.animations.overlap !== false && this.#config.animations.overlap > 0) {
+          if (
+            this.#config.animations.overlap !== false &&
+            this.#config.animations.overlap > 0
+          ) {
             stepPromises.push(notification.component.hide());
             setTimeout(() => {
-              stepPromises.push(this.shiftNotifications(oldNotifications, notification.component.getHeight(), false));
+              stepPromises.push(
+                this.shiftNotifications(
+                  oldNotifications,
+                  notification.component.getHeight(),
+                  false,
+                ),
+              );
             }, this.#config.animations.hide.speed - this.#config.animations.overlap);
           } else {
             notification.component.hide().then(() => {
-              stepPromises.push(this.shiftNotifications(oldNotifications, notification.component.getHeight(), false));
+              stepPromises.push(
+                this.shiftNotifications(
+                  oldNotifications,
+                  notification.component.getHeight(),
+                  false,
+                ),
+              );
             });
           }
         } else {
           stepPromises.push(notification.component.hide());
-          stepPromises.push(this.shiftNotifications(oldNotifications, notification.component.getHeight(), false));
+          stepPromises.push(
+            this.shiftNotifications(
+              oldNotifications,
+              notification.component.getHeight(),
+              false,
+            ),
+          );
         }
       } else {
         stepPromises.push(notification.component.hide());
@@ -375,13 +461,18 @@ export class NotifierContainerComponent implements OnDestroy {
         this.#config.animations.hide.offset > 0
       ) {
         for (let i: number = numberOfNotifications - 1; i >= 0; i--) {
-          const animationOffset: number = this.#config.position.vertical.position === 'top' ? numberOfNotifications - 1 : i;
+          const animationOffset: number =
+            this.#config.position.vertical.position === "top"
+              ? numberOfNotifications - 1
+              : i;
           setTimeout(() => {
             this.notifications[i].component.hide().then(() => {
               // Are we done here, was this the last notification to be hidden?
               if (
-                (this.#config.position.vertical.position === 'top' && i === 0) ||
-                (this.#config.position.vertical.position === 'bottom' && i === numberOfNotifications - 1)
+                (this.#config.position.vertical.position === "top" &&
+                  i === 0) ||
+                (this.#config.position.vertical.position === "bottom" &&
+                  i === numberOfNotifications - 1)
               ) {
                 this.removeAllNotificationsFromList();
                 resolve(); // Done
@@ -410,7 +501,11 @@ export class NotifierContainerComponent implements OnDestroy {
    * @param   toMakePlace   Flag, defining in which direciton to shift
    * @returns Promise, resolved when done
    */
-  private shiftNotifications(notifications: Array<NotifierNotification>, distance: number, toMakePlace: boolean): Promise<void> {
+  private shiftNotifications(
+    notifications: Array<NotifierNotification>,
+    distance: number,
+    toMakePlace: boolean,
+  ): Promise<void> {
     return new Promise<void>((resolve: () => void) => {
       // Are there any notifications to shift?
       if (notifications.length === 0) {
@@ -420,7 +515,9 @@ export class NotifierContainerComponent implements OnDestroy {
 
       const notificationPromises: Array<Promise<void>> = [];
       for (let i: number = notifications.length - 1; i >= 0; i--) {
-        notificationPromises.push(notifications[i].component.shift(distance, toMakePlace));
+        notificationPromises.push(
+          notifications[i].component.shift(distance, toMakePlace),
+        );
       }
       Promise.all(notificationPromises).then(resolve); // Done
     });
@@ -442,7 +539,9 @@ export class NotifierContainerComponent implements OnDestroy {
    * @param notification Notification to be removed from the list of notifications
    */
   private removeNotificationFromList(notification: NotifierNotification): void {
-    this.notifications = this.notifications.filter((item: NotifierNotification) => item.component !== notification.component);
+    this.notifications = this.notifications.filter(
+      (item: NotifierNotification) => item.component !== notification.component,
+    );
     this.#changeDetector.markForCheck(); // Run change detection because the notification list changed
   }
 
@@ -460,8 +559,13 @@ export class NotifierContainerComponent implements OnDestroy {
    * @param   notificationId Notification ID, used for finding notification
    * @returns Notification, undefined if not found
    */
-  private findNotificationById(notificationId: string): NotifierNotification | undefined {
-    return this.notifications.find((currentNotification: NotifierNotification) => currentNotification.id === notificationId);
+  private findNotificationById(
+    notificationId: string,
+  ): NotifierNotification | undefined {
+    return this.notifications.find(
+      (currentNotification: NotifierNotification) =>
+        currentNotification.id === notificationId,
+    );
   }
 
   /**
@@ -470,9 +574,12 @@ export class NotifierContainerComponent implements OnDestroy {
    * @param   notificationId Notification ID, used for finding a notification's index
    * @returns Notification index, undefined if not found
    */
-  private findNotificationIndexById(notificationId: string): number | undefined {
+  private findNotificationIndexById(
+    notificationId: string,
+  ): number | undefined {
     const notificationIndex: number = this.notifications.findIndex(
-      (currentNotification: NotifierNotification) => currentNotification.id === notificationId
+      (currentNotification: NotifierNotification) =>
+        currentNotification.id === notificationId,
     );
     return notificationIndex !== -1 ? notificationIndex : undefined;
   }

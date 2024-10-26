@@ -1,7 +1,7 @@
-import { User } from '@chat-app/web/shared/util/auth';
+import { User } from "@chat-app/web/shared/util/auth";
 
-import { Conversation } from './conversation.type';
-import { Message } from './message.type';
+import { Conversation } from "./conversation.type";
+import { Message } from "./message.type";
 
 export type ChatState = {
   messageList: Message[];
@@ -11,4 +11,4 @@ export type ChatState = {
   selectedConversation: Conversation | null;
   selectedConversationLoading: boolean;
   memberIdMap: Map<string, User>;
-}
+};

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule } from "@angular/common";
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -7,9 +7,9 @@ import {
   signal,
   Type,
   ViewChild,
-  ViewContainerRef
-} from '@angular/core';
-import { ButtonComponent } from '@chat-app/ui-button';
+  ViewContainerRef,
+} from "@angular/core";
+import { ButtonComponent } from "@chat-app/ui-button";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface ModalContentComponent {
@@ -17,16 +17,17 @@ export interface ModalContentComponent {
 }
 
 @Component({
-  selector: 'mg-modal',
+  selector: "mg-modal",
   standalone: true,
   imports: [CommonModule, ButtonComponent],
-  templateUrl: './modal.component.html',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: "./modal.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ModalComponent implements AfterViewInit {
-  @ViewChild('contentContainer', { read: ViewContainerRef, static: false }) contentViewContainer!: ViewContainerRef;
+  @ViewChild("contentContainer", { read: ViewContainerRef, static: false })
+  contentViewContainer!: ViewContainerRef;
   readonly isOpen = signal(false);
-  readonly title = signal('title');
+  readonly title = signal("title");
 
   #contentComponentRef: ComponentRef<ModalContentComponent> | null = null;
   #pendingContentComponent: Type<ModalContentComponent> | null = null;
@@ -39,14 +40,17 @@ export class ModalComponent implements AfterViewInit {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  createContent<T extends ModalContentComponent>(contentComponent: Type<ModalContentComponent>): ComponentRef<ModalContentComponent> | null {
+  createContent<T extends ModalContentComponent>(
+    contentComponent: Type<ModalContentComponent>,
+  ): ComponentRef<ModalContentComponent> | null {
     if (!this.contentViewContainer) {
       this.#pendingContentComponent = contentComponent;
       return null;
     }
 
     this.contentViewContainer.clear();
-    this.#contentComponentRef = this.contentViewContainer.createComponent(contentComponent);
+    this.#contentComponentRef =
+      this.contentViewContainer.createComponent(contentComponent);
     return this.#contentComponentRef;
   }
 

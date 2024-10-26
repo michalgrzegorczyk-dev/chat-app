@@ -1,4 +1,4 @@
-import { NotifierNotification } from './notifier-notification.model';
+import { NotifierNotification } from "./notifier-notification.model";
 
 /**
  * Notifier animation data
@@ -30,12 +30,18 @@ export interface NotifierAnimationData {
     /**
      * Animation easing function (comp. CSS easing functions)
      */
-    easing?: 'linear' | 'ease' | 'ease-in' | 'ease-out' | 'ease-in-out' | string;
+    easing?:
+      | "linear"
+      | "ease"
+      | "ease-in"
+      | "ease-out"
+      | "ease-in-out"
+      | string;
 
     /**
      * Animation fill mode
      */
-    fill: 'none' | 'forwards' | 'backwards';
+    fill: "none" | "forwards" | "backwards";
   };
 }
 
@@ -49,12 +55,16 @@ export interface NotifierAnimationPreset {
   /**
    * Function generating the keyframes for animating-out
    */
-  hide: (notification: NotifierNotification) => NotifierAnimationPresetKeyframes;
+  hide: (
+    notification: NotifierNotification,
+  ) => NotifierAnimationPresetKeyframes;
 
   /**
    * Function generating the keyframes for animating-in
    */
-  show: (notification: NotifierNotification) => NotifierAnimationPresetKeyframes;
+  show: (
+    notification: NotifierNotification,
+  ) => NotifierAnimationPresetKeyframes;
 }
 
 /**

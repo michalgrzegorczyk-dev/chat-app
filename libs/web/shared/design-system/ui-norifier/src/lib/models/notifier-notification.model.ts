@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { TemplateRef } from '@angular/core';
+import { TemplateRef } from "@angular/core";
 
-import { NotifierNotificationComponent } from '../components/notifier-notification.component';
+import { NotifierNotificationComponent } from "../components/notifier-notification.component";
 
 /**
  * Notification
@@ -12,32 +12,32 @@ export class NotifierNotification {
   /**
    * Unique notification ID, can be set manually to control the notification from outside later on
    */
-    //@ts-ignore
+  //@ts-ignore
   public id: string;
 
   /**
    * Notification type, will be used for constructing an appropriate class name
    */
-    //@ts-ignore
+  //@ts-ignore
   public type: string;
 
   /**
    * Notification message
    */
-    //@ts-ignore
+  //@ts-ignore
   public message: string;
 
   /**
    * The template to customize
    * the appearance of the notification
    */
-    //@ts-ignore
+  //@ts-ignore
   public template?: TemplateRef<any> = null;
 
   /**
    * Component reference of this notification, created and set during creation time
    */
-    //@ts-ignore
+  //@ts-ignore
   public component: NotifierNotificationComponent;
 
   /**

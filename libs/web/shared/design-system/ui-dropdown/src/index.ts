@@ -1,1 +1,1 @@
-export * from './lib/ui-dropdown/ui-dropdown.component';
+export * from "./lib/ui-dropdown/ui-dropdown.component";

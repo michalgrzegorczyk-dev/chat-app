@@ -105,3 +105,7 @@ pnpm run dev-all
 ## License
 
 This project is licensed under the MIT License. See the `LICENSE` file for details.
+
+
+todo:
+add pnpm exec prettier --write "**/*.{js,jsx,ts,tsx,html}"

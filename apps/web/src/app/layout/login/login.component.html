@@ -1,13 +1,22 @@
-<div class="min-h-screen flex items-center justify-center bg-gray-100 py-12 px-4">
-  <div class="max-w-md w-full space-y-8">
+<div
+  class="flex min-h-screen items-center justify-center bg-gray-100 px-4 py-12"
+>
+  <div class="w-full max-w-md space-y-8">
     <div class="mb-16">
-      <h2 class="text-center text-4xl font-bold text-gray-900">Welcome to Chat</h2>
-      <p class="mt-2 text-center text-xl text-primary-500 font-semibold">Choose Your Chat Avatar</p>
+      <h2 class="text-center text-4xl font-bold text-gray-900">
+        Welcome to Chat
+      </h2>
+      <p class="text-primary-500 mt-2 text-center text-xl font-semibold">
+        Choose Your Chat Avatar
+      </p>
       <p class="mt-4 text-center text-sm text-gray-600">
         Pick a character to start collaborating. Don't worry, it's just for fun!
       </p>
     </div>
-    <mg-account-list (selectUserEvent)="onSelectUser($event)" [users]="users()" />
+    <mg-account-list
+      (selectUserEvent)="onSelectUser($event)"
+      [users]="users()"
+    />
     <p class="mt-4 text-center text-xs text-gray-500">
       Note: This is a simplified login. No real authentication required.
     </p>

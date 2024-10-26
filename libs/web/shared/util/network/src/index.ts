@@ -1,1 +1,1 @@
-export * from './lib/network.service';
+export * from "./lib/network.service";

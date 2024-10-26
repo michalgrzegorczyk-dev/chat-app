@@ -3,19 +3,22 @@ import {
   ConversationListElementDto,
   MemberDto,
   MessageDto,
-  SendMessageRequestDto
-} from '@chat-app/dtos';
-import { Injectable } from '@nestjs/common';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+  SendMessageRequestDto,
+} from "@chat-app/dtos";
+import { Injectable } from "@nestjs/common";
+import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
-import { MessageDbModel } from './model/conversation.model';
+import { MessageDbModel } from "./model/conversation.model";
 
 @Injectable()
 export class SupabaseService {
   private supabase: SupabaseClient;
 
   constructor() {
-    this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
+    this.supabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_KEY,
+    );
   }
 
   // async getConversationsByUserId(userId: string): Promise<ConversationListElementDto[]> {
@@ -44,13 +47,14 @@ export class SupabaseService {
   //   }).sort((a, b) => b.lastMessageTimestamp.localeCompare(a.lastMessageTimestamp));
   // }
 
-
-  async getConversationsByUserId(userId: string): Promise<ConversationListElementDto[]> {
-
+  async getConversationsByUserId(
+    userId: string,
+  ): Promise<ConversationListElementDto[]> {
     try {
       const { data, error } = await this.supabase
-        .from('conversationuser')
-        .select(`
+        .from("conversationuser")
+        .select(
+          `
         conversation_id,
         conversation:conversation_id(
           name,
@@ -62,11 +66,11 @@ export class SupabaseService {
         last_message:conversation_id(
           message(sender_id)
         )
-      `)
-        .eq('user_id', userId)
-        .neq('other_user.users.id', userId)
-        .order('conversation(last_message_timestamp)', { ascending: false });
-
+      `,
+        )
+        .eq("user_id", userId)
+        .neq("other_user.users.id", userId)
+        .order("conversation(last_message_timestamp)", { ascending: false });
 
       if (error) {
         return [];
@@ -76,20 +80,22 @@ export class SupabaseService {
         return [];
       }
 
+      const conversations: ConversationListElementDto[] = data.map(
+        (item: any) => {
+          const otherUser = item.other_user.users[0];
+          const lastMessage = item.last_message.message[0];
 
-      const conversations: ConversationListElementDto[] = data.map((item: any) => {
-        const otherUser = item.other_user.users[0];
-        const lastMessage = item.last_message.message[0];
-
-        return {
-          conversationId: item.conversation_id,
-          avatarUrl: otherUser?.profile_photo_url,
-          name: otherUser?.name,
-          lastMessageContent: item.conversation.last_message || '',
-          lastMessageTimestamp: item.conversation.last_message_timestamp || '',
-          lastMessageSenderId: lastMessage?.sender_id || ''
-        };
-      });
+          return {
+            conversationId: item.conversation_id,
+            avatarUrl: otherUser?.profile_photo_url,
+            name: otherUser?.name,
+            lastMessageContent: item.conversation.last_message || "",
+            lastMessageTimestamp:
+              item.conversation.last_message_timestamp || "",
+            lastMessageSenderId: lastMessage?.sender_id || "",
+          };
+        },
+      );
       return conversations;
     } catch (error) {
       return [];
@@ -98,14 +104,14 @@ export class SupabaseService {
 
   async saveMessage(message: SendMessageRequestDto): Promise<MessageDto> {
     const { data } = await this.supabase
-      .from('message')
+      .from("message")
       .insert({
         conversation_id: message.conversationId,
         local_message_id: message.localMessageId,
         sender_id: message.userId,
         content: message.content,
         created_at: message.timestamp,
-        status: 'sent'
+        status: "sent",
       })
       .select()
       .single();
@@ -113,18 +119,23 @@ export class SupabaseService {
     return data;
   }
 
-  async getConversation(userId: string, conversationId: string): Promise<ConversationDetailsDto> {
+  async getConversation(
+    userId: string,
+    conversationId: string,
+  ): Promise<ConversationDetailsDto> {
     const data = await this.supabase
-      .from('message')
-      .select(`
+      .from("message")
+      .select(
+        `
               id,
               content,
               created_at,
               sender:users(name, id, profile_photo_url),
               conversation:conversation!inner(id)
-            `)
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: true });
+            `,
+      )
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: true });
 
     //TODO: check how to type objects from supabase etc.
     // const conversationListDb: ConversationDbModel[] = data as any;
@@ -132,67 +143,66 @@ export class SupabaseService {
 
     return {
       conversationId: conversationId,
-      messageList: messageListDb.map(msg => ({
+      messageList: messageListDb.map((msg) => ({
         message_id: String(msg.id),
         content: msg.content,
         created_at: msg.created_at,
         sender_id: String(msg.sender.id),
-        status: 'sent' //todo
+        status: "sent", //todo
       })),
-      memberList: this.getUniqueSenders(messageListDb)
+      memberList: this.getUniqueSenders(messageListDb),
     };
   }
 
   getUniqueSenders(data: any): MemberDto[] {
     return Array.from(
-      new Map(
-        data.map((msg: any) => [msg.sender.id, msg.sender])
-      ).values()
+      new Map(data.map((msg: any) => [msg.sender.id, msg.sender])).values(),
     ) as MemberDto[];
   }
 
   //todo remove after auth implementation
   async getAllUsers() {
-    const { data } = await this.supabase
-      .from('users')
-      .select('*');
+    const { data } = await this.supabase.from("users").select("*");
     return data;
   }
 
-  async updateConversationList(sendMessageDto: SendMessageRequestDto): Promise<void> {
-
+  async updateConversationList(
+    sendMessageDto: SendMessageRequestDto,
+  ): Promise<void> {
     await this.supabase
-      .from('conversation')
+      .from("conversation")
       .update({
         last_message: sendMessageDto.content,
         last_message_timestamp: sendMessageDto.timestamp,
-        last_message_sender_id: sendMessageDto.userId
+        last_message_sender_id: sendMessageDto.userId,
       })
-      .eq('id', sendMessageDto.conversationId);
+      .eq("id", sendMessageDto.conversationId);
   }
 
-  async getUserIdListFromConversation(conversationId: string): Promise<string[]> {
+  async getUserIdListFromConversation(
+    conversationId: string,
+  ): Promise<string[]> {
     const { data } = await this.supabase
-      .from('conversationuser')
-      .select('user_id')
-      .eq('conversation_id', conversationId);
-    return data.map(item => item.user_id);
+      .from("conversationuser")
+      .select("user_id")
+      .eq("conversation_id", conversationId);
+    return data.map((item) => item.user_id);
   }
 
   async updateMessages(userId, conversationId, queue) {
     //write subapbase query to update
     const { data, error } = await this.supabase
-      .from('message')
+      .from("message")
       .upsert({
         conversation_id: conversationId,
         local_message_id: queue.localMessageId,
         sender_id: userId,
         content: queue.content,
         created_at: queue.timestamp,
-        status: 'sending'
+        status: "sending",
       })
-      .eq('conversation_id', conversationId)
-      .eq('sender_id', userId);
+      .eq("conversation_id", conversationId)
+      .eq("sender_id", userId);
     return data;
   }
 }

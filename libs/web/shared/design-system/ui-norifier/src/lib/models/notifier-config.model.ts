@@ -23,20 +23,20 @@ export interface NotifierOptions {
   };
   behaviour?: {
     autoHide?: number | false;
-    onClick?: 'hide' | false;
-    onMouseover?: 'pauseAutoHide' | 'resetAutoHide' | false;
+    onClick?: "hide" | false;
+    onMouseover?: "pauseAutoHide" | "resetAutoHide" | false;
     showDismissButton?: boolean;
     stacking?: number | false;
   };
   position?: {
     horizontal?: {
       distance?: number;
-      position?: 'left' | 'middle' | 'right';
+      position?: "left" | "middle" | "right";
     };
     vertical?: {
       distance?: number;
       gap?: number;
-      position?: 'top' | 'bottom';
+      position?: "top" | "bottom";
     };
   };
   theme?: string;
@@ -78,8 +78,8 @@ export class NotifierConfig implements NotifierOptions {
    */
   public behaviour: {
     autoHide: number | false;
-    onClick: 'hide' | false;
-    onMouseover: 'pauseAutoHide' | 'resetAutoHide' | false;
+    onClick: "hide" | false;
+    onMouseover: "pauseAutoHide" | "resetAutoHide" | false;
     showDismissButton: boolean;
     stacking: number | false;
   };
@@ -90,12 +90,12 @@ export class NotifierConfig implements NotifierOptions {
   public position: {
     horizontal: {
       distance: number;
-      position: 'left' | 'middle' | 'right';
+      position: "left" | "middle" | "right";
     };
     vertical: {
       distance: number;
       gap: number;
-      position: 'top' | 'bottom';
+      position: "top" | "bottom";
     };
   };
 
@@ -114,41 +114,41 @@ export class NotifierConfig implements NotifierOptions {
     this.animations = {
       enabled: true,
       hide: {
-        easing: 'ease',
+        easing: "ease",
         offset: 50,
-        preset: 'fade',
-        speed: 300
+        preset: "fade",
+        speed: 300,
       },
       overlap: 150,
       shift: {
-        easing: 'ease',
-        speed: 300
+        easing: "ease",
+        speed: 300,
       },
       show: {
-        easing: 'ease',
-        preset: 'slide',
-        speed: 300
-      }
+        easing: "ease",
+        preset: "slide",
+        speed: 300,
+      },
     };
     this.behaviour = {
       autoHide: 7000,
       onClick: false,
-      onMouseover: 'pauseAutoHide',
+      onMouseover: "pauseAutoHide",
       showDismissButton: true,
-      stacking: 4
+      stacking: 4,
     };
     this.position = {
       horizontal: {
         distance: 12,
-        position: 'left'
+        position: "left",
       },
       vertical: {
         distance: 12,
         gap: 10,
-        position: 'bottom'
-      }
+        position: "bottom",
+      },
     };
-    this.theme = 'material';
+    this.theme = "material";
 
     // The following merges the custom options into the notifier config, respecting the already set default values
     // This linear, more explicit and code-sizy workflow is preferred here over a recursive one (because we know the object structure)
@@ -178,7 +178,10 @@ export class NotifierConfig implements NotifierOptions {
     }
     if (customOptions.position !== undefined) {
       if (customOptions.position.horizontal !== undefined) {
-        Object.assign(this.position.horizontal, customOptions.position.horizontal);
+        Object.assign(
+          this.position.horizontal,
+          customOptions.position.horizontal,
+        );
       }
       if (customOptions.position.vertical !== undefined) {
         Object.assign(this.position.vertical, customOptions.position.vertical);

@@ -1,11 +1,10 @@
-import { MessageStatus } from './shared-types';
+import { MessageStatus } from "./shared-types";
 
 export interface ConversationDetailsDto {
   conversationId: string;
   messageList: MessageDto[];
   memberList: any;
 }
-
 
 export interface MemberDto {
   id: string;
@@ -24,4 +23,3 @@ export interface MessageDto {
 export interface ReceiveMessageDto extends MessageDto {
   conversation_id: string;
 }
-

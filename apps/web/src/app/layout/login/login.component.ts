@@ -1,23 +1,34 @@
-import { NgFor, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { AccountListComponent, AccountWidgetComponent } from '@chat-app/feature-account';
-import { routes } from '@chat-app/util-routing';
-import { AuthService, User } from '@chat-app/web/shared/util/auth';
+import { NgFor, NgIf } from "@angular/common";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { toSignal } from "@angular/core/rxjs-interop";
+import { FormsModule } from "@angular/forms";
+import { Router } from "@angular/router";
+import {
+  AccountListComponent,
+  AccountWidgetComponent,
+} from "@chat-app/feature-account";
+import { routes } from "@chat-app/util-routing";
+import { AuthService, User } from "@chat-app/web/shared/util/auth";
 
 @Component({
-  selector: 'mg-login',
+  selector: "mg-login",
   standalone: true,
-  templateUrl: './login.component.html',
-  imports: [NgFor, NgIf, FormsModule, AccountWidgetComponent, AccountListComponent],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  templateUrl: "./login.component.html",
+  imports: [
+    NgFor,
+    NgIf,
+    FormsModule,
+    AccountWidgetComponent,
+    AccountListComponent,
+  ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
   readonly #authService = inject(AuthService);
   //todo check leaks with tosignal approach
-  readonly users = toSignal(this.#authService.getAllUsers(), { initialValue: [] });
+  readonly users = toSignal(this.#authService.getAllUsers(), {
+    initialValue: [],
+  });
   readonly #router = inject(Router);
 
   async onSelectUser(user: User): Promise<void> {

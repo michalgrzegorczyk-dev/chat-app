@@ -1,33 +1,41 @@
-<ul class="overflow-y-auto flex-1 p-3">
+<ul class="flex-1 overflow-y-auto p-3">
   @for (conversation of conversationList(); track conversation.conversationId) {
-    <li (click)="conversationClicked(conversation)"
-        class="flex items-center p-2 rounded-lg mb-2 cursor-pointer transition-all duration-200 border"
-        [ngClass]="{
-          'bg-primary-50 border-primary-100': conversation | isActive,
-          'bg-gray-50 border-gray-200 hover:bg-gray-100': !(conversation | isActive)
-        }">
-      <img [src]="conversation.avatarUrl" [alt]="'Avatar for conversation: ' + conversation.name"
-           class="w-8 h-8 rounded-lg mr-4">
-      <div class="flex-1 overflow-hidden">
-        <div class="flex flex-col">
-          <div class="flex items-center justify-between">
-            <span class="text-sm font-semibold truncate"
-                  [ngClass]="{'text-primary-700': conversation | isActive, 'text-gray-800': !(conversation | isActive)}">
-              {{ conversation.name }}
-            </span>
-          </div>
-          <span class="text-sm text-gray-700">
-            @if (conversation.lastMessageSenderId === user().id) {
-              You:
-            }
-            {{ conversation.lastMessageContent }}
-            <span class="text-gray-500 text-xs">
-                        <span class="mx-1">&middot;</span>
-              {{ conversation.lastMessageTimestamp | relativeTime }}
-            </span>
+  <li
+    (click)="conversationClicked(conversation)"
+    class="mb-2 flex cursor-pointer items-center rounded-lg border p-2 transition-all duration-200"
+    [ngClass]="{
+      'bg-primary-50 border-primary-100': conversation | isActive,
+      'border-gray-200 bg-gray-50 hover:bg-gray-100': !(conversation | isActive)
+    }"
+  >
+    <img
+      [src]="conversation.avatarUrl"
+      [alt]="'Avatar for conversation: ' + conversation.name"
+      class="mr-4 h-8 w-8 rounded-lg"
+    />
+    <div class="flex-1 overflow-hidden">
+      <div class="flex flex-col">
+        <div class="flex items-center justify-between">
+          <span
+            class="truncate text-sm font-semibold"
+            [ngClass]="{
+              'text-primary-700': conversation | isActive,
+              'text-gray-800': !(conversation | isActive)
+            }"
+          >
+            {{ conversation.name }}
           </span>
         </div>
+        <span class="text-sm text-gray-700">
+          @if (conversation.lastMessageSenderId === user().id) { You: }
+          {{ conversation.lastMessageContent }}
+          <span class="text-xs text-gray-500">
+            <span class="mx-1">&middot;</span>
+            {{ conversation.lastMessageTimestamp | relativeTime }}
+          </span>
+        </span>
       </div>
-    </li>
+    </div>
+  </li>
   }
 </ul>

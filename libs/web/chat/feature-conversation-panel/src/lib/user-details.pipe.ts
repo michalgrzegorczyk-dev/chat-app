@@ -1,12 +1,12 @@
-import { inject, Pipe, PipeTransform } from '@angular/core';
-import { ChatStore } from '@chat-app/domain';
-import { User } from '@chat-app/web/shared/util/auth';
+import { inject, Pipe, PipeTransform } from "@angular/core";
+import { ChatStore } from "@chat-app/domain";
+import { User } from "@chat-app/web/shared/util/auth";
 
 type UserKeys = keyof User;
 
 @Pipe({
-  name: 'mgUserDetails',
-  standalone: true
+  name: "mgUserDetails",
+  standalone: true,
 })
 export class MgUserDetailsPipe implements PipeTransform {
   readonly #memberIdMap = inject(ChatStore).memberIdMap;
@@ -15,9 +15,9 @@ export class MgUserDetailsPipe implements PipeTransform {
     if (this.#memberIdMap() && userId) {
       const result = this.#memberIdMap().get(userId);
       if (result) {
-        return result[detailKey] ?? '';
+        return result[detailKey] ?? "";
       }
     }
-    return '';
+    return "";
   }
 }

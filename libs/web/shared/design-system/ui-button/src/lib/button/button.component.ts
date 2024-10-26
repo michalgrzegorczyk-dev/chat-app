@@ -1,29 +1,35 @@
-import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { NgClass } from "@angular/common";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  input,
+  output,
+} from "@angular/core";
 
 @Component({
-  selector: 'mg-button',
+  selector: "mg-button",
   standalone: true,
   template: `
-    <button (click)="this.click.emit(); $event.stopPropagation()"
-            [ngClass]="{
-              'bg-primary-500 text-white hover:bg-primary-600': !outlined(),
-              'border-primary-500 text-primary-500 border hover:bg-primary-100': outlined()
-            }"
-            class="w-full p-2 text-sm font-medium rounded-md focus:outline-none
-                   focus:ring-2 focus:ring-primary-200 focus:ring-opacity-50
-                   flex items-center justify-center transition duration-300 shadow-sm">
+    <button
+      (click)="this.click.emit(); $event.stopPropagation()"
+      [ngClass]="{
+        'bg-primary-500 hover:bg-primary-600 text-white': !outlined(),
+        'border-primary-500 text-primary-500 hover:bg-primary-100 border':
+          outlined()
+      }"
+      class="focus:ring-primary-200 flex w-full items-center justify-center rounded-md
+                   p-2 text-sm font-medium
+                   shadow-sm transition duration-300 focus:outline-none focus:ring-2 focus:ring-opacity-50"
+    >
       <ng-content />
       {{ buttonText() }}
     </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NgClass
-  ]
+  imports: [NgClass],
 })
 export class ButtonComponent {
-  buttonText = input('');
+  buttonText = input("");
   outlined = input(false);
 
   readonly click = output<void>();

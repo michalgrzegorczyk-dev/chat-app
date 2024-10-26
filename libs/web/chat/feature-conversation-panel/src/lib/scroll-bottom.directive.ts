@@ -1,8 +1,15 @@
-import { AfterViewInit, Directive, ElementRef, inject, NgZone, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Directive,
+  ElementRef,
+  inject,
+  NgZone,
+  OnInit,
+} from "@angular/core";
 
 @Directive({
-  selector: '[mgScrollToBottom]',
-  standalone: true
+  selector: "[mgScrollToBottom]",
+  standalone: true,
 })
 export class ScrollToBottomDirective implements OnInit, AfterViewInit {
   readonly #el = inject(ElementRef);
@@ -10,8 +17,10 @@ export class ScrollToBottomDirective implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.#ngZone.runOutsideAngular(() => {
-      new MutationObserver(() => this.scrollToBottom())
-        .observe(this.#el.nativeElement, { childList: true, subtree: true });
+      new MutationObserver(() => this.scrollToBottom()).observe(
+        this.#el.nativeElement,
+        { childList: true, subtree: true },
+      );
     });
   }
 

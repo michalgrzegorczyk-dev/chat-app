@@ -1,27 +1,27 @@
-import { NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { ButtonComponent } from '@chat-app/ui-button';
-import { UiDropdownComponent } from '@chat-app/ui-dropdown';
-import { AuthService } from '@chat-app/web/shared/util/auth';
+import { NgClass } from "@angular/common";
+import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ButtonComponent } from "@chat-app/ui-button";
+import { UiDropdownComponent } from "@chat-app/ui-dropdown";
+import { AuthService } from "@chat-app/web/shared/util/auth";
 
 @Component({
-  selector: 'mg-account-widget',
-  templateUrl: './account-widget.component.html',
+  selector: "mg-account-widget",
+  templateUrl: "./account-widget.component.html",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, ButtonComponent, UiDropdownComponent]
+  imports: [NgClass, ButtonComponent, UiDropdownComponent],
 })
 export class AccountWidgetComponent {
   dropdownItems: any = [
-    { type: 'button', text: 'Add Conversation' },
-    { type: 'link', text: 'Account Settings', href: 'account' },
-    { type: 'button', text: 'Change Account', href: 'auth' }
+    { type: "button", text: "Add Conversation" },
+    { type: "link", text: "Account Settings", href: "account" },
+    { type: "button", text: "Change Account", href: "auth" },
   ];
   readonly #authService = inject(AuthService);
   readonly user = this.#authService.user;
 
   async onItemClick($event: any): Promise<void> {
-    if ($event.text === 'Change Account') {
+    if ($event.text === "Change Account") {
       await this.#authService.logOut();
     }
   }

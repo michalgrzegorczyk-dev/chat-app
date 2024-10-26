@@ -1,5 +1,9 @@
-import { ConversationDetailsDto, ConversationListElementDto, SendMessageRequestDto } from '@chat-app/dtos';
-import { Logger } from '@nestjs/common';
+import {
+  ConversationDetailsDto,
+  ConversationListElementDto,
+  SendMessageRequestDto,
+} from "@chat-app/dtos";
+import { Logger } from "@nestjs/common";
 import {
   ConnectedSocket,
   MessageBody,
@@ -7,29 +11,28 @@ import {
   OnGatewayDisconnect,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer
-} from '@nestjs/websockets';
-import { Server, Socket } from 'socket.io';
+  WebSocketServer,
+} from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
 
-import { SupabaseService } from './supabase.service';
+import { SupabaseService } from "./supabase.service";
 
 @WebSocketGateway({
   cors: {
-    origin: '*'
-  }
+    origin: "*",
+  },
 })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
-  private logger = new Logger('ChatGateway');
+  private logger = new Logger("ChatGateway");
 
-  constructor(private supabaseService: SupabaseService) {
-  }
+  constructor(private supabaseService: SupabaseService) {}
 
   async handleConnection(client: Socket) {
     try {
       const userId = client.handshake.query.userId as string;
       if (!userId) {
-        this.logger.error('User ID not provided in connection');
+        this.logger.error("User ID not provided in connection");
         client.disconnect();
         return;
       }
@@ -48,24 +51,39 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage('sendMessage')
-  async handleSendMessage(@MessageBody() requestDto: SendMessageRequestDto, @ConnectedSocket() client: Socket): Promise<void> {
+  @SubscribeMessage("sendMessage")
+  async handleSendMessage(
+    @MessageBody() requestDto: SendMessageRequestDto,
+    @ConnectedSocket() client: Socket,
+  ): Promise<void> {
     await this.supabaseService.updateConversationList(requestDto);
     const savedMessage = await this.supabaseService.saveMessage(requestDto);
-    const conversationUsers = await this.supabaseService.getUserIdListFromConversation(requestDto.conversationId);
+    const conversationUsers =
+      await this.supabaseService.getUserIdListFromConversation(
+        requestDto.conversationId,
+      );
 
     for (const userId of conversationUsers) {
-      const conversations = await this.supabaseService.getConversationsByUserId(userId);
-      this.server.to(`user:${userId}`).emit('loadConversationListSuccess', conversations);
-      this.server.to(`user:${userId}`).emit('sendMessageSuccess', savedMessage);
+      const conversations = await this.supabaseService.getConversationsByUserId(
+        userId,
+      );
+      this.server
+        .to(`user:${userId}`)
+        .emit("loadConversationListSuccess", conversations);
+      this.server.to(`user:${userId}`).emit("sendMessageSuccess", savedMessage);
     }
   }
 
-  async getConversation(userId: string, conversationId: string): Promise<ConversationDetailsDto> {
+  async getConversation(
+    userId: string,
+    conversationId: string,
+  ): Promise<ConversationDetailsDto> {
     return await this.supabaseService.getConversation(userId, conversationId);
   }
 
-  async getConversations(userId: string): Promise<ConversationListElementDto[]> {
+  async getConversations(
+    userId: string,
+  ): Promise<ConversationListElementDto[]> {
     return await this.supabaseService.getConversationsByUserId(userId);
   }
 

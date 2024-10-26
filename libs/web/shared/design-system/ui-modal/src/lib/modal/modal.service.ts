@@ -1,9 +1,14 @@
-import { ComponentRef, Injectable, Type, ViewContainerRef } from '@angular/core';
+import {
+  ComponentRef,
+  Injectable,
+  Type,
+  ViewContainerRef,
+} from "@angular/core";
 
-import { ModalComponent, ModalContentComponent } from './modal.component';
+import { ModalComponent, ModalContentComponent } from "./modal.component";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class ModalService {
   #modalComponentRef!: ComponentRef<ModalComponent>;
@@ -11,13 +16,14 @@ export class ModalService {
 
   open(contentComponent: Type<ModalContentComponent>, title: string): void {
     if (!this.#rootViewContainer) {
-      console.error('ModalService: Root view container not set');
+      console.error("ModalService: Root view container not set");
       return;
     }
 
     this.close();
 
-    this.#modalComponentRef = this.#rootViewContainer.createComponent(ModalComponent);
+    this.#modalComponentRef =
+      this.#rootViewContainer.createComponent(ModalComponent);
     this.#modalComponentRef.instance.setTitle(title);
     this.#modalComponentRef.instance.open();
     this.#modalComponentRef.instance.createContent(contentComponent);

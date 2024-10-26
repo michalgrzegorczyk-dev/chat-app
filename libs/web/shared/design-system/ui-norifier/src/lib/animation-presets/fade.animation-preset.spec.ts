@@ -1,41 +1,49 @@
-import { NotifierAnimationPresetKeyframes } from '../models/notifier-animation.model';
-import { NotifierConfig } from '../models/notifier-config.model';
+import { NotifierAnimationPresetKeyframes } from "../models/notifier-animation.model";
+import { NotifierConfig } from "../models/notifier-config.model";
 
-import { fade } from './fade.animation-preset';
+import { fade } from "./fade.animation-preset";
 
 /**
  * Fade animation preset - Unit Test
  */
-describe('Fade Animation Preset', () => {
-  describe('(show)', () => {
-    it('should return animation keyframes', () => {
-      const testNotification: MockNotification = new MockNotification(<NotifierConfig>{});
+describe("Fade Animation Preset", () => {
+  describe("(show)", () => {
+    it("should return animation keyframes", () => {
+      const testNotification: MockNotification = new MockNotification(
+        <NotifierConfig>{},
+      );
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          opacity: '0'
+          opacity: "0",
         },
         to: {
-          opacity: '1'
-        }
+          opacity: "1",
+        },
       };
-      const keyframes: NotifierAnimationPresetKeyframes = fade.show(<any>testNotification);
+      const keyframes: NotifierAnimationPresetKeyframes = fade.show(
+        <any>testNotification,
+      );
 
       expect(keyframes).toEqual(expectedKeyframes);
     });
   });
 
-  describe('(hide)', () => {
-    it('should return animation keyframes', () => {
-      const testNotification: MockNotification = new MockNotification(<NotifierConfig>{});
+  describe("(hide)", () => {
+    it("should return animation keyframes", () => {
+      const testNotification: MockNotification = new MockNotification(
+        <NotifierConfig>{},
+      );
       const expectedKeyframes: NotifierAnimationPresetKeyframes = {
         from: {
-          opacity: '1'
+          opacity: "1",
         },
         to: {
-          opacity: '0'
-        }
+          opacity: "0",
+        },
       };
-      const keyframes: NotifierAnimationPresetKeyframes = fade.hide(<any>testNotification);
+      const keyframes: NotifierAnimationPresetKeyframes = fade.hide(
+        <any>testNotification,
+      );
 
       expect(keyframes).toEqual(expectedKeyframes);
     });
@@ -69,17 +77,17 @@ class MockNotification {
   /**
    * Notification ID
    */
-  public id = 'ID_FAKE';
+  public id = "ID_FAKE";
 
   /**
    * Notification type
    */
-  public type = 'SUCCESS';
+  public type = "SUCCESS";
 
   /**
    * Notification message
    */
-  public message = 'Lorem ipsum dolor sit amet.';
+  public message = "Lorem ipsum dolor sit amet.";
 
   /**
    * Notification component
@@ -88,7 +96,7 @@ class MockNotification {
     getConfig: () => this.config,
     getHeight: () => mockNotificationHeight,
     getShift: () => mockNotificationShift,
-    getWidth: () => mockNotificationWidth
+    getWidth: () => mockNotificationWidth,
   };
 
   /**

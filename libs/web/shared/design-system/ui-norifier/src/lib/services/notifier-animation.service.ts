@@ -1,15 +1,19 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
 
-import { fade } from '../animation-presets/fade.animation-preset';
-import { slide } from '../animation-presets/slide.animation-preset';
-import { NotifierAnimationData, NotifierAnimationPreset, NotifierAnimationPresetKeyframes } from '../models/notifier-animation.model';
-import { NotifierNotification } from '../models/notifier-notification.model';
+import { fade } from "../animation-presets/fade.animation-preset";
+import { slide } from "../animation-presets/slide.animation-preset";
+import {
+  NotifierAnimationData,
+  NotifierAnimationPreset,
+  NotifierAnimationPresetKeyframes,
+} from "../models/notifier-animation.model";
+import { NotifierNotification } from "../models/notifier-notification.model";
 
 /**
  * Notifier animation service
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class NotifierAnimationService {
   /**
@@ -39,17 +43,26 @@ export class NotifierAnimationService {
    * @param   notification Notification the animation data should be generated for
    * @returns Animation information
    */
-  public getAnimationData(direction: 'show' | 'hide', notification: NotifierNotification): NotifierAnimationData {
+  public getAnimationData(
+    direction: "show" | "hide",
+    notification: NotifierNotification,
+  ): NotifierAnimationData {
     // Get all necessary animation data
     let keyframes: NotifierAnimationPresetKeyframes;
     let duration: number;
     let easing: string;
-    if (direction === 'show') {
-      keyframes = this.#animationPresets[notification.component.getConfig().animations.show.preset].show(notification);
+    if (direction === "show") {
+      keyframes =
+        this.#animationPresets[
+          notification.component.getConfig().animations.show.preset
+        ].show(notification);
       duration = notification.component.getConfig().animations.show.speed;
       easing = notification.component.getConfig().animations.show.easing;
     } else {
-      keyframes = this.#animationPresets[notification.component.getConfig().animations.hide.preset].hide(notification);
+      keyframes =
+        this.#animationPresets[
+          notification.component.getConfig().animations.hide.preset
+        ].hide(notification);
       duration = notification.component.getConfig().animations.hide.speed;
       easing = notification.component.getConfig().animations.hide.easing;
     }
@@ -60,7 +73,7 @@ export class NotifierAnimationService {
       options: {
         duration,
         easing,
-        fill: 'forwards', // Keep the newly painted state after the animation finished
+        fill: "forwards", // Keep the newly painted state after the animation finished
       },
     };
   }

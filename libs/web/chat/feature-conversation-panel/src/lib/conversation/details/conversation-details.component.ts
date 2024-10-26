@@ -1,29 +1,45 @@
-import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, input, output } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { ButtonComponent,ButtonRemoveComponent } from '@chat-app/ui-button';
-import { UiDropdownComponent } from '@chat-app/ui-dropdown';
+import { CommonModule } from "@angular/common";
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnInit,
+  input,
+  output,
+} from "@angular/core";
+import { FormsModule } from "@angular/forms";
+import { ButtonComponent, ButtonRemoveComponent } from "@chat-app/ui-button";
+import { UiDropdownComponent } from "@chat-app/ui-dropdown";
 
 @Component({
-  selector: 'mg-conversation-details',
+  selector: "mg-conversation-details",
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonRemoveComponent, UiDropdownComponent, ButtonComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ButtonRemoveComponent,
+    UiDropdownComponent,
+    ButtonComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './conversation-details.component.html',
+  templateUrl: "./conversation-details.component.html",
 })
 export class ConversationDetailsComponent implements OnInit {
-  readonly conversationName = input<string>('Conversation');
+  readonly conversationName = input<string>("Conversation");
   readonly closeDetails = output<void>();
 
-  editedName = '';
+  editedName = "";
   isMuted = false;
-  selectedTheme = 'System';
-  searchQuery = '';
+  selectedTheme = "System";
+  searchQuery = "";
 
-  themeOptions: Array<{ type: 'link' | 'button', text: string, href?: string }>  = [
-    { type: 'button', text: 'Light' },
-    { type: 'button', text: 'Dark' },
-    { type: 'button', text: 'System' }
+  themeOptions: Array<{
+    type: "link" | "button";
+    text: string;
+    href?: string;
+  }> = [
+    { type: "button", text: "Light" },
+    { type: "button", text: "Dark" },
+    { type: "button", text: "System" },
   ];
 
   ngOnInit() {

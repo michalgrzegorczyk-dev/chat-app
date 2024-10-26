@@ -4,11 +4,16 @@
   "sourceRoot": "libs/web/account/feature-account/src",
   "prefix": "mg",
   "projectType": "library",
-  "tags": ["scope:account", "type:feature"],
+  "tags": [
+    "scope:account",
+    "type:feature"
+  ],
   "targets": {
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
       "options": {
         "jestConfig": "libs/web/account/feature-account/jest.config.ts"
       }

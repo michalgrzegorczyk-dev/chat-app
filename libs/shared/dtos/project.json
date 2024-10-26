@@ -3,16 +3,23 @@
   "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/shared/dtos/src",
   "projectType": "library",
-  "tags": ["type:dtos", "scope:shared"],
+  "tags": [
+    "type:dtos",
+    "scope:shared"
+  ],
   "targets": {
     "build": {
       "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/libs/shared/dtos",
         "main": "libs/shared/dtos/src/index.ts",
         "tsConfig": "libs/shared/dtos/tsconfig.lib.json",
-        "assets": ["libs/shared/dtos/*.md"]
+        "assets": [
+          "libs/shared/dtos/*.md"
+        ]
       }
     }
   }

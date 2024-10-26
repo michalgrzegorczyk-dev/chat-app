@@ -82,10 +82,11 @@ chat-app/
    (You'll get these from your Supabase account)
 
 4. Set up your Supabase database:
-  - Create a free Supabase account if you haven't already
-  - In your Supabase project, go to the SQL editor
-  - Copy the contents of the `database/init.sql` file from our project
-  - Paste it into the SQL editor and run it to set up your database
+
+- Create a free Supabase account if you haven't already
+- In your Supabase project, go to the SQL editor
+- Copy the contents of the `database/init.sql` file from our project
+- Paste it into the SQL editor and run it to set up your database
 
 5. Start the app:
    ```bash

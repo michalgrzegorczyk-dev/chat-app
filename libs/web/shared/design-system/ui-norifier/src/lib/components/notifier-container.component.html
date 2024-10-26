@@ -1,8 +1,12 @@
 <ul class="notifier__container-list">
-  @for( notification of notifications; track notification.id ){
-    <li class="notifier__container-list-item">
-      <notifier-notification [notification]="notification" (ready)="onNotificationReady($event)" (dismiss)="onNotificationDismiss($event)">
-      </notifier-notification>
-    </li>
-  } 
+  @for (notification of notifications; track notification.id) {
+  <li class="notifier__container-list-item">
+    <notifier-notification
+      [notification]="notification"
+      (ready)="onNotificationReady($event)"
+      (dismiss)="onNotificationDismiss($event)"
+    >
+    </notifier-notification>
+  </li>
+  }
 </ul>

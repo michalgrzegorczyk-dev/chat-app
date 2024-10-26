@@ -1,14 +1,14 @@
-import { Injectable, InjectionToken } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Injectable, InjectionToken } from "@angular/core";
+import { Observable } from "rxjs";
 
-import { NotifierAction } from '../models/notifier-action.model';
-import { NotifierConfig } from '../models/notifier-config.model';
-import { NotifierNotificationOptions } from '../models/notifier-notification.model';
+import { NotifierAction } from "../models/notifier-action.model";
+import { NotifierConfig } from "../models/notifier-config.model";
+import { NotifierNotificationOptions } from "../models/notifier-notification.model";
 
-import { NotifierQueueService } from './notifier-queue.service';
+import { NotifierQueueService } from "./notifier-queue.service";
 
-
-export const NotifierConfigToken: InjectionToken<NotifierConfig> = new InjectionToken<NotifierConfig>('[anuglar-notifier] Notifier Config');
+export const NotifierConfigToken: InjectionToken<NotifierConfig> =
+  new InjectionToken<NotifierConfig>("[anuglar-notifier] Notifier Config");
 
 export function notifierDefaultConfigFactory(): NotifierConfig {
   return new NotifierConfig({});
@@ -22,11 +22,9 @@ export function notifierDefaultConfigFactory(): NotifierConfig {
  * actions, which then get thrown into the action queue - eventually being processed at the right moment.
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class NotifierService {
-
-
   /**
    * Notifier queue service
    */
@@ -49,21 +47,21 @@ export class NotifierService {
   }
 
   /**
-   * Get the notifier configuration
-   *
-   * @returns Notifier configuration
-   */
-  public getConfig(): NotifierConfig {
-    return this.#config;
-  }
-
-  /**
    * Get the observable for handling actions
    *
    * @returns Observable of NotifierAction
    */
   public get actionStream(): Observable<NotifierAction> {
     return this.#queueService.actionStream.asObservable();
+  }
+
+  /**
+   * Get the notifier configuration
+   *
+   * @returns Notifier configuration
+   */
+  public getConfig(): NotifierConfig {
+    return this.#config;
   }
 
   /**
@@ -74,7 +72,7 @@ export class NotifierService {
   public show(notificationOptions: NotifierNotificationOptions): void {
     this.#queueService.push({
       payload: notificationOptions,
-      type: 'SHOW',
+      type: "SHOW",
     });
   }
 
@@ -86,7 +84,7 @@ export class NotifierService {
   public hide(notificationId: string): void {
     this.#queueService.push({
       payload: notificationId,
-      type: 'HIDE',
+      type: "HIDE",
     });
   }
 
@@ -95,7 +93,7 @@ export class NotifierService {
    */
   public hideNewest(): void {
     this.#queueService.push({
-      type: 'HIDE_NEWEST',
+      type: "HIDE_NEWEST",
     });
   }
 
@@ -104,7 +102,7 @@ export class NotifierService {
    */
   public hideOldest(): void {
     this.#queueService.push({
-      type: 'HIDE_OLDEST',
+      type: "HIDE_OLDEST",
     });
   }
 
@@ -113,7 +111,7 @@ export class NotifierService {
    */
   public hideAll(): void {
     this.#queueService.push({
-      type: 'HIDE_ALL',
+      type: "HIDE_ALL",
     });
   }
 

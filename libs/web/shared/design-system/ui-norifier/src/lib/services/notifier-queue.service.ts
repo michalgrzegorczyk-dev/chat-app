@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { Subject } from "rxjs";
 
-import { NotifierAction } from '../models/notifier-action.model';
+import { NotifierAction } from "../models/notifier-action.model";
 
 // Disable ESLint for the entire file
 /* eslint-disable */
@@ -18,7 +18,7 @@ import { NotifierAction } from '../models/notifier-action.model';
  * An action looks pretty similar to the ones within the Flux / Redux pattern.
  */
 @Injectable({
-  providedIn: 'root',
+  providedIn: "root",
 })
 export class NotifierQueueService {
   /**

@@ -16,5 +16,5 @@ export interface NotifierAction {
   /**
    * Action type
    */
-  type: 'SHOW' | 'HIDE' | 'HIDE_ALL' | 'HIDE_NEWEST' | 'HIDE_OLDEST';
+  type: "SHOW" | "HIDE" | "HIDE_ALL" | "HIDE_NEWEST" | "HIDE_OLDEST";
 }

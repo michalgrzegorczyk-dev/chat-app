@@ -1,15 +1,12 @@
-import { NgClass,NgForOf } from '@angular/common';
-import { ChangeDetectionStrategy,Component } from '@angular/core';
+import { NgClass, NgForOf } from "@angular/common";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 
 @Component({
-  selector: 'mg-conversation-loading',
+  selector: "mg-conversation-loading",
   standalone: true,
-  templateUrl: './conversation-loading.component.html',
+  templateUrl: "./conversation-loading.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    NgForOf,
-    NgClass
-  ],
+  imports: [NgForOf, NgClass],
   styles: [
     `
       :host {
@@ -17,8 +14,7 @@ import { ChangeDetectionStrategy,Component } from '@angular/core';
         flex-direction: column;
         height: 100%;
       }
-    `
-  ]
+    `,
+  ],
 })
-export class ConversationLoadingComponent {
-}
+export class ConversationLoadingComponent {}

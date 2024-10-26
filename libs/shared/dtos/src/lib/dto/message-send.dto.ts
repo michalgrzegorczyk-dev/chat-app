@@ -1,13 +1,11 @@
 export type SendMessageRequestDto = {
-  conversationId: string,
-  userId: string,
-  content: string,
+  conversationId: string;
+  userId: string;
+  content: string;
   timestamp: string;
 
   localMessageId: string;
-
-}
-
+};
 
 // export interface MessageSend {
 //   conversationId: string;
@@ -19,4 +17,3 @@ export type SendMessageRequestDto = {
 //   localMessageId: string;
 //   status: MessageStatus;
 // }
-

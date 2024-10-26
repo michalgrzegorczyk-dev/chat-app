@@ -1,12 +1,13 @@
-<footer class="h-32 bg-white shadow-sm px-6 py-3">
-  <div class="flex items-center h-full">
+<footer class="h-32 bg-white px-6 py-3 shadow-sm">
+  <div class="flex h-full items-center">
     <div
-      class="flex-1 bg-gray-100 border rounded-md px-4 py-2 focus-within:ring-2 focus-within:ring-primary-500 h-full">
+      class="focus-within:ring-primary-500 h-full flex-1 rounded-md border bg-gray-100 px-4 py-2 focus-within:ring-2"
+    >
       <textarea
         (keyup.enter)="sendMessage()"
         [(ngModel)]="inputMessage"
         [disabled]="!selectedConversation()"
-        class="w-full h-full bg-transparent focus:outline-none text-gray-700 resize-none text-sm"
+        class="h-full w-full resize-none bg-transparent text-sm text-gray-700 focus:outline-none"
         placeholder="Type a message..."
       ></textarea>
     </div>

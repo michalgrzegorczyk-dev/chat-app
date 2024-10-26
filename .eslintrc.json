@@ -1,9 +1,13 @@
 {
   "root": true,
-  "plugins": ["@nx"],
+  "plugins": [
+    "@nx"
+  ],
   "overrides": [
     {
-      "files": ["*.ts"],
+      "files": [
+        "*.ts"
+      ],
       "rules": {
         "@nx/enforce-module-boundaries": [
           "warn",
@@ -11,11 +15,18 @@
             "depConstraints": [
               {
                 "sourceTag": "scope:web",
-                "onlyDependOnLibsWithTags": ["type:feature", "type:utils", "scope:shared"]
+                "onlyDependOnLibsWithTags": [
+                  "type:feature",
+                  "type:utils",
+                  "scope:shared"
+                ]
               },
               {
                 "sourceTag": "scope:api",
-                "onlyDependOnLibsWithTags": ["type:dtos", "scope:shared"]
+                "onlyDependOnLibsWithTags": [
+                  "type:dtos",
+                  "scope:shared"
+                ]
               },
               {
                 "sourceTag": "scope:docs",
@@ -23,11 +34,18 @@
               },
               {
                 "sourceTag": "scope:account",
-                "onlyDependOnLibsWithTags": ["scope:shared", "type:utils"]
+                "onlyDependOnLibsWithTags": [
+                  "scope:shared",
+                  "type:utils"
+                ]
               },
               {
                 "sourceTag": "scope:chat",
-                "onlyDependOnLibsWithTags":["scope:shared", "type:utils", "type:data-access"]
+                "onlyDependOnLibsWithTags": [
+                  "scope:shared",
+                  "type:utils",
+                  "type:data-access"
+                ]
               },
               {
                 "sourceTag": "scope:shared",
@@ -47,18 +65,32 @@
         "@typescript-eslint/no-unused-vars": "error",
         "@typescript-eslint/ban-ts-comment": "warn",
         "unused-imports/no-unused-imports": "error",
-        "import/no-duplicates":["error", { "prefer-inline":true}],
+        "import/no-duplicates": [
+          "error",
+          {
+            "prefer-inline": true
+          }
+        ],
         "simple-import-sort/imports": [
           "error",
           {
             "groups": [
-              ["^@|angular", "^@?\\w"],
-              ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
-              ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"]
+              [
+                "^@|angular",
+                "^@?\\w"
+              ],
+              [
+                "^\\.\\.(?!/?$)",
+                "^\\.\\./?$"
+              ],
+              [
+                "^\\./(?=.*/)(?!/?$)",
+                "^\\.(?!/?$)",
+                "^\\./?$"
+              ]
             ]
           }
         ]
-
       },
       "plugins": [
         "eslint-plugin-import",
@@ -66,15 +98,20 @@
         "@typescript-eslint",
         "simple-import-sort",
         "unused-imports"
-
-     ]
+      ]
     },
     {
-      "files": ["*.html"],
-      "extends": ["plugin:@nx/angular-template"],
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@nx/angular-template"
+      ],
       "rules": {
         "@angular-eslint/template/no-duplicate-attributes": "error",
-        "@angular-eslint/template/no-call-expression": ["off"],
+        "@angular-eslint/template/no-call-expression": [
+          "off"
+        ],
         "@angular-eslint/template/no-any": "error",
         "@angular-eslint/template/banana-in-box": "error",
         "@angular-eslint/template/eqeqeq": "error",
@@ -83,17 +120,32 @@
       }
     },
     {
-      "files": ["*.ts", "*.tsx"],
-      "extends": ["plugin:@nx/typescript"],
+      "files": [
+        "*.ts",
+        "*.tsx"
+      ],
+      "extends": [
+        "plugin:@nx/typescript"
+      ],
       "rules": {}
     },
     {
-      "files": ["*.js", "*.jsx"],
-      "extends": ["plugin:@nx/javascript"],
+      "files": [
+        "*.js",
+        "*.jsx"
+      ],
+      "extends": [
+        "plugin:@nx/javascript"
+      ],
       "rules": {}
     },
     {
-      "files": ["*.spec.ts", "*.spec.tsx", "*.spec.js", "*.spec.jsx"],
+      "files": [
+        "*.spec.ts",
+        "*.spec.tsx",
+        "*.spec.js",
+        "*.spec.jsx"
+      ],
       "env": {
         "jest": true
       },

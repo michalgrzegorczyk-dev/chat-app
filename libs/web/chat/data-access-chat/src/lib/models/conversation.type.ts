@@ -5,4 +5,4 @@ export type Conversation = {
   lastMessageContent: string;
   lastMessageTimestamp: string;
   lastMessageSenderId?: string;
-}
+};

@@ -1,4 +1,4 @@
-import { MessageStatus } from './shared-types';
+import { MessageStatus } from "./shared-types";
 
 export interface MessageSendDto {
   localMessageId: string; // local_message_id

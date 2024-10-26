@@ -8,6 +8,7 @@ When working on small projects, a simple and effective branch naming convention 
 - `description`: Brief, hyphenated explanation of the branch contents
 
 ### Common Types:
+
 - `feature`: New functionality
 - `bugfix`: Fixes for issues
 - `hotfix`: Urgent fixes for production
@@ -15,6 +16,7 @@ When working on small projects, a simple and effective branch naming convention 
 - `refactor`: Code improvements without changing functionality
 
 ### Examples:
+
 - `feature/user-authentication`
 - `bugfix/login-error`
 - `docs/api-endpoints`

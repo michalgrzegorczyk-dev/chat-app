@@ -1,4 +1,4 @@
-import { MessageStatus } from '@chat-app/dtos';
+import { MessageStatus } from "@chat-app/dtos";
 
 export type Message = {
   createdAt: string;
@@ -7,4 +7,4 @@ export type Message = {
   senderId: string;
   content: string;
   status?: MessageStatus;
-}
+};

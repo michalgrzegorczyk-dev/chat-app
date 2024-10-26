@@ -1,5 +1,6 @@
 import {ChangeDetectionStrategy, Component, inject} from "@angular/core";
-import { ChatFacade } from '@chat-app/domain';
+import { ChatStore } from '../../../../../data-access-chat/src/lib/application/store/chat.store';
+// import { ChatFacade } from '@chat-app/domain';
 
 @Component({
   selector: 'mg-conversation-header',
@@ -8,5 +9,6 @@ import { ChatFacade } from '@chat-app/domain';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationHeaderComponent {
-  readonly selectedConversation = inject(ChatFacade).selectedConversation;
+  store = inject(ChatStore);
+  // readonly selectedConversation = inject(ChatFacade).selectedConversation;
 }

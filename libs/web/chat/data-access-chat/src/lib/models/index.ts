@@ -1,4 +1,3 @@
-export { ChatState } from './chat-state.type';
 export { Conversation } from './conversation.type';
 export { ConversationDetails } from './conversation-details.type';
 export { Member } from './member.type';

@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonRemoveComponent } from '@chat-app/ui-button';
 
@@ -8,6 +8,7 @@ import { SendMessageInputComponent } from '../message/send/send-message-input.co
 
 import { ConversationDetailsComponent } from './details/conversation-details.component';
 import { ConversationHeaderComponent } from './header/conversation-header.component';
+import { ChatStore } from '../../../../data-access-chat/src/lib/application/store/chat.store';
 
 @Component({
   selector: 'mg-conversation',

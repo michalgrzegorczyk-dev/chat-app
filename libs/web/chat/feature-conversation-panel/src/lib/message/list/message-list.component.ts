@@ -1,11 +1,11 @@
-import { DatePipe, NgClass, NgForOf, NgIf } from '@angular/common';
+import { DatePipe, NgClass, NgForOf, NgIf, JsonPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, ElementRef, inject, ViewChild } from '@angular/core';
-import { ChatFacade } from '@chat-app/domain';
 import { AuthService } from '@chat-app/web/shared/util/auth';
 
 import { ScrollToBottomDirective } from '../../scroll-bottom.directive';
 import { MgUserDetailsPipe } from '../../user-details.pipe';
 import { SingleMessageComponent } from '../single/single-message.component';
+import { ChatStore } from '../../../../../data-access-chat/src/lib/application/store/chat.store';
 
 @Component({
   selector: 'mg-message-list',
@@ -19,7 +19,8 @@ import { SingleMessageComponent } from '../single/single-message.component';
     MgUserDetailsPipe,
     DatePipe,
     SingleMessageComponent,
-    ScrollToBottomDirective
+    ScrollToBottomDirective,
+    JsonPipe
   ],
   styles: [
     `
@@ -35,6 +36,6 @@ import { SingleMessageComponent } from '../single/single-message.component';
 export class MessageListComponent {
   @ViewChild('messageContainer') messageContainer!: ElementRef;
   readonly user = inject(AuthService).user;
-  readonly #chatStore = inject(ChatFacade);
-  readonly messageList = this.#chatStore.messageList;
+  readonly #store = inject(ChatStore);
+  messageList = this.#store.messageList;
 }

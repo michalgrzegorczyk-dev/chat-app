@@ -1,23 +1,29 @@
-import { ConversationListElementDto,MessageSendDto } from '@chat-app/dtos';
-import { Body,Controller, Get, Headers, Param, Post } from '@nestjs/common';
-
+import { ConversationListElementDto, MessageSendDto } from '@chat-app/dtos';
+import { Body, Controller, Get, Headers, Param, Post } from '@nestjs/common';
 import { ChatGateway } from './chat.gateway';
 
-// TODO: implement routes object
+const DELAY_MS = 500;
+
+// Helper function to delay promises
+const delayResponse = async <T>(promise: Promise<T>): Promise<T> => {
+  await new Promise(resolve => setTimeout(resolve, DELAY_MS));
+  return promise;
+};
+
 @Controller('chat')
 export class ChatController {
-  constructor(private chatGateway: ChatGateway) {
-  }
+  constructor(private chatGateway: ChatGateway) {}
 
-  // TODO: remove when auth is implemented
   @Get('users')
   async getUsers(): Promise<any> {
-    return await this.chatGateway.getAllUsers();
+    return await delayResponse(this.chatGateway.getAllUsers());
   }
 
   @Get('conversations')
-  async getConversations(@Headers('X-User-Id') userId: string): Promise<ConversationListElementDto[]> {
-    return await this.chatGateway.getConversations(userId);
+  async getConversations(
+    @Headers('X-User-Id') userId: string
+  ): Promise<ConversationListElementDto[]> {
+    return await delayResponse(this.chatGateway.getConversations(userId));
   }
 
   @Post('conversations')
@@ -25,14 +31,19 @@ export class ChatController {
     @Headers('X-User-Id') userId: string,
     @Body('queue') queue: MessageSendDto[],
     @Body('conversationId') conversationId: string
-    ): Promise<any> {
-    return await this.chatGateway.updateMessagesFromQueue(userId, conversationId, queue);
+  ): Promise<any> {
+    return await delayResponse(
+      this.chatGateway.updateMessagesFromQueue(userId, conversationId, queue)
+    );
   }
 
   @Get('conversations/:conversationId')
   async getConversation(
     @Headers('X-User-Id') userId: string,
-    @Param('conversationId') conversationId: string): Promise<any> {
-    return await this.chatGateway.getConversation(userId, conversationId);
+    @Param('conversationId') conversationId: string
+  ): Promise<any> {
+    return await delayResponse(
+      this.chatGateway.getConversation(userId, conversationId)
+    );
   }
 }

@@ -32,23 +32,19 @@ export class ConversationDetailsComponent implements OnInit {
 
   updateConversationName() {
     // Implement logic to update conversation name
-    console.log('Updating conversation name to:', this.editedName);
   }
 
   toggleMute() {
     this.isMuted = !this.isMuted;
     // Implement logic to mute/unmute notifications
-    console.log('Mute status:', this.isMuted);
   }
 
   onThemeSelect(item: any) {
     this.selectedTheme = item.text;
     // Implement logic to change theme
-    console.log('Selected theme:', this.selectedTheme);
   }
 
   removeConversation() {
     // Implement logic to remove conversation
-    console.log('Removing conversation');
   }
 }

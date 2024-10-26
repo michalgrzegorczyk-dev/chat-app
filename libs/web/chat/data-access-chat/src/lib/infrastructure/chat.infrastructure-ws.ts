@@ -10,7 +10,6 @@ import { Conversation, MessageSendDto, ReceivedMessage } from '../models';
 export class ChatInfrastructureWebSockets {
   readonly messageReceived$ = new Subject<ReceivedMessage>();
   readonly loadConversationListSuccess$ = new Subject<Conversation[]>();
-
   readonly #environment = inject(ENVIRONMENT);
   readonly #socket = io(this.#environment.apiUrl, {
     query: { userId: inject(AuthService).user().id },

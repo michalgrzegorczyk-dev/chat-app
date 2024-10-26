@@ -30,7 +30,7 @@ import { IsActivePipe } from './is-active.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ConversationsComponent {
-  readonly conversationList = input.required<Conversation[]>();
+  readonly conversationList = input.required<Conversation[] | undefined>();
 
   readonly clickConversation = output<Conversation>();
   readonly user = inject(AuthService).user;

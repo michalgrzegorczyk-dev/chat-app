@@ -1,5 +1,5 @@
 import { DatePipe, NgClass } from '@angular/common';
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { Message } from '@chat-app/domain';
 
 import { MgUserDetailsPipe } from '../../user-details.pipe';

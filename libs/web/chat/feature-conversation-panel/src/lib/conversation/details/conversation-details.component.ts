@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnInit, Output, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, input, output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent, ButtonRemoveComponent } from '@chat-app/ui-button';
 import { UiDropdownComponent } from '@chat-app/ui-dropdown';

@@ -49,21 +49,21 @@ export class NotifierService {
   }
 
   /**
-   * Get the notifier configuration
-   *
-   * @returns Notifier configuration
-   */
-  public getConfig(): NotifierConfig {
-    return this.#config;
-  }
-
-  /**
    * Get the observable for handling actions
    *
    * @returns Observable of NotifierAction
    */
   public get actionStream(): Observable<NotifierAction> {
     return this.#queueService.actionStream.asObservable();
+  }
+
+  /**
+   * Get the notifier configuration
+   *
+   * @returns Notifier configuration
+   */
+  public getConfig(): NotifierConfig {
+    return this.#config;
   }
 
   /**

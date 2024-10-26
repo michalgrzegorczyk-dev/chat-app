@@ -12,15 +12,13 @@ import { AuthService } from '@chat-app/web/shared/util/auth';
   imports: [NgClass, ButtonComponent, UiDropdownComponent]
 })
 export class AccountWidgetComponent {
-  readonly #authService = inject(AuthService);
-  readonly user = this.#authService.user;
-
-
   dropdownItems: any = [
     { type: 'button', text: 'Add Conversation' },
     { type: 'link', text: 'Account Settings', href: 'account' },
     { type: 'button', text: 'Change Account', href: 'auth' }
   ];
+  readonly #authService = inject(AuthService);
+  readonly user = this.#authService.user;
 
   async onItemClick($event: any): Promise<void> {
     if ($event.text === 'Change Account') {

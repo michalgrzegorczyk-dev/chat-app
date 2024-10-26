@@ -1,5 +1,5 @@
-import { inject,Pipe, PipeTransform } from "@angular/core";
-import { Conversation } from "@chat-app/domain";
+import { inject,Pipe, PipeTransform } from '@angular/core';
+import { ChatStore,Conversation } from '@chat-app/domain';
 
 @Pipe({
     standalone: true,
@@ -7,10 +7,9 @@ import { Conversation } from "@chat-app/domain";
   })
   export class IsActivePipe implements PipeTransform {
 
-    // readonly #selectedConversation = inject(ChatFacade).selectedConversation;
+    readonly #selectedConversation = inject(ChatStore).selectedConversation;
 
     transform(conversation: Conversation): boolean {
-      // return conversation.conversationId === this.#selectedConversation()?.conversationId;
-      return false;
+      return conversation.conversationId === this.#selectedConversation()?.conversationId;
     }
   }

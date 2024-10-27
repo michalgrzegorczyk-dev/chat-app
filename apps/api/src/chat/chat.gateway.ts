@@ -1,8 +1,4 @@
-import {
-  ConversationDetailsDto,
-  ConversationListElementDto,
-  SendMessageRequestDto,
-} from "@chat-app/dtos";
+import { ConversationDetailsDto, ConversationListElementDto, SendMessageRequestDto } from "@chat-app/dtos";
 import { Logger } from "@nestjs/common";
 import {
   ConnectedSocket,
@@ -28,6 +24,10 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   constructor(private supabaseService: SupabaseService) {}
 
+  map = {
+    "1": "18cdf29a-2a91-4490-9b18-0d9c5bd4812c",
+  };
+
   async handleConnection(client: Socket) {
     try {
       const userId = client.handshake.query.userId as string;
@@ -52,43 +52,26 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   @SubscribeMessage("sendMessage")
-  async handleSendMessage(
-    @MessageBody() requestDto: SendMessageRequestDto,
-    @ConnectedSocket() client: Socket,
-  ): Promise<void> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any,@typescript-eslint/no-unused-vars
+  async handleSendMessage(@MessageBody() requestDto: SendMessageRequestDto, @ConnectedSocket() client: Socket): Promise<void> {
     await this.supabaseService.updateConversationList(requestDto);
     const savedMessage = await this.supabaseService.saveMessage(requestDto);
-    const conversationUsers =
-      await this.supabaseService.getUserIdListFromConversation(
-        requestDto.conversationId,
-      );
+    const conversationUsers = await this.supabaseService.getUserIdListFromConversation(requestDto.conversationId);
 
     for (const userId of conversationUsers) {
-      const conversations = await this.supabaseService.getConversationsByUserId(
-        userId,
-      );
-      this.server
-        .to(`user:${userId}`)
-        .emit("loadConversationListSuccess", conversations);
+      const conversations = await this.supabaseService.getConversationsByUserId(userId);
+      this.server.to(`user:${userId}`).emit("loadConversationListSuccess", conversations);
       this.server.to(`user:${userId}`).emit("sendMessageSuccess", savedMessage);
     }
   }
 
-  async getConversation(
-    userId: string,
-    conversationId: string,
-  ): Promise<ConversationDetailsDto> {
+  async getConversation(userId: string, conversationId: string): Promise<ConversationDetailsDto> {
     return await this.supabaseService.getConversation(userId, conversationId);
   }
 
-  async getConversations(
-    userId: string,
-  ): Promise<ConversationListElementDto[]> {
+  async getConversations(userId: string): Promise<ConversationListElementDto[]> {
+    userId = this.map[userId] || userId;
     return await this.supabaseService.getConversationsByUserId(userId);
-  }
-
-  async getAllUsers(): Promise<any> {
-    return await this.supabaseService.getAllUsers();
   }
 
   async updateMessagesFromQueue(userId, conversationId, queue) {

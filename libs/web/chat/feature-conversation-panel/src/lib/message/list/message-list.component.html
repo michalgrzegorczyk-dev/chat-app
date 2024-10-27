@@ -4,6 +4,6 @@
   mgScrollToBottom
 >
   @for (message of messageList(); track message.messageId) {
-  <mg-message [message]="message" [currentUserId]="user().id" />
+  <mg-message [message]="message" [currentUserId]="account().id" />
   }
 </div>

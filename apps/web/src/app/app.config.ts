@@ -1,6 +1,7 @@
-import { provideHttpClient } from "@angular/common/http";
+import { provideHttpClient, withInterceptors } from "@angular/common/http";
 import { ApplicationConfig, provideZoneChangeDetection } from "@angular/core";
 import { provideRouter } from "@angular/router";
+import { authInterceptor } from "@chat-app/web/shared/util/auth";
 import { provideStoreDevtools } from "@ngrx/store-devtools";
 
 import { appRoutes } from "./app.routes";
@@ -13,6 +14,6 @@ export const appConfig: ApplicationConfig = {
     }),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
-    provideHttpClient(),
+    provideHttpClient(withInterceptors([authInterceptor])),
   ],
 };

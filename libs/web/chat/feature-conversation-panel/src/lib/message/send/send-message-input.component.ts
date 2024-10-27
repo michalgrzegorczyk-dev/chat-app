@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { AuthService } from "@chat-app/web/shared/util/auth";
-import { v4 as uuidv4 } from "uuid";
 import { ChatStore } from "@chat-app/domain";
 import { MessageSendDto } from "@chat-app/dtos";
+import { AuthService } from "@chat-app/web/shared/util/auth";
+import { v4 as uuidv4 } from "uuid";
 
 @Component({
   selector: "mg-send-message-input",
@@ -13,7 +13,7 @@ import { MessageSendDto } from "@chat-app/dtos";
   imports: [FormsModule],
 })
 export class SendMessageInputComponent {
-  readonly user = inject(AuthService).user;
+  readonly account = inject(AuthService).user;
   protected inputMessage = "";
   readonly #store = inject(ChatStore);
   readonly selectedConversation = this.#store.selectedConversation;
@@ -25,7 +25,7 @@ export class SendMessageInputComponent {
       const messageToSend: MessageSendDto = {
         localMessageId: uuidv4(),
         conversationId: selectedConversation.conversationId,
-        userId: this.user().id,
+        userId: this.account().id,
         content: this.inputMessage.trim(),
         timestamp: new Date().toISOString(),
         status: "sending",

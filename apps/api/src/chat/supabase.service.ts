@@ -1,11 +1,6 @@
-import {
-  ConversationDetailsDto,
-  ConversationListElementDto,
-  MemberDto,
-  MessageDto,
-  SendMessageRequestDto,
-} from "@chat-app/dtos";
-import { Injectable } from "@nestjs/common";
+import { ConversationDetailsDto, ConversationListElementDto, MemberDto, MessageDto, SendMessageRequestDto } from "@chat-app/dtos";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { createClient, SupabaseClient } from "@supabase/supabase-js";
 
 import { MessageDbModel } from "./model/conversation.model";
@@ -14,11 +9,8 @@ import { MessageDbModel } from "./model/conversation.model";
 export class SupabaseService {
   private supabase: SupabaseClient;
 
-  constructor() {
-    this.supabase = createClient(
-      process.env.SUPABASE_URL,
-      process.env.SUPABASE_KEY,
-    );
+  constructor(private jwtService: JwtService) {
+    this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
   }
 
   // async getConversationsByUserId(userId: string): Promise<ConversationListElementDto[]> {
@@ -47,9 +39,38 @@ export class SupabaseService {
   //   }).sort((a, b) => b.lastMessageTimestamp.localeCompare(a.lastMessageTimestamp));
   // }
 
-  async getConversationsByUserId(
-    userId: string,
-  ): Promise<ConversationListElementDto[]> {
+  async login(loginDto: { email: string; password: string }) {
+    try {
+      // Query the users table
+      const { data: user } = await this.supabase
+        .from("users")
+        .select("id, name, email, profile_photo_url")
+        .eq("email", loginDto.email)
+        .eq("password", loginDto.password) // Note: In production, use proper password hashing
+        .single();
+
+      const payload = {
+        email: user.email,
+        sub: user.id,
+        name: user.name,
+        profile_photo_url: user.profile_photo_url,
+      };
+
+      return {
+        access_token: this.jwtService.sign(payload),
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          profile_photo_url: user.profile_photo_url,
+        },
+      };
+    } catch (error) {
+      throw new UnauthorizedException("Invalid credentials");
+    }
+  }
+
+  async getConversationsByUserId(userId: string): Promise<ConversationListElementDto[]> {
     try {
       const { data, error } = await this.supabase
         .from("conversationuser")
@@ -80,22 +101,20 @@ export class SupabaseService {
         return [];
       }
 
-      const conversations: ConversationListElementDto[] = data.map(
-        (item: any) => {
-          const otherUser = item.other_user.users[0];
-          const lastMessage = item.last_message.message[0];
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const conversations: ConversationListElementDto[] = data.map((item: any) => {
+        const otherUser = item.other_user.users[0];
+        const lastMessage = item.last_message.message[0];
 
-          return {
-            conversationId: item.conversation_id,
-            avatarUrl: otherUser?.profile_photo_url,
-            name: otherUser?.name,
-            lastMessageContent: item.conversation.last_message || "",
-            lastMessageTimestamp:
-              item.conversation.last_message_timestamp || "",
-            lastMessageSenderId: lastMessage?.sender_id || "",
-          };
-        },
-      );
+        return {
+          conversationId: item.conversation_id,
+          avatarUrl: otherUser?.profile_photo_url,
+          name: otherUser?.name,
+          lastMessageContent: item.conversation.last_message || "",
+          lastMessageTimestamp: item.conversation.last_message_timestamp || "",
+          lastMessageSenderId: lastMessage?.sender_id || "",
+        };
+      });
       return conversations;
     } catch (error) {
       return [];
@@ -119,10 +138,7 @@ export class SupabaseService {
     return data;
   }
 
-  async getConversation(
-    userId: string,
-    conversationId: string,
-  ): Promise<ConversationDetailsDto> {
+  async getConversation(userId: string, conversationId: string): Promise<ConversationDetailsDto> {
     const data = await this.supabase
       .from("message")
       .select(
@@ -139,6 +155,7 @@ export class SupabaseService {
 
     //TODO: check how to type objects from supabase etc.
     // const conversationListDb: ConversationDbModel[] = data as any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const messageListDb: MessageDbModel[] = data.data as any;
 
     return {
@@ -154,10 +171,10 @@ export class SupabaseService {
     };
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getUniqueSenders(data: any): MemberDto[] {
-    return Array.from(
-      new Map(data.map((msg: any) => [msg.sender.id, msg.sender])).values(),
-    ) as MemberDto[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return Array.from(new Map(data.map((msg: any) => [msg.sender.id, msg.sender])).values()) as MemberDto[];
   }
 
   //todo remove after auth implementation
@@ -166,9 +183,7 @@ export class SupabaseService {
     return data;
   }
 
-  async updateConversationList(
-    sendMessageDto: SendMessageRequestDto,
-  ): Promise<void> {
+  async updateConversationList(sendMessageDto: SendMessageRequestDto): Promise<void> {
     await this.supabase
       .from("conversation")
       .update({
@@ -179,19 +194,13 @@ export class SupabaseService {
       .eq("id", sendMessageDto.conversationId);
   }
 
-  async getUserIdListFromConversation(
-    conversationId: string,
-  ): Promise<string[]> {
-    const { data } = await this.supabase
-      .from("conversationuser")
-      .select("user_id")
-      .eq("conversation_id", conversationId);
+  async getUserIdListFromConversation(conversationId: string): Promise<string[]> {
+    const { data } = await this.supabase.from("conversationuser").select("user_id").eq("conversation_id", conversationId);
     return data.map((item) => item.user_id);
   }
 
   async updateMessages(userId, conversationId, queue) {
-    //write subapbase query to update
-    const { data, error } = await this.supabase
+    const { data } = await this.supabase
       .from("message")
       .upsert({
         conversation_id: conversationId,

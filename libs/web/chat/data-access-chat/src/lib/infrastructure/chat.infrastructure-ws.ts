@@ -1,11 +1,11 @@
 import { inject, Injectable } from "@angular/core";
+import { MessageSendDto } from "@chat-app/dtos";
 import { ENVIRONMENT } from "@chat-app/environment";
 import { AuthService } from "@chat-app/web/shared/util/auth";
 import { Subject } from "rxjs";
 import { io } from "socket.io-client";
 
 import { Conversation, ReceivedMessage } from "../models";
-import { MessageSendDto } from "@chat-app/dtos";
 
 @Injectable()
 export class ChatInfrastructureWebSockets {
@@ -31,6 +31,7 @@ export class ChatInfrastructureWebSockets {
   }
 
   private setupSocketListeners(): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.#socket.on("sendMessageSuccess", (message: any) => {
       this.messageReceived$.next({
         conversationId: message.conversation_id,
@@ -43,11 +44,8 @@ export class ChatInfrastructureWebSockets {
       });
     });
 
-    this.#socket.on(
-      "loadConversationListSuccess",
-      (conversationList: Conversation[]) => {
-        this.loadConversationListSuccess$.next(conversationList);
-      },
-    );
+    this.#socket.on("loadConversationListSuccess", (conversationList: Conversation[]) => {
+      this.loadConversationListSuccess$.next(conversationList);
+    });
   }
 }

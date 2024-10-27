@@ -27,7 +27,7 @@
           </span>
         </div>
         <span class="text-sm text-gray-700">
-          @if (conversation.lastMessageSenderId === user().id) { You: }
+          @if (conversation.lastMessageSenderId === account().id) { You: }
           {{ conversation.lastMessageContent }}
           <span class="text-xs text-gray-500">
             <span class="mx-1">&middot;</span>

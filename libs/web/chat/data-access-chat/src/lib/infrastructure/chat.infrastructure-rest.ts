@@ -1,37 +1,22 @@
-import { Injectable, inject } from "@angular/core";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { inject, Injectable } from "@angular/core";
+// eslint-disable-next-line
 import { Conversation } from "@chat-app/domain";
-import { HttpHeaders, HttpParams, HttpClient } from "@angular/common/http";
-import { ROUTE_PARAMS, routes } from "@chat-app/util-routing";
-import {
-  ConversationDetailsDto,
-  ConversationListElementDto,
-} from "@chat-app/dtos";
-import { map, Observable } from "rxjs";
-import { AuthService } from "@chat-app/web/shared/util/auth";
+import { ConversationDetailsDto, ConversationListElementDto } from "@chat-app/dtos";
 import { ENVIRONMENT } from "@chat-app/environment";
+import { ROUTE_PARAMS, routes } from "@chat-app/util-routing";
+import { map, Observable } from "rxjs";
 
 @Injectable()
 export class ChatInfrastructureRest {
   readonly #http = inject(HttpClient);
-  readonly #authService = inject(AuthService);
   readonly #environment = inject(ENVIRONMENT);
 
   getConversationContent(conversation: Conversation) {
-    const headers = new HttpHeaders().set(
-      "X-User-Id",
-      this.#authService.user().id,
-    );
-    const params = new HttpParams()
-      .set(ROUTE_PARAMS.USER_ID, this.#authService.user().id)
-      .set(ROUTE_PARAMS.CONVERSATION_ID, conversation.conversationId);
+    const params = new HttpParams().set(ROUTE_PARAMS.CONVERSATION_ID, conversation.conversationId);
 
     return this.#http
-      .get<ConversationDetailsDto>(
-        `${this.#environment.apiUrl}${routes.chat.conversation.content.url(
-          conversation.conversationId,
-        )}`,
-        { params, headers },
-      )
+      .get<ConversationDetailsDto>(`${this.#environment.apiUrl}${routes.chat.conversation.content.url(conversation.conversationId)}`, { params })
       .pipe(
         map((convDetailsDto) => {
           return {
@@ -57,28 +42,14 @@ export class ChatInfrastructureRest {
   }
 
   fetchConversations(): Observable<Conversation[]> {
-    const headers = new HttpHeaders().set(
-      "X-User-Id",
-      this.#authService.user().id,
+    return this.#http.get<ConversationListElementDto[]>(`${this.#environment.apiUrl}${routes.chat.conversations.url()}`, {}).pipe(
+      map((conversationDtoList: ConversationListElementDto[]) => {
+        return conversationDtoList.map((conversationDto: ConversationListElementDto) => {
+          return {
+            ...conversationDto,
+          };
+        });
+      }),
     );
-
-    return this.#http
-      .get<ConversationListElementDto[]>(
-        `${this.#environment.apiUrl}${routes.chat.conversations.url()}`,
-        {
-          headers,
-        },
-      )
-      .pipe(
-        map((conversationDtoList: ConversationListElementDto[]) => {
-          return conversationDtoList.map(
-            (conversationDto: ConversationListElementDto) => {
-              return {
-                ...conversationDto,
-              };
-            },
-          );
-        }),
-      );
   }
 }

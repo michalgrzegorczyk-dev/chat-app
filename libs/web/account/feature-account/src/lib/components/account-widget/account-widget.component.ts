@@ -18,11 +18,11 @@ export class AccountWidgetComponent {
     { type: "button", text: "Change Account", href: "auth" },
   ];
   readonly #authService = inject(AuthService);
-  readonly user = this.#authService.user;
+  readonly account = inject(AuthService).user;
 
   async onItemClick($event: any): Promise<void> {
     if ($event.text === "Change Account") {
-      await this.#authService.logOut();
+      await this.#authService.logout();
     }
   }
 }

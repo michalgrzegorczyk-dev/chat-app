@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 // eslint-disable-next-line @nx/enforce-module-boundaries
-import { ChatInfrastructureRest, ChatInfrastructureWebSockets, ChatStore, NetworkService } from "@chat-app/domain";
+import { ChatInfrastructureRest, ChatInfrastructureWebSockets, ChatStore } from "@chat-app/domain";
 import { AccountWidgetComponent } from "@chat-app/feature-account";
 import { ConversationListLayoutComponent } from "@chat-app/feature-conversation-list";
 import { AuthService } from "@chat-app/web/shared/util/auth";
+import { NetworkService } from "@chat-app/network";
 
 @Component({
   selector: "mg-chat",

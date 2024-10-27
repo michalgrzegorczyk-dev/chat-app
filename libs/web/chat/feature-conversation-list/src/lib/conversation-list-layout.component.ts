@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, Component, inject, OnInit } from "@angular/core";
-import { ChatStore, Conversation, NetworkService } from "@chat-app/domain";
+import { ChatStore, Conversation } from "@chat-app/domain";
 
 import { ConversationsComponent } from "./conversation-list/converstaion-list.component";
 import { ConversationListLoadingComponent } from "./conversation-list-loading/conversation-list-loading.component";
 import { RelativeTimePipe } from "./relative-time.pipe";
+import { NetworkService } from "@chat-app/network";
 
 @Component({
   selector: "mg-conversation-list-layout",

@@ -1,14 +1,15 @@
-import { Injectable, inject } from "@angular/core";
-import { Conversation } from "@chat-app/domain";
-import { HttpHeaders, HttpParams, HttpClient } from "@angular/common/http";
-import { ROUTE_PARAMS, routes } from "@chat-app/util-routing";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
+import { inject, Injectable } from "@angular/core";
 import {
   ConversationDetailsDto,
   ConversationListElementDto,
 } from "@chat-app/dtos";
-import { map, Observable } from "rxjs";
-import { AuthService } from "@chat-app/web/shared/util/auth";
 import { ENVIRONMENT } from "@chat-app/environment";
+import { ROUTE_PARAMS, routes } from "@chat-app/util-routing";
+import { AuthService } from "@chat-app/web/shared/util/auth";
+import { firstValueFrom, map } from "rxjs";
+
+import { Conversation } from "../models/conversation.type";
 
 @Injectable()
 export class ChatInfrastructureRest {
@@ -56,29 +57,19 @@ export class ChatInfrastructureRest {
       );
   }
 
-  fetchConversations(): Observable<Conversation[]> {
+  fetchConversations() {
     const headers = new HttpHeaders().set(
       "X-User-Id",
       this.#authService.user().id,
     );
 
-    return this.#http
-      .get<ConversationListElementDto[]>(
+    return firstValueFrom(
+      this.#http.get<ConversationListElementDto[]>(
         `${this.#environment.apiUrl}${routes.chat.conversations.url()}`,
         {
           headers,
         },
-      )
-      .pipe(
-        map((conversationDtoList: ConversationListElementDto[]) => {
-          return conversationDtoList.map(
-            (conversationDto: ConversationListElementDto) => {
-              return {
-                ...conversationDto,
-              };
-            },
-          );
-        }),
-      );
+      ),
+    );
   }
 }

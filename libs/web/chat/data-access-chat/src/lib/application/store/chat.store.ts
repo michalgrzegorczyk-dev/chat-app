@@ -38,29 +38,18 @@ export const ChatStore = signalStore(
       serviceWS = inject(ChatInfrastructureWebSockets),
       network = inject(NetworkService),
     ) => ({
-      loadConversationList: rxMethod<void>(
-        pipe(
-          switchMap(() => {
-            patchState(store, {
-              conversationListLoading: true,
-            });
+      loadConversationList: async () => {
+        patchState(store, { conversationListLoading: true });
 
-            return serviceRest.fetchConversations().pipe(
-              tapResponse({
-                next: (conversations) =>
-                  patchState(store, {
-                    conversationList: conversations,
-                    conversationListLoading: false,
-                  }),
-                error: (error) => {
-                  console.error("Failed to load conversation list:", error);
-                  patchState(store, { conversationListLoading: false });
-                },
-              }),
-            );
-          }),
-        ),
-      ),
+        try {
+          const conversations = await serviceRest.fetchConversations();
+          patchState(store, { conversationList: conversations });
+        } catch (e) {
+          console.error("Failed to load conversation list:", e);
+        } finally {
+          patchState(store, { conversationListLoading: false });
+        }
+      },
 
       selectConversation: rxMethod<Conversation | null>(
         pipe(

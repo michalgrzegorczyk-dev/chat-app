@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ChatStore } from "@chat-app/domain";
-import { ButtonRemoveComponent } from "@chat-app/ui-button";
 
 import { ConversationComponent } from "./conversation/conversation.component";
 import { ConversationDetailsComponent } from "./conversation/details/conversation-details.component";
@@ -17,7 +16,6 @@ import { SendMessageInputComponent } from "./message/send/send-message-input.com
     ConversationHeaderComponent,
     MessageListComponent,
     SendMessageInputComponent,
-    ButtonRemoveComponent,
     ConversationComponent,
     ConversationDetailsComponent,
   ],

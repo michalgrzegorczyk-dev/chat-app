@@ -1,14 +1,14 @@
-@if (user()) {
+@if (account()) {
 <div
   class="flex h-16 items-center justify-between border-b border-gray-200 px-4"
 >
   <div class="flex items-center">
     <img
-      [src]="user().avatarUrl"
+      [src]="account().avatarUrl"
       alt="Avatar logo"
       class="mr-3 h-8 w-8 rounded-full"
     />
-    <h2 class="text-sm font-medium text-gray-800">{{ user().name }}</h2>
+    <h2 class="text-sm font-medium text-gray-800">{{ account().name }}</h2>
   </div>
 
   <div class="flex gap-2">

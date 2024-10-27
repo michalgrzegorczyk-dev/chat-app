@@ -1,50 +1,45 @@
 import { ConversationListElementDto, MessageSendDto } from "@chat-app/dtos";
-import { Body, Controller, Get, Headers, Param, Post } from "@nestjs/common";
+import { Body, Controller, Get, Logger, Param, Post, Request, UseGuards } from "@nestjs/common";
+
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
 
 import { ChatGateway } from "./chat.gateway";
 
 const DELAY_MS = 500;
 
-// Helper function to delay promises
 const delayResponse = async <T>(promise: Promise<T>): Promise<T> => {
   await new Promise((resolve) => setTimeout(resolve, DELAY_MS));
   return promise;
 };
 
 @Controller("chat")
+@UseGuards(JwtAuthGuard)
 export class ChatController {
-  constructor(private chatGateway: ChatGateway) {}
+  private readonly logger = new Logger(ChatController.name);
 
-  @Get("users")
-  async getUsers(): Promise<any> {
-    return await delayResponse(this.chatGateway.getAllUsers());
+  constructor(private chatGateway: ChatGateway) {
+    this.logger.log("ChatController initialized");
   }
 
   @Get("conversations")
-  async getConversations(
-    @Headers("X-User-Id") userId: string,
-  ): Promise<ConversationListElementDto[]> {
-    return await delayResponse(this.chatGateway.getConversations(userId));
+  @UseGuards(JwtAuthGuard)
+  async getConversations(@Request() req): Promise<ConversationListElementDto[]> {
+    const userId = req.user.id;
+    return await delayResponse(this.chatGateway.getConversations(String(userId)));
   }
 
   @Post("conversations")
-  async updateMessagesFromQueue(
-    @Headers("X-User-Id") userId: string,
-    @Body("queue") queue: MessageSendDto[],
-    @Body("conversationId") conversationId: string,
-  ): Promise<any> {
-    return await delayResponse(
-      this.chatGateway.updateMessagesFromQueue(userId, conversationId, queue),
-    );
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async updateMessagesFromQueue(@Request() req, @Body("queue") queue: MessageSendDto[], @Body("conversationId") conversationId: string): Promise<any> {
+    const userId = req.user.id;
+    return await delayResponse(this.chatGateway.updateMessagesFromQueue(userId, conversationId, queue));
   }
 
   @Get("conversations/:conversationId")
-  async getConversation(
-    @Headers("X-User-Id") userId: string,
-    @Param("conversationId") conversationId: string,
-  ): Promise<any> {
-    return await delayResponse(
-      this.chatGateway.getConversation(userId, conversationId),
-    );
+  @UseGuards(JwtAuthGuard)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async getConversation(@Request() req, @Param("conversationId") conversationId: string): Promise<any> {
+    const userId = req.user.id;
+    return await delayResponse(this.chatGateway.getConversation(userId, conversationId));
   }
 }

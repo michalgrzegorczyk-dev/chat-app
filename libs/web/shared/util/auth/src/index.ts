@@ -1,6 +1,4 @@
-export * from "./lib/auth/auth.service";
+export { AuthGuard } from "./lib/auth/auth.guard";
 export { AuthService } from "./lib/auth/auth.service";
-export * from "./lib/auth/auth.guard";
 export { User } from "./lib/auth/user.type";
-
-//todo unikać gwiazek
+export { authInterceptor } from "./lib/auth/auth.interceptor";

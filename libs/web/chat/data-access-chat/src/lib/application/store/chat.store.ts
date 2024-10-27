@@ -10,12 +10,7 @@ import { EMPTY, from, pipe, switchMap, tap } from "rxjs";
 
 import { ChatInfrastructureRest } from "../../infrastructure/chat.infrastructure-rest";
 import { ChatInfrastructureWebSockets } from "../../infrastructure/chat.infrastructure-ws";
-import {
-  Conversation,
-  ConversationDetails,
-  Message,
-  ReceivedMessage,
-} from "../../models";
+import { Conversation, ConversationDetails, Message, ReceivedMessage } from "../../models";
 import { ChatState } from "../../models/chat.state";
 
 export const initialState: ChatState = {
@@ -72,12 +67,7 @@ export const ChatStore = signalStore(
               memberIdMap: new Map(),
             });
 
-            return from(
-              router.navigate([
-                `${routes.chat.url()}`,
-                conversation.conversationId,
-              ]),
-            ).pipe(
+            return from(router.navigate([`${routes.chat.url()}`, conversation.conversationId])).pipe(
               switchMap(() => serviceRest.getConversationContent(conversation)),
               tapResponse({
                 next: (details: ConversationDetails) =>
@@ -85,7 +75,16 @@ export const ChatStore = signalStore(
                     selectedConversation: conversation,
                     messageList: details.messageList,
                     memberIdMap: new Map(
-                      details.memberList.map((member) => [member.id, member]),
+                      details.memberList.map((member) => {
+                        return [
+                          member.id,
+                          {
+                            id: member.id,
+                            name: member.name,
+                            avatarUrl: member.avatarUrl,
+                          },
+                        ];
+                      }),
                     ),
                     messageListLoading: false,
                     selectedConversationLoading: false,
@@ -124,14 +123,9 @@ export const ChatStore = signalStore(
             if (network.isOnline()) {
               serviceWS.sendMessageWebSocket(message);
             } else {
-              const offlineMessages = JSON.parse(
-                localStorage.getItem("offlineMessages") ?? "[]",
-              );
+              const offlineMessages = JSON.parse(localStorage.getItem("offlineMessages") ?? "[]");
               offlineMessages.push(message);
-              localStorage.setItem(
-                "offlineMessages",
-                JSON.stringify(offlineMessages),
-              );
+              localStorage.setItem("offlineMessages", JSON.stringify(offlineMessages));
             }
 
             return EMPTY;
@@ -144,31 +138,24 @@ export const ChatStore = signalStore(
           switchMap(() => {
             return serviceWS.messageReceived$.pipe(
               tap((message: ReceivedMessage) => {
-                const currentConversationId =
-                  store.selectedConversation()?.conversationId;
+                const currentConversationId = store.selectedConversation()?.conversationId;
 
                 if (currentConversationId === message.conversationId) {
                   const currentMessages = store.messageList();
 
                   // todo, not performant, skip  for now
-                  const updatedMessages = currentMessages.map(
-                    (currentMessage: Message) => {
-                      if (
-                        currentMessage.localMessageId === message.localMessageId
-                      ) {
-                        return {
-                          ...currentMessage,
-                          status: "sent" as MessageStatus,
-                          messageId: message.messageId,
-                        };
-                      }
-                      return currentMessage;
-                    },
-                  );
+                  const updatedMessages = currentMessages.map((currentMessage: Message) => {
+                    if (currentMessage.localMessageId === message.localMessageId) {
+                      return {
+                        ...currentMessage,
+                        status: "sent" as MessageStatus,
+                        messageId: message.messageId,
+                      };
+                    }
+                    return currentMessage;
+                  });
 
-                  const messageExists = currentMessages.some(
-                    (msg) => msg.localMessageId === message.localMessageId,
-                  );
+                  const messageExists = currentMessages.some((msg) => msg.localMessageId === message.localMessageId);
 
                   if (!messageExists) {
                     updatedMessages.push(message);
@@ -187,9 +174,7 @@ export const ChatStore = signalStore(
       syncOfflineMessages: rxMethod<void>(
         pipe(
           switchMap(() => {
-            const offlineMessages: MessageSendDto[] = JSON.parse(
-              localStorage.getItem("offlineMessages") ?? "[]",
-            );
+            const offlineMessages: MessageSendDto[] = JSON.parse(localStorage.getItem("offlineMessages") ?? "[]");
 
             if (offlineMessages.length > 0) {
               offlineMessages.forEach((message) => {

@@ -10,6 +10,8 @@ CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE IF NOT EXISTS public.users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT NOT NULL,
+    email TEXT NOT NULL UNIQUE,
+    password TEXT NOT NULL,
     profile_photo_url TEXT
 );
 
@@ -58,12 +60,14 @@ ADD CONSTRAINT fk_conversation
 FOREIGN KEY (conversation_id)
 REFERENCES public.conversation(id);
 
-INSERT INTO public.users (name, profile_photo_url) VALUES
-('David', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Mackenzie&skinColor=ecad80,f2d3b1'),
-('Frank', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Liam&skinColor=ecad80,f2d3b1'),
-('Gizmo', 'https://api.dicebear.com/9.x/adventurer/svg?seed=George'),
-('Bob', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Brian&skinColor=ecad80,f2d3b1');
+INSERT INTO public.users (name, email, password, profile_photo_url) VALUES
+('David', 'david@example.com', 'davidpass123', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Mackenzie&skinColor=ecad80,f2d3b1'),
+('Frank', 'frank@example.com', 'frankpass123', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Liam&skinColor=ecad80,f2d3b1'),
+('Gizmo', 'gizmo@example.com', 'gizmopass123', 'https://api.dicebear.com/9.x/adventurer/svg?seed=George'),
+('Bob', 'bob@example.com', 'bobpass123', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Brian&skinColor=ecad80,f2d3b1'),
+('Test User', 'test@test.com', 'test', 'https://api.dicebear.com/9.x/adventurer/svg?seed=Test');
 
+-- Rest of the schema remains the same
 INSERT INTO public.conversation (name, avatar_url) VALUES
 ('David and Bob', ''),
 ('David and Frank', ''),
@@ -108,7 +112,7 @@ SELECT
 FROM (VALUES
     ('Hi Bob, how are you?', 'sent', '2024-08-27 10:15:00.12345', 'David', 'David and Bob', 'local1'),
     ('I am good, thanks! How about you?', 'sent', '2024-08-27 10:20:00.12345', 'Bob', 'David and Bob', 'local2'),
-    ('Let’s discuss the project tomorrow.', 'sent', '2024-08-27 10:25:00.12345', 'David', 'David and Frank', 'local3'),
+    ('Lets discuss the project tomorrow.', 'sent', '2024-08-27 10:25:00.12345', 'David', 'David and Frank', 'local3'),
     ('Sure, I will be available.', 'sent', '2024-08-27 10:30:00.12345', 'Frank', 'David and Frank', 'local4'),
     ('Hey Bob, do you have the report?', 'sent', '2024-08-27 10:35:00.12345', 'Bob', 'Bob and Frank', 'local5'),
     ('Yes, I will send it to you shortly.', 'sent', '2024-08-27 10:40:00.12345', 'Frank', 'Bob and Frank', 'local6'),

@@ -1,11 +1,5 @@
 import { AsyncPipe, DatePipe, JsonPipe, NgClass } from "@angular/common";
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  input,
-  output,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
 import { Conversation } from "@chat-app/domain";
 import { ButtonComponent, ButtonRemoveComponent } from "@chat-app/ui-button";
 import { ModalService } from "@chat-app/ui-modal";
@@ -21,24 +15,14 @@ import { IsActivePipe } from "./is-active.pipe";
   selector: "mg-conversation-list",
   templateUrl: "./conversation-list.component.html",
   standalone: true,
-  imports: [
-    NgClass,
-    JsonPipe,
-    AsyncPipe,
-    ButtonRemoveComponent,
-    ButtonComponent,
-    ConversationAddComponent,
-    DatePipe,
-    RelativeTimePipe,
-    IsActivePipe,
-  ],
+  imports: [NgClass, JsonPipe, AsyncPipe, ButtonRemoveComponent, ButtonComponent, ConversationAddComponent, DatePipe, RelativeTimePipe, IsActivePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationsComponent {
   readonly conversationList = input.required<Conversation[] | undefined>();
 
+  account = inject(AuthService).user;
   readonly clickConversation = output<Conversation>();
-  readonly user = inject(AuthService).user;
   readonly #modalService = inject(ModalService);
 
   conversationClicked(conversation: Conversation): void {
@@ -46,10 +30,7 @@ export class ConversationsComponent {
   }
 
   removedConversation(conversation: Conversation): void {
-    this.#modalService.open(
-      ConversationRemoveComponent,
-      `Remove Conversation: ${conversation.name}`,
-    );
+    this.#modalService.open(ConversationRemoveComponent, `Remove Conversation: ${conversation.name}`);
   }
 
   addNewConversation(): void {

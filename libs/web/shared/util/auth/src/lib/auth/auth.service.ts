@@ -1,62 +1,52 @@
 import { HttpClient } from "@angular/common/http";
-import { inject, Injectable, signal } from "@angular/core";
+import { computed, inject, Injectable, signal } from "@angular/core";
 import { Router } from "@angular/router";
-import { UserDto } from "@chat-app/dtos";
-import { ENVIRONMENT } from "@chat-app/environment";
+// eslint-disable-next-line
 import { routes } from "@chat-app/util-routing";
-import { map, Observable } from "rxjs";
-import { User } from "./user.type";
+import { Observable } from "rxjs";
+import { tap } from "rxjs/operators";
 
-const USER_PLACEHOLDER = {
-  id: "",
-  avatarUrl: "",
-  name: "",
-};
+import { User } from "./user.type";
 
 @Injectable({
   providedIn: "root",
 })
 export class AuthService {
-  readonly user = signal<User>(USER_PLACEHOLDER);
+  user = signal<User>({
+    id: "",
+    name: "",
+    avatarUrl: "",
+  });
+  private readonly API_URL = "http://localhost:3000/auth";
   readonly #router = inject(Router);
   readonly #http = inject(HttpClient);
-  readonly #environment = inject(ENVIRONMENT);
 
-  setUser(user: User) {
-    this.user.update(() => user);
-  }
+  isLoggedIn = computed(() => {
+    const token = this.getToken();
+    const userId = this.user().id;
+    return !!token && !!userId;
+  });
 
-  isUserLoggedIn() {
-    return (
-      this.user().id !== USER_PLACEHOLDER.id &&
-      this.user().avatarUrl !== USER_PLACEHOLDER.avatarUrl &&
-      this.user().name !== USER_PLACEHOLDER.name
+  login(username: string, password: string): Observable<any> {
+    return this.#http.post(`${this.API_URL}/login`, { username, password }).pipe(
+      // eslint-disable-next-line
+      tap((response: any) => {
+        localStorage.setItem("token", response.access_token);
+        this.user.set({
+          id: response.user.id,
+          name: response.user.name,
+          avatarUrl: response.user.profile_photo_url,
+        });
+      }),
     );
   }
 
-  async logOut(): Promise<void> {
-    this.setUser(USER_PLACEHOLDER);
+  async logout(): Promise<void> {
+    localStorage.removeItem("token");
     await this.#router.navigate([routes.auth.url()]);
   }
 
-  // from chat
-  getAllUsers(): Observable<User[]> {
-    return this.#http
-      .get<UserDto[]>(`${this.#environment.apiUrl}${routes.chat.users.url()}`)
-      .pipe(
-        map((response: UserDto[] | null) => {
-          if (!response) {
-            throw new Error(
-              "No users found. Please create Table users in your Supabase instance.",
-            );
-          }
-          return response.map((userDto: UserDto) => {
-            return {
-              ...userDto,
-              avatarUrl: userDto.profile_photo_url,
-            };
-          });
-        }),
-      );
+  getToken(): string | null {
+    return localStorage.getItem("token");
   }
 }

@@ -1,1 +1,10 @@
-pnpm run lint-all
+#!/bin/sh
+
+echo "Running lint-all..."
+pnpm run lint-all || exit 1
+
+echo "Running pretty-quick..."
+pretty-quick --staged || exit 1
+
+echo "Running lint-staged..."
+lint-staged || exit 1

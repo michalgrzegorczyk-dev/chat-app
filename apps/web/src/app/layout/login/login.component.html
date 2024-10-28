@@ -19,83 +19,44 @@
     <div class="rounded-xl bg-white shadow-xl ring-1 ring-gray-200 overflow-hidden">
       <!-- Login Form Section -->
       <div class="p-8">
-        <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-6">
-          <div class="space-y-2">
-            <label for="username" class="block text-sm font-medium text-gray-700">Email</label>
-            <div class="group relative">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                </svg>
-              </div>
-              <input
-                type="email"
-                id="username"
-                [(ngModel)]="username"
-                name="username"
-                required
-                class="block w-full rounded-lg border border-gray-300 bg-gray-50 pl-10 pr-4 py-2.5 text-sm
-                       text-gray-700 transition duration-150 ease-in-out placeholder-gray-400
-                       focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                placeholder="Enter your email"
-              >
-            </div>
-          </div>
+        <form (ngSubmit)="onSubmit()" #loginForm="ngForm" class="space-y-4">
+          <mg-input
+            id="username"
+            name="username"
+            label="Email"
+            type="email"
+            [(value)]="username"
+            placeholder="Enter your email"
+            [required]="true"
+          >
+          <svg leadingIcon xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          </mg-input>
 
-          <div class="space-y-2">
-            <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-            <div class="group relative">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                </svg>
-              </div>
-              <input
-                type="password"
-                id="password"
-                [(ngModel)]="password"
-                name="password"
-                required
-                class="block w-full rounded-lg border border-gray-300 bg-gray-50 pl-10 pr-4 py-2.5 text-sm
-                       text-gray-700 transition duration-150 ease-in-out placeholder-gray-400
-                       focus:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500/20"
-                placeholder="Enter your password"
-              >
-            </div>
-          </div>
+          <mg-input
+            id="password"
+            name="password"
+            label="Password"
+            type="password"
+            [(value)]="password"
+            placeholder="Enter your password"
+            [required]="true"
+          >
+            <svg leadingIcon xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+          </mg-input>
 
-<!--          <div *ngIf="error" class="rounded-lg bg-red-50 p-4 text-sm text-red-600 flex items-center space-x-2">-->
-<!--            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">-->
-<!--              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />-->
-<!--            </svg>-->
-<!--            <span>{{ error }}</span>-->
-<!--          </div>-->
-
-
-          <mg-button type="submit" text="Sign in to your account" class="mt-4">
+          <mg-button type="submit" text="Sign in to your account">
             <svg icon xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
               <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />
             </svg>
           </mg-button>
-
-<!--          <button-->
-<!--            type="submit"-->
-<!--            class="relative w-full rounded-lg bg-primary-500 px-4 py-3 text-sm font-medium text-white-->
-<!--                   shadow-lg shadow-primary-500/30 transition-all duration-150 ease-in-out-->
-<!--                   hover:bg-primary-600 hover:shadow-primary-600/30 focus:outline-none focus:ring-2-->
-<!--                   focus:ring-primary-500 focus:ring-offset-2"-->
-<!--          >-->
-<!--            <span class="flex items-center justify-center space-x-2">-->
-<!--              <span>Sign in to your account</span>-->
-<!--              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">-->
-<!--                <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd" />-->
-<!--              </svg>-->
-<!--            </span>-->
-<!--          </button>-->
         </form>
       </div>
 
-      <!-- Divider -->
+      <!-- Rest of the template remains the same -->
       <div class="relative">
         <div class="absolute inset-0 flex items-center px-8">
           <div class="w-full border-t border-gray-200"></div>
@@ -133,7 +94,6 @@
               </div>
             </button>
           }
-
         </div>
 
         <p class="mt-4 text-xs text-gray-500 flex items-center justify-center space-x-1">

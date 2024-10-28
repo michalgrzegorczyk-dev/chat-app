@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, effect, inject, signal } from "@angular/core";
 import { ChatStore } from "@chat-app/domain";
 
 import { ConversationComponent } from "./conversation/conversation.component";
@@ -32,5 +32,22 @@ import { SendMessageInputComponent } from "./message/send/send-message-input.com
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationPanelLayoutComponent {
-  readonly messageListLoading = inject(ChatStore).messageListLoading;
+  showDetails = signal(false);
+  readonly #store = inject(ChatStore);
+  readonly messageListLoading = this.#store.messageListLoading;
+  readonly selectedConversation = this.#store.selectedConversation;
+
+  closeConversationDetails() {
+    this.showDetails.set(false);
+  }
+
+  openConversationDetails() {
+    console.log("hello");
+    this.showDetails.set(true);
+  }
+
+  updateConversationName(name: string) {
+    console.log(name);
+    this.#store.updateConversationName(name);
+  }
 }

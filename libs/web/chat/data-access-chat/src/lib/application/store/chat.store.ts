@@ -187,6 +187,40 @@ export const ChatStore = signalStore(
           }),
         ),
       ),
+
+      updateConversationName: rxMethod<string>(
+        pipe(
+          switchMap((name) => {
+            const conversation = store.selectedConversation();
+            const conversationList = store.conversationList();
+
+            if (!conversation || !conversationList) {
+              return EMPTY;
+            }
+
+            return from(serviceRest.updateConversationName(conversation.conversationId, name)).pipe(
+              tapResponse({
+                next: () => {
+                  // Update selected conversation
+                  const updatedConversation = { ...conversation, name };
+
+                  // Update conversation in the list
+                  const updatedList = conversationList.map((conv) => (conv.conversationId === conversation.conversationId ? { ...conv, name } : conv));
+
+                  // Update both states
+                  patchState(store, {
+                    selectedConversation: updatedConversation,
+                    conversationList: updatedList,
+                  });
+                },
+                error: (error) => {
+                  console.error("Failed to update conversation name:", error);
+                },
+              }),
+            );
+          }),
+        ),
+      ),
     }),
   ),
 );

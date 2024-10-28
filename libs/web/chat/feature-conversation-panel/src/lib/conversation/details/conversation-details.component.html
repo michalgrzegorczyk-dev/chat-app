@@ -1,12 +1,10 @@
 <div class="flex h-full w-96 flex-col border-l border-gray-200 bg-white">
-  <header
-    class="flex h-16 items-center justify-between border-b border-gray-200 px-6"
-  >
+  <header class="flex h-16 items-center justify-between border-b border-gray-200 px-6">
     <h2 class="text-lg font-semibold text-gray-800">
-      {{ conversationName() }} Details
+      Conversation Details
     </h2>
     <button
-      (click)="closeDetails.emit()"
+      (click)="detailsClosed.emit()"
       class="text-gray-400 transition-colors duration-200 hover:text-gray-600"
     >
       <svg
@@ -36,39 +34,28 @@
         <div class="space-y-6">
           <!-- Change Name -->
           <div>
-            <label
-              class="mb-2 block text-sm font-medium text-gray-700"
-              for="conversationName"
-              >Conversation Name</label
-            >
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="conversationName">
+              Conversation Name
+            </label>
             <div class="flex items-center space-x-2">
-              <div
-                class="focus-within:ring-primary-500 flex-1 rounded-md bg-gray-100 px-4 py-2 focus-within:ring-2"
+              <mg-input
+                id="conversationName"
+                [(value)]="editedName"
+                placeholder="Enter conversation name..."
+                (keyup.enter)="updateConversationName()"
+                class="flex-1"
               >
-                <input
-                  (keyup.enter)="updateConversationName()"
-                  [(ngModel)]="editedName"
-                  class="w-full bg-transparent text-gray-700 focus:outline-none"
-                  id="conversationName"
-                  placeholder="Enter conversation name..."
-                  type="text"
-                />
-              </div>
+                <svg leadingIcon xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+              </mg-input>
               <button
                 (click)="updateConversationName()"
+                [disabled]="!editedName.trim()"
                 class="bg-primary-500 hover:bg-primary-600 focus:ring-primary-500 rounded-md p-2 text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                <svg
-                  class="h-5 w-5"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    clip-rule="evenodd"
-                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                    fill-rule="evenodd"
-                  />
+                <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path clip-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" fill-rule="evenodd" />
                 </svg>
               </button>
             </div>
@@ -76,9 +63,7 @@
 
           <!-- Mute Notifications -->
           <div class="flex items-center justify-between">
-            <span class="text-sm font-medium text-gray-700"
-              >Mute Notifications</span
-            >
+            <span class="text-sm font-medium text-gray-700">Mute Notifications</span>
             <button
               (click)="toggleMute()"
               [ngClass]="isMuted ? 'bg-primary-600' : 'bg-gray-200'"
@@ -89,18 +74,6 @@
                 class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
               ></span>
             </button>
-          </div>
-
-          <!-- Theme Selector -->
-          <div>
-            <label class="mb-2 block text-sm font-medium text-gray-700"
-              >Theme</label
-            >
-            <mg-ui-dropdown
-              (itemClick)="onThemeSelect($event)"
-              [buttonText]="selectedTheme"
-              [items]="themeOptions"
-            ></mg-ui-dropdown>
           </div>
         </div>
       </section>
@@ -115,33 +88,27 @@
         <div class="space-y-6">
           <!-- Search -->
           <div>
-            <label
-              class="mb-2 block text-sm font-medium text-gray-700"
-              for="conversationSearch"
-              >Search in Conversation</label
+            <label class="mb-2 block text-sm font-medium text-gray-700" for="conversationSearch">
+              Search in Conversation
+            </label>
+            <mg-input
+              id="conversationSearch"
+              [(value)]="searchQuery"
+              placeholder="Type to search..."
             >
-            <div
-              class="focus-within:ring-primary-500 rounded-md bg-gray-100 px-4 py-2 focus-within:ring-2"
-            >
-              <input
-                [(ngModel)]="searchQuery"
-                class="w-full bg-transparent text-gray-700 focus:outline-none"
-                id="conversationSearch"
-                placeholder="Type to search..."
-                type="text"
-              />
-            </div>
+              <svg leadingIcon xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+              </svg>
+            </mg-input>
           </div>
         </div>
       </section>
     </div>
   </div>
 
-  <!--      <div class="border-t border-gray-200"></div>-->
-
   <!-- Remove Conversation -->
   <div class="p-6">
-    <mg-button (click)="removeConversation()" class="w-full">
+    <mg-button (click)="removeConversation()" text="Remove Conversation">
       Remove Conversation
     </mg-button>
   </div>

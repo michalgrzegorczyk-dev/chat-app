@@ -1,5 +1,5 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from "@angular/common";
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component, output, input } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 import { MessageListComponent } from "../message/list/message-list.component";
@@ -7,6 +7,7 @@ import { SendMessageInputComponent } from "../message/send/send-message-input.co
 
 import { ConversationDetailsComponent } from "./details/conversation-details.component";
 import { ConversationHeaderComponent } from "./header/conversation-header.component";
+import { Conversation } from "@chat-app/domain";
 
 @Component({
   selector: "mg-conversation",
@@ -35,4 +36,10 @@ import { ConversationHeaderComponent } from "./header/conversation-header.compon
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ConversationComponent {}
+export class ConversationComponent {
+  readonly detailsOpened = output<void>();
+
+  openDetails() {
+    this.detailsOpened.emit();
+  }
+}

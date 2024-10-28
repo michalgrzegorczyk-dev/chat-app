@@ -1,54 +1,44 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, input, OnInit, output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
+import { Conversation } from "@chat-app/domain";
 import { ButtonComponent } from "@chat-app/ui-button";
 import { UiDropdownComponent } from "@chat-app/ui-dropdown";
+import { InputComponent } from "@chat-app/ui-input";
 
 @Component({
   selector: "mg-conversation-details",
   standalone: true,
-  imports: [CommonModule, FormsModule, UiDropdownComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, UiDropdownComponent, ButtonComponent, InputComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./conversation-details.component.html",
 })
 export class ConversationDetailsComponent implements OnInit {
-  readonly conversationName = input<string>("Conversation");
-  readonly closeDetails = output<void>();
+  conversation = input<Conversation | null>();
+  readonly detailsClosed = output<void>();
+  readonly nameUpdated = output<string>();
 
   editedName = "";
   isMuted = false;
-  selectedTheme = "System";
   searchQuery = "";
 
-  themeOptions: Array<{
-    type: "link" | "button";
-    text: string;
-    href?: string;
-  }> = [
-    { type: "button", text: "Light" },
-    { type: "button", text: "Dark" },
-    { type: "button", text: "System" },
-  ];
-
   ngOnInit() {
-    this.editedName = this.conversationName();
+    const name = this.conversation()?.name;
+
+    if (name) {
+      this.editedName = name;
+    }
   }
 
   updateConversationName() {
-    // Implement logic to update conversation name
+    if (this.editedName.trim()) {
+      this.nameUpdated.emit(this.editedName.trim());
+    }
   }
 
   toggleMute() {
     this.isMuted = !this.isMuted;
-    // Implement logic to mute/unmute notifications
   }
 
-  onThemeSelect(item: any) {
-    this.selectedTheme = item.text;
-    // Implement logic to change theme
-  }
-
-  removeConversation() {
-    // Implement logic to remove conversation
-  }
+  removeConversation() {}
 }

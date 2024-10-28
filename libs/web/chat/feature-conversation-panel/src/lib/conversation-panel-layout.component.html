@@ -1,8 +1,14 @@
 @if (messageListLoading()) {
 <mg-conversation-loading />
 } @else {
-<div class="flex">
-  <mg-conversation />
-  <mg-conversation-details />
-</div>
+  <div class="flex">
+    <mg-conversation (detailsOpened)="openConversationDetails()" />
+    @if (showDetails()) {
+      <mg-conversation-details
+        (nameUpdated)="updateConversationName($event)"
+        [conversation]="selectedConversation()"
+        (detailsClosed)="closeConversationDetails()"
+      />
+    }
+  </div>
 }

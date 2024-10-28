@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, output } from "@angular/core";
 import { ChatStore } from "@chat-app/domain";
 
 @Component({
@@ -10,4 +10,5 @@ import { ChatStore } from "@chat-app/domain";
 export class ConversationHeaderComponent {
   readonly #store = inject(ChatStore);
   selectedConversation = this.#store.selectedConversation;
+  readonly detailsOpened = output<void>();
 }

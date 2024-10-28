@@ -5,12 +5,13 @@ import { Router } from "@angular/router";
 import { AccountListComponent, AccountWidgetComponent } from "@chat-app/feature-account";
 import { routes } from "@chat-app/util-routing";
 import { AuthService } from "@chat-app/web/shared/util/auth";
+import { ButtonComponent } from "@chat-app/ui-button";
 
 @Component({
   selector: "mg-login",
   standalone: true,
   templateUrl: "./login.component.html",
-  imports: [NgFor, NgIf, FormsModule, AccountWidgetComponent, AccountListComponent, AsyncPipe, JsonPipe],
+  imports: [NgFor, NgIf, FormsModule, AccountWidgetComponent, AccountListComponent, AsyncPipe, JsonPipe, ButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {

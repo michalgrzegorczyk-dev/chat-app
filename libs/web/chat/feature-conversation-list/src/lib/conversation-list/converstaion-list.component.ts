@@ -1,7 +1,7 @@
 import { AsyncPipe, DatePipe, JsonPipe, NgClass } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject, input, output } from "@angular/core";
 import { Conversation } from "@chat-app/domain";
-import { ButtonComponent, ButtonRemoveComponent } from "@chat-app/ui-button";
+import { ButtonComponent } from "@chat-app/ui-button";
 import { ModalService } from "@chat-app/ui-modal";
 import { AuthService } from "@chat-app/web/shared/util/auth";
 
@@ -15,7 +15,7 @@ import { IsActivePipe } from "./is-active.pipe";
   selector: "mg-conversation-list",
   templateUrl: "./conversation-list.component.html",
   standalone: true,
-  imports: [NgClass, JsonPipe, AsyncPipe, ButtonRemoveComponent, ButtonComponent, ConversationAddComponent, DatePipe, RelativeTimePipe, IsActivePipe],
+  imports: [NgClass, JsonPipe, AsyncPipe, ButtonComponent, ConversationAddComponent, DatePipe, RelativeTimePipe, IsActivePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ConversationsComponent {

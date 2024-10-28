@@ -1,7 +1,6 @@
 import { DatePipe, NgClass, NgForOf, NgIf } from "@angular/common";
 import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ButtonRemoveComponent } from "@chat-app/ui-button";
 
 import { MessageListComponent } from "../message/list/message-list.component";
 import { SendMessageInputComponent } from "../message/send/send-message-input.component";
@@ -22,7 +21,6 @@ import { ConversationHeaderComponent } from "./header/conversation-header.compon
     ConversationHeaderComponent,
     MessageListComponent,
     SendMessageInputComponent,
-    ButtonRemoveComponent,
     ConversationDetailsComponent,
   ],
   styles: [

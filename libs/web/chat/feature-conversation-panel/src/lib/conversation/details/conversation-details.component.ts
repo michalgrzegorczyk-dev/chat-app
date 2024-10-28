@@ -1,13 +1,13 @@
 import { CommonModule } from "@angular/common";
 import { ChangeDetectionStrategy, Component, input, OnInit, output } from "@angular/core";
 import { FormsModule } from "@angular/forms";
-import { ButtonComponent, ButtonRemoveComponent } from "@chat-app/ui-button";
+import { ButtonComponent } from "@chat-app/ui-button";
 import { UiDropdownComponent } from "@chat-app/ui-dropdown";
 
 @Component({
   selector: "mg-conversation-details",
   standalone: true,
-  imports: [CommonModule, FormsModule, ButtonRemoveComponent, UiDropdownComponent, ButtonComponent],
+  imports: [CommonModule, FormsModule, UiDropdownComponent, ButtonComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./conversation-details.component.html",
 })

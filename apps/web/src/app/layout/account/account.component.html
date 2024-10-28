@@ -36,18 +36,8 @@
       <ul class="overflow-hidden rounded-md bg-white shadow-sm">
         <li class="border-b border-gray-200 p-4 py-6">
           <div class="flex-1">
-            <label
-              class="mb-1 block text-sm font-medium text-gray-700"
-              for="name"
-              >Change Your Name</label
-            >
-            <input
-              class="focus:ring-primary-500 h-10 w-full rounded-md bg-gray-100 px-3 text-gray-700 focus:outline-none focus:ring-2"
-              id="name"
-              placeholder="Enter your name"
-              type="text"
-              value="David"
-            />
+            <mg-input [value]="account().name" label="Change Your Name" name="name" id="name" [required]="true" type="text"
+              placeholder="Enter your name"/>
           </div>
         </li>
 
@@ -58,16 +48,7 @@
               for="language"
               >Choose Language</label
             >
-            <select
-              class="focus:ring-primary-500 h-10 w-full appearance-none rounded-md bg-gray-100 px-3 pr-8 text-gray-700 focus:outline-none focus:ring-2"
-              id="language"
-            >
-              <option>English</option>
-              <option>Español</option>
-              <option>Français</option>
-              <option>Deutsch</option>
-              <option>日本語</option>
-            </select>
+            <mg-ui-dropdown [items]="lenguageOptions()"/>
           </div>
         </li>
 
@@ -93,18 +74,8 @@
         </li>
       </ul>
 
-      <button
-        (click)="back()"
-        class="focus:ring-primary-500 flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-3 text-sm font-medium text-gray-700 shadow-sm transition-colors duration-200 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
-      >
-        Cancel
-      </button>
-      <button
-        class="bg-primary-500 hover:bg-primary-600 focus:ring-primary-500 flex w-full justify-center rounded-md border border-transparent px-4 py-3 text-sm font-medium text-white shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2"
-        type="submit"
-      >
-        Save Changes
-      </button>
+      <mg-button text="Cancel" type="button" [variant]="'secondary'" (click)="back()"/>
+      <mg-button text="Save Changes" type="submit"/>
     </form>
 
     <p class="mt-4 text-center text-xs text-gray-500">

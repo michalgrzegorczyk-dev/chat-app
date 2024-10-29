@@ -34,7 +34,7 @@ export class AccountComponent {
     language: 'English'
   });
 
-  lenguageOptions = signal<DropDownOption[]>([
+  languageOptions = signal<DropDownOption[]>([
     {
       type: "button",
       text: "English"

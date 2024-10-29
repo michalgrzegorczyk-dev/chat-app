@@ -1,5 +1,5 @@
 import { NgIf } from "@angular/common";
-import { AfterContentInit, ChangeDetectionStrategy, Component, computed, ContentChild, ElementRef, input, model, signal, WritableSignal } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, contentChild, ElementRef, input, model } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 const INPUT_CLASSES = [
@@ -61,7 +61,7 @@ const DEFAULT_PADDING_LEFT = "pl-4";
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputComponent implements AfterContentInit{
+export class InputComponent {
   readonly id = input("");
   readonly name = input("");
   readonly label = input("");
@@ -70,15 +70,10 @@ export class InputComponent implements AfterContentInit{
   readonly required = input(false);
   readonly value = model("");
 
-  @ContentChild('leadingIcon', { static: false, read: ElementRef }) leadingIcon!: ElementRef | null;
-  hasLeadingIcon = signal<boolean>(false);
-
-  ngAfterContentInit() {
-    this.hasLeadingIcon.set(!!this.leadingIcon);
-  }
+  private leadingIcon = contentChild<ElementRef | null>("leadingIcon");
 
   inputClasses = computed(() => {
-    const withIcon = this.hasLeadingIcon();
+    const withIcon = this.leadingIcon();
     if (withIcon) {
       return [INPUT_CLASSES, LEFT_ICON_PADDING].join(" ");
     }

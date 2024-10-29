@@ -10,18 +10,18 @@ import {
 } from "@angular/core";
 import { RouterLink } from "@angular/router";
 
-type link = {
-  type: "link";
-  text: string;
-  href: string;
+type Link = {
+  readonly type: "link";
+  readonly text: string;
+  readonly href: string;
 }
 
-type button = {
-  type: "button";
-  text: string;
+type Button = {
+  readonly type: "button";
+  readonly text: string;
 }
 
-export type DropDownOption = (link | button);
+export type DropDownOption = (Link | Button);
 
 @Component({
   // TODO based on rule prefix should be lib here

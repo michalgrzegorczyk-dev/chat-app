@@ -35,6 +35,7 @@ export type DropDownOption = (link | button);
 })
 export class UiDropdownComponent {
   readonly buttonText = input("Options");
+  readonly value = input("");
   readonly items = input.required<DropDownOption[]>();
   readonly itemClick = output();
 

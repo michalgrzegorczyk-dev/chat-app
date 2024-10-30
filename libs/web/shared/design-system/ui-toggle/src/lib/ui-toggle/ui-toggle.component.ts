@@ -53,7 +53,7 @@ const DEFAULT_TEXT_CONFIG: Readonly<Pick<ToggleTextConfig, 'weight' | 'size' | '
 export class ToggleComponent {
   value = model.required<boolean>();
   textConfig = input<ToggleTextConfig>();
-  valueChanged = output<boolean>();
+  valueChange = output<boolean>();
 
   readonly toggleTrackClasses = `peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800
       peer-checked:bg-primary-500 peer h-6 w-11 rounded-full bg-gray-200
@@ -76,6 +76,6 @@ export class ToggleComponent {
 
   changeState(): void {
     this.value.update((value) => !value);
-    this.valueChanged.emit(this.value());
+    this.valueChange.emit(this.value());
   }
 }

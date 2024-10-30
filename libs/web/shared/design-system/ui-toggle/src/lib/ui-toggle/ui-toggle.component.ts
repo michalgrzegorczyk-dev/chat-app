@@ -29,7 +29,7 @@ const DEFAULT_TEXT_CONFIG: Readonly<Pick<ToggleTextConfig, 'weight' | 'size' | '
     <label class="relative inline-flex cursor-pointer items-center">
       <input
         class="peer sr-only"
-        id="theme-toggle"
+        [attr.id]="id()"
         type="checkbox"
         [checked]="value()"
         role="switch"
@@ -52,6 +52,7 @@ const DEFAULT_TEXT_CONFIG: Readonly<Pick<ToggleTextConfig, 'weight' | 'size' | '
 })
 export class ToggleComponent {
   value = model.required<boolean>();
+  id = input.required<string>();
   textConfig = input<ToggleTextConfig>();
   valueChange = output<boolean>();
 

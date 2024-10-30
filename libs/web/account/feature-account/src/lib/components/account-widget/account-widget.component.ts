@@ -1,7 +1,7 @@
 import { NgClass } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ButtonComponent } from "@chat-app/ui-button";
-import { UiDropdownComponent } from "@chat-app/ui-dropdown";
+import { DropDownOption, UiDropdownComponent } from "@chat-app/ui-dropdown";
 import { AuthService } from "@chat-app/web/shared/util/auth";
 
 @Component({
@@ -12,10 +12,10 @@ import { AuthService } from "@chat-app/web/shared/util/auth";
   imports: [NgClass, ButtonComponent, UiDropdownComponent],
 })
 export class AccountWidgetComponent {
-  dropdownItems: any = [
+  dropdownItems: DropDownOption[] = [
     { type: "button", text: "Add Conversation" },
     { type: "link", text: "Account Settings", href: "account" },
-    { type: "button", text: "Change Account", href: "auth" },
+    { type: "link", text: "Change Account", href: "auth" },
   ];
   readonly #authService = inject(AuthService);
   readonly account = inject(AuthService).user;

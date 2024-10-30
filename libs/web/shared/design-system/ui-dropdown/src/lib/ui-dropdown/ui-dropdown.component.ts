@@ -4,10 +4,24 @@ import {
   Component,
   ElementRef,
   HostListener,
+  inject,
   input,
   output,
 } from "@angular/core";
 import { RouterLink } from "@angular/router";
+
+type Link = {
+  readonly type: "link";
+  readonly text: string;
+  readonly href: string;
+}
+
+type Button = {
+  readonly type: "button";
+  readonly text: string;
+}
+
+export type DropDownOption = (Link | Button);
 
 @Component({
   // TODO based on rule prefix should be lib here
@@ -21,15 +35,13 @@ import { RouterLink } from "@angular/router";
 })
 export class UiDropdownComponent {
   readonly buttonText = input("Options");
-  readonly items =
-    input.required<
-      { type: "link" | "button"; text: string; href?: string }[]
-    >();
+  readonly value = input("");
+  readonly items = input.required<DropDownOption[]>();
   readonly itemClick = output();
 
-  isOpen = false;
+  private elementRef = inject(ElementRef)
 
-  constructor(private elementRef: ElementRef) {}
+  isOpen = false;
 
   //todo not optimal? :)
   @HostListener("document:click", ["$event"])

@@ -1,5 +1,5 @@
 import { NgIf } from "@angular/common";
-import { ChangeDetectionStrategy, Component, input, model } from "@angular/core";
+import { ChangeDetectionStrategy, Component, computed, contentChild, ElementRef, input, model } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 
 const INPUT_CLASSES = [
@@ -10,7 +10,6 @@ const INPUT_CLASSES = [
   "border-gray-300",
   "bg-gray-50",
   "py-2.5",
-  "pl-10",
   "pr-4",
   "text-sm",
   "text-gray-700",
@@ -23,6 +22,9 @@ const INPUT_CLASSES = [
   "focus:border-primary-500",
   "focus:ring-primary-500/20",
 ].join(" ");
+
+const LEFT_ICON_PADDING = "pl-10";
+const DEFAULT_PADDING_LEFT = "pl-4";
 
 @Component({
   selector: "mg-input",
@@ -41,7 +43,7 @@ const INPUT_CLASSES = [
 
       <div class="group relative">
         <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-          <ng-content select="[leadingIcon]" />
+          <ng-content select="svg" />
         </div>
 
         <input
@@ -52,7 +54,7 @@ const INPUT_CLASSES = [
           [placeholder]="placeholder()"
           [ngModel]="value()"
           (ngModelChange)="value.set($event)"
-          [class]="INPUT_CLASSES"
+          [class]="inputClasses()"
         />
       </div>
     </div>
@@ -60,8 +62,6 @@ const INPUT_CLASSES = [
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InputComponent {
-  protected readonly INPUT_CLASSES = INPUT_CLASSES;
-
   readonly id = input("");
   readonly name = input("");
   readonly label = input("");
@@ -69,4 +69,14 @@ export class InputComponent {
   readonly placeholder = input("");
   readonly required = input(false);
   readonly value = model("");
+
+  private leadingIcon = contentChild<ElementRef | null>("leadingIcon");
+
+  inputClasses = computed(() => {
+    const withIcon = this.leadingIcon();
+    if (withIcon) {
+      return [INPUT_CLASSES, LEFT_ICON_PADDING].join(" ");
+    }
+    return [INPUT_CLASSES, DEFAULT_PADDING_LEFT].join(" ");
+  })
 }

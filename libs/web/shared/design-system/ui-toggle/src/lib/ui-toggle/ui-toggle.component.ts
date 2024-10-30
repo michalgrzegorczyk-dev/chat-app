@@ -65,12 +65,12 @@ export class ToggleComponent {
 
   textClasses = computed(() => {
     const {
-      size = DEFAULT_TEXT_CONFIG.size,
-      weight = DEFAULT_TEXT_CONFIG.weight,
-      color = DEFAULT_TEXT_CONFIG.color,
-      shade = DEFAULT_TEXT_CONFIG.shade,
-      shadeDark = DEFAULT_TEXT_CONFIG.shadeDark,
-    } = this.textConfig() || {};
+      size,
+      weight,
+      color,
+      shade,
+      shadeDark
+    } = { ...DEFAULT_TEXT_CONFIG, ...(this.textConfig() || {}) };
     return `ml-3 text-${size} font-${weight} text-${color}-${shade} dark:text-${color}-${shadeDark}`;
   });
 

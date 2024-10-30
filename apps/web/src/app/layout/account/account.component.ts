@@ -66,6 +66,11 @@ export class AccountComponent {
 
   isDarkTheme = signal<boolean>(false);
 
+  // TODO: save changes in account
+  themeChange(value: boolean) {
+    console.log(value);
+  }
+
   back() {
     history.back();
   }

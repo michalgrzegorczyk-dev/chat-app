@@ -5,7 +5,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { AuthController } from "./auth/auth.controller";
 import { AuthService } from "./auth/auth.service";
 import { JwtStrategy } from "./auth/jwt.strategy";
-import { ChatController } from "./chat/chat.controller";
+import { ChatControllerOLD } from "./chat/chatControllerOLD";
 import { ChatGateway } from "./chat/chat.gateway";
 import { SupabaseService } from "./chat/supabase.service";
 
@@ -19,7 +19,7 @@ import { SupabaseService } from "./chat/supabase.service";
       isGlobal: true,
     }),
   ],
-  controllers: [ChatController, AuthController],
+  controllers: [ChatControllerOLD, AuthController],
   providers: [ChatGateway, SupabaseService, AuthService, JwtStrategy],
 })
 export class AppModule {}

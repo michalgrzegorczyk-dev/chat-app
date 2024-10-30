@@ -1,27 +1,19 @@
 import { CommonModule } from "@angular/common";
-import {
-  ChangeDetectionStrategy,
-  Component,
-  ElementRef,
-  HostListener,
-  inject,
-  input,
-  output,
-} from "@angular/core";
+import { ChangeDetectionStrategy, Component, ElementRef, HostListener, inject, input, output } from "@angular/core";
 import { RouterLink } from "@angular/router";
 
 type Link = {
   readonly type: "link";
   readonly text: string;
   readonly href: string;
-}
+};
 
 type Button = {
   readonly type: "button";
   readonly text: string;
-}
+};
 
-export type DropDownOption = (Link | Button);
+export type DropDownOption = Link | Button;
 
 @Component({
   // TODO based on rule prefix should be lib here
@@ -39,13 +31,14 @@ export class UiDropdownComponent {
   readonly items = input.required<DropDownOption[]>();
   readonly itemClick = output();
 
-  private elementRef = inject(ElementRef)
+  private elementRef = inject(ElementRef);
 
   isOpen = false;
 
   //todo not optimal? :)
   @HostListener("document:click", ["$event"])
   onDocumentClick(event: MouseEvent) {
+    console.log("xxx");
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isOpen = false;
     }

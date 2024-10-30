@@ -14,8 +14,8 @@ const delayResponse = async <T>(promise: Promise<T>): Promise<T> => {
 
 @Controller("chat")
 @UseGuards(JwtAuthGuard)
-export class ChatController {
-  private readonly logger = new Logger(ChatController.name);
+export class ChatControllerOLD {
+  private readonly logger = new Logger(ChatControllerOLD.name);
 
   constructor(private chatGateway: ChatGateway) {
     this.logger.log("ChatController initialized");
@@ -25,6 +25,7 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   async getConversations(@Request() req): Promise<ConversationListElementDto[]> {
     const userId = req.user.id;
+    console.log("userId", userId);
     return await delayResponse(this.chatGateway.getConversations(String(userId)));
   }
 

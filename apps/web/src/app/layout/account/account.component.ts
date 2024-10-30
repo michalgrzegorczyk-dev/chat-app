@@ -25,7 +25,7 @@ import { ToggleComponent, ToggleTextConfig } from "@chat-app/ui-toggle";
     InputComponent,
     UiDropdownComponent,
     ButtonComponent,
-    ToggleComponent
+    ToggleComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -59,9 +59,12 @@ export class AccountComponent {
     }
   ]);
 
-  toggleConfig: ToggleTextConfig = {
+  // TODO: add support for i18n
+  toggleConfig = signal<ToggleTextConfig>({
     text: "Dark Mode",
-  };
+  });
+
+  isDarkTheme = signal<boolean>(false);
 
   back() {
     history.back();

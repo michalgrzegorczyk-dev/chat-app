@@ -9,6 +9,7 @@ import {
 import { ButtonComponent } from "@chat-app/ui-button";
 import { DropDownOption, UiDropdownComponent } from "@chat-app/ui-dropdown";
 import { InputComponent } from "@chat-app/ui-input";
+import { ToggleComponent, ToggleTextConfig } from "@chat-app/ui-toggle";
 
 @Component({
   selector: "mg-account-layout",
@@ -23,7 +24,8 @@ import { InputComponent } from "@chat-app/ui-input";
     RouterOutlet,
     InputComponent,
     UiDropdownComponent,
-    ButtonComponent
+    ButtonComponent,
+    ToggleComponent
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -56,6 +58,10 @@ export class AccountComponent {
       text: "日本語"
     }
   ]);
+
+  toggleConfig: ToggleTextConfig = {
+    text: "Dark Mode",
+  };
 
   back() {
     history.back();

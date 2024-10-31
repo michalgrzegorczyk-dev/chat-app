@@ -37,11 +37,12 @@ const HOST_CLASSES = "flex items-center justify-between";
 export class ToggleComponent implements OnInit, OnDestroy {
   private readonly controlNameFallback = "unknown";
   readonly toggleTrackClasses = TOGGLE_CLASSES;
-  readonly hostClasses = input<string>(HOST_CLASSES);
+
   readonly parentControlContainer = inject(ControlContainer, { skipSelf: true, optional: true });
 
   readonly id = input.required<string>();
   readonly value = model<boolean>(false);
+  readonly hostClasses = input<string>(HOST_CLASSES);
 
   readonly formControl = input<FormControl<boolean>>(new FormControl<boolean>(false, { nonNullable: true }));
   readonly controlName = input<string>(this.controlNameFallback);

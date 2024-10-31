@@ -1,59 +1,52 @@
-import { ChangeDetectionStrategy, Component, computed, input, model, output } from "@angular/core";
+import { ChangeDetectionStrategy, Component, inject, input, model, OnDestroy, OnInit, output } from "@angular/core";
+import { AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 
-// TODO: move ShadeScale type to a shared folder
-type ShadeScale = '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
-
-export type ToggleTextConfig = {
-  text: string;
-  size?: 'xs' | 'sm' | 'base' | 'lg' | 'xl';
-  weight?: 'thin' | 'extralight' | 'light' | 'normal' | 'medium' | 'semibold' | 'bold' | 'extrabold' | 'black';
-  color?: 'gray' | 'red' | 'yellow' | 'green' | 'blue' | 'indigo' | 'purple' | 'pink';
-  shade?: ShadeScale;
-  shadeDark?: ShadeScale;
-}
-
-const DEFAULT_TEXT_CONFIG: Readonly<Pick<ToggleTextConfig, 'weight' | 'size' | 'color' | 'shade' | 'shadeDark'>> = {
-  size: 'sm',
-  weight: 'medium',
-  color: 'gray',
-  shade: '900',
-  shadeDark: '300',
-};
-
-// TODO: make component functional with reactive form
+// TODO: make component style customizable and/or inherited from theme
 @Component({
   selector: "mg-toggle",
   standalone: true,
-  imports: [],
+  imports: [ReactiveFormsModule],
   template: `
     <label class="relative inline-flex cursor-pointer items-center">
-      <input
-        class="peer sr-only"
-        [attr.id]="id()"
-        type="checkbox"
-        [checked]="value()"
-        role="switch"
-        [attr.aria-checked]="value()"
-        [attr.aria-label]="textConfig()?.text"
-      />
-      <div
-        (click)="changeState()"
-        [class]="toggleTrackClasses"
-      ></div>
-      @if (textConfig()) {
-      <span [class]="textClasses()">{{ textConfig()?.text }}</span>
+      @if (parentControlContainer) {
+        <input
+          [formControlName]="controlName()"
+          [checked]="value()"
+          [attr.id]="id()"
+          [attr.aria-checked]="value()"
+          type="checkbox"
+          class="peer sr-only"
+          role="switch"
+        />
+      } @else {
+        <input
+          [checked]="value()"
+          [attr.id]="id()"
+          [attr.aria-checked]="value()"
+          type="checkbox"
+          class="peer sr-only"
+          role="switch"
+        />
       }
+      <div (click)="changeState()" [class]="toggleTrackClasses"></div>
     </label>
   `,
-  host:{
-    class: 'flex items-center justify-between'
+  host: {
+    class: "flex items-center justify-between",
   },
+  viewProviders: [
+    {
+      provide: ControlContainer,
+      useFactory: () => inject(ControlContainer, { skipSelf: true, optional: true }),
+    },
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToggleComponent {
-  value = model.required<boolean>();
+export class ToggleComponent implements OnInit, OnDestroy {
+  private readonly controlNameFallback = "unknown";
+
   id = input.required<string>();
-  textConfig = input<ToggleTextConfig>();
+  value = model<boolean>(false);
   valueChange = output<boolean>();
 
   readonly toggleTrackClasses = `peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800
@@ -64,19 +57,54 @@ export class ToggleComponent {
       peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4
       dark:border-gray-600 dark:bg-gray-700`.trim();
 
-  textClasses = computed(() => {
-    const {
-      size,
-      weight,
-      color,
-      shade,
-      shadeDark
-    } = { ...DEFAULT_TEXT_CONFIG, ...(this.textConfig() || {}) };
-    return `ml-3 text-${size} font-${weight} text-${color}-${shade} dark:text-${color}-${shadeDark}`;
-  });
+  // TODO: Validate reactive from inptus
+  // Reactive form options
+  parentControlContainer = inject(ControlContainer, { skipSelf: true, optional: true });
+  formControl = model<AbstractControl>(new FormControl<boolean>(this.value()));
+  controlName = input<string>(this.controlNameFallback);
+
+  ngOnInit(): void {
+    this.injectControl();
+  }
+
+  ngOnDestroy(): void {
+    this.destroyControl();
+  }
 
   changeState(): void {
     this.value.update((value) => !value);
     this.valueChange.emit(this.value());
+  }
+
+  // TODO: move AbstractControl functions to separate class
+  // Reactive form fns
+  private shouldInitializeReactiveControl(): boolean {
+    return !!this.parentControlContainer && !!this.controlName();
+  }
+
+  protected injectControl() {
+    if (!this.shouldInitializeReactiveControl()) return;
+
+    const control = this.parentControlContainer!.control;
+    const name = this.controlName() || this.controlNameFallback;
+
+    if (control instanceof FormGroup) {
+      control.addControl(name, this.formControl());
+    } else if (control instanceof FormArray) {
+      control.push(this.formControl());
+    }
+  }
+
+  private destroyControl() {
+    if (!this.shouldInitializeReactiveControl()) return;
+
+    const control = this.parentControlContainer!.control;
+
+    if (control instanceof FormGroup) {
+      control.removeControl(this.controlName() || this.controlNameFallback);
+    } else if (control instanceof FormArray) {
+      const index = control.controls.indexOf(this.formControl()!);
+      control.removeAt(index);
+    }
   }
 }

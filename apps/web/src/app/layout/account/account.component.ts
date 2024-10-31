@@ -65,7 +65,7 @@ export class AccountComponent {
     userName: 'userName',
     language: 'language',
     themeToggleControl: 'darkTheme'
-  };
+  } as const;
 
   darkTheme = signal<boolean>(false);
 

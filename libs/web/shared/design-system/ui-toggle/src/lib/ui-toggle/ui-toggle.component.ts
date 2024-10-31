@@ -15,6 +15,8 @@ const TOGGLE_CLASSES = [
   TOGGLE_DARK_MODE_CLASSES
 ].join(' ').trim();
 
+const HOST_CLASSES = "flex items-center justify-between";
+
 // TODO: make component style customizablxe and/or inherited from theme
 @Component({
   selector: "mg-toggle",
@@ -22,7 +24,7 @@ const TOGGLE_CLASSES = [
   imports: [ReactiveFormsModule],
   templateUrl: "./ui-toggle.component.html",
   host: {
-    class: "flex items-center justify-between",
+    '[class]': 'hostClasses()',
   },
   viewProviders: [
     {
@@ -35,6 +37,7 @@ const TOGGLE_CLASSES = [
 export class ToggleComponent implements OnInit, OnDestroy {
   private readonly controlNameFallback = "unknown";
   readonly toggleTrackClasses = TOGGLE_CLASSES;
+  readonly hostClasses = input<string>(HOST_CLASSES);
   readonly parentControlContainer = inject(ControlContainer, { skipSelf: true, optional: true });
 
   readonly id = input.required<string>();

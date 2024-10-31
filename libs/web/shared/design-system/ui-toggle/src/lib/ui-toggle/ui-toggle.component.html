@@ -1,0 +1,24 @@
+<label class="relative inline-flex cursor-pointer items-center">
+  @if (parentControlContainer) {
+    <input
+      [formControlName]="controlName()"
+      [checked]="value()"
+      [attr.id]="id()"
+      [attr.aria-checked]="value()"
+      type="checkbox"
+      class="peer sr-only"
+      role="switch"
+    />
+  } @else {
+    <input
+      [formControl]="formControl()"
+      [checked]="value()"
+      [attr.id]="id()"
+      [attr.aria-checked]="value()"
+      type="checkbox"
+      class="peer sr-only"
+      role="switch"
+    />
+  }
+  <div (click)="changeValue()" [class]="toggleTrackClasses"></div>
+</label>

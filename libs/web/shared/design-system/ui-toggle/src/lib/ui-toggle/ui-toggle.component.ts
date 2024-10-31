@@ -15,26 +15,12 @@ const TOGGLE_CLASSES = [
   TOGGLE_DARK_MODE_CLASSES
 ].join(' ').trim();
 
-
 // TODO: make component style customizablxe and/or inherited from theme
 @Component({
   selector: "mg-toggle",
   standalone: true,
   imports: [ReactiveFormsModule],
-  template: `
-    <label class="relative inline-flex cursor-pointer items-center">
-      <input
-        [formControl]="formControl()"
-        [checked]="value()"
-        [attr.id]="id()"
-        [attr.aria-checked]="value()"
-        type="checkbox"
-        class="peer sr-only"
-        role="switch"
-      />
-      <div (click)="changeState()" [class]="toggleTrackClasses"></div>
-    </label>
-  `,
+  templateUrl: "./ui-toggle.component.html",
   host: {
     class: "flex items-center justify-between",
   },
@@ -53,10 +39,11 @@ export class ToggleComponent implements OnInit, OnDestroy {
 
   readonly id = input.required<string>();
   readonly value = model<boolean>(false);
-  readonly valueChange = output<boolean>();
 
-  readonly formControl = model<FormControl<boolean>>(new FormControl<boolean>(false, { nonNullable: true }));
+  readonly formControl = input<FormControl<boolean>>(new FormControl<boolean>(false, { nonNullable: true }));
   readonly controlName = input<string>(this.controlNameFallback);
+
+  readonly valueChange = output<boolean>();
 
   ngOnInit(): void {
     this.injectControl();
@@ -66,12 +53,14 @@ export class ToggleComponent implements OnInit, OnDestroy {
     this.destroyControl();
   }
 
-  changeState(): void {
+  changeValue(): void {
     this.value.update((value) => !value);
+    this.formControl().setValue(this.value());
     this.valueChange.emit(this.value());
   }
 
   // TODO: move AbstractControl functions to separate class
+  // TODO: add Validators to control
   // Reactive form fns
   private shouldInitializeReactiveControl(): boolean {
     return !!this.parentControlContainer && !!this.controlName();

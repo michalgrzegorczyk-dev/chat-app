@@ -1,6 +1,6 @@
 import { NgFor, NgIf } from "@angular/common";
-import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
-import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
+import { FormControl, FormGroup, FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { RouterOutlet } from "@angular/router";
 import {
   AccountListComponent,
@@ -32,6 +32,8 @@ import { ToggleComponent } from "@chat-app/ui-toggle";
 })
 export class AccountComponent {
 
+  fb = inject(NonNullableFormBuilder);
+
   account = signal({
     name: "David",
     language: 'English'
@@ -60,13 +62,21 @@ export class AccountComponent {
     }
   ]);
 
-  accountForm = new FormGroup({});
   formFields = {
     userName: 'userName',
     language: 'language',
     themeToggleControl: 'darkTheme'
   } as const;
 
+  accountForm = this.fb.group({
+    [this.formFields.userName]: ['', { updateOn: 'blur' }],
+    [this.formFields.language]: ['', { updateOn: 'blur' }],
+    [this.formFields.themeToggleControl]: [false, { updateOn: 'blur' }]
+  });
+
+  themeControl = this.accountForm.get(this.formFields.themeToggleControl) as FormControl<boolean>;
+
+  // initial value for darkTheme
   darkTheme = signal<boolean>(false);
 
   submit() {

@@ -1,6 +1,6 @@
 import { NgFor, NgIf } from "@angular/common";
 import { ChangeDetectionStrategy, Component, signal } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormGroup, FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { RouterOutlet } from "@angular/router";
 import {
   AccountListComponent,
@@ -9,7 +9,7 @@ import {
 import { ButtonComponent } from "@chat-app/ui-button";
 import { DropDownOption, UiDropdownComponent } from "@chat-app/ui-dropdown";
 import { InputComponent } from "@chat-app/ui-input";
-import { ToggleComponent, ToggleTextConfig } from "@chat-app/ui-toggle";
+import { ToggleComponent } from "@chat-app/ui-toggle";
 
 @Component({
   selector: "mg-account-layout",
@@ -19,6 +19,7 @@ import { ToggleComponent, ToggleTextConfig } from "@chat-app/ui-toggle";
     NgFor,
     NgIf,
     FormsModule,
+    ReactiveFormsModule,
     AccountWidgetComponent,
     AccountListComponent,
     RouterOutlet,
@@ -59,16 +60,14 @@ export class AccountComponent {
     }
   ]);
 
-  // TODO: add support for i18n
-  toggleConfig = signal<ToggleTextConfig>({
-    text: "Dark Mode",
-  });
+  accountForm = new FormGroup({});
+  formFields = {
+    themeToggleControl: 'darkTheme'
+  };
+  darkTheme = signal<boolean>(false);
 
-  isDarkTheme = signal<boolean>(false);
-
-  // TODO: save changes in account
-  themeChange(value: boolean) {
-    console.log(value);
+  submit() {
+    console.log(this.accountForm.value);
   }
 
   back() {

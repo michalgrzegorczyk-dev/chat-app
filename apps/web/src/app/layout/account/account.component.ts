@@ -62,8 +62,11 @@ export class AccountComponent {
 
   accountForm = new FormGroup({});
   formFields = {
+    userName: 'userName',
+    language: 'language',
     themeToggleControl: 'darkTheme'
   };
+
   darkTheme = signal<boolean>(false);
 
   submit() {

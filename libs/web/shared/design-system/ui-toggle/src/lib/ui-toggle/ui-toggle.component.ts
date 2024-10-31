@@ -1,33 +1,30 @@
 import { ChangeDetectionStrategy, Component, inject, input, model, OnDestroy, OnInit, output } from "@angular/core";
 import { AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
 
-// TODO: make component style customizable and/or inherited from theme
+const TOGGLE_CLASSES = `peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800
+      peer-checked:bg-primary-500 peer h-6 w-11 rounded-full bg-gray-200
+      after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5
+      after:rounded-full after:border after:border-gray-300 after:bg-white
+      after:transition-all after:content-[''] peer-checked:after:translate-x-full
+      peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4
+      dark:border-gray-600 dark:bg-gray-700`.trim();
+
+// TODO: make component style customizablxe and/or inherited from theme
 @Component({
   selector: "mg-toggle",
   standalone: true,
   imports: [ReactiveFormsModule],
   template: `
     <label class="relative inline-flex cursor-pointer items-center">
-      @if (parentControlContainer) {
-        <input
-          [formControlName]="controlName()"
-          [checked]="value()"
-          [attr.id]="id()"
-          [attr.aria-checked]="value()"
-          type="checkbox"
-          class="peer sr-only"
-          role="switch"
-        />
-      } @else {
-        <input
-          [checked]="value()"
-          [attr.id]="id()"
-          [attr.aria-checked]="value()"
-          type="checkbox"
-          class="peer sr-only"
-          role="switch"
-        />
-      }
+      <input
+        [formControl]="formControl()"
+        [checked]="value()"
+        [attr.id]="id()"
+        [attr.aria-checked]="value()"
+        type="checkbox"
+        class="peer sr-only"
+        role="switch"
+      />
       <div (click)="changeState()" [class]="toggleTrackClasses"></div>
     </label>
   `,
@@ -44,24 +41,15 @@ import { AbstractControl, ControlContainer, FormArray, FormControl, FormGroup, R
 })
 export class ToggleComponent implements OnInit, OnDestroy {
   private readonly controlNameFallback = "unknown";
+  readonly toggleTrackClasses = TOGGLE_CLASSES;
+  readonly parentControlContainer = inject(ControlContainer, { skipSelf: true, optional: true });
 
-  id = input.required<string>();
-  value = model<boolean>(false);
-  valueChange = output<boolean>();
+  readonly id = input.required<string>();
+  readonly value = model<boolean>(false);
+  readonly valueChange = output<boolean>();
 
-  readonly toggleTrackClasses = `peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800
-      peer-checked:bg-primary-500 peer h-6 w-11 rounded-full bg-gray-200
-      after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5
-      after:rounded-full after:border after:border-gray-300 after:bg-white
-      after:transition-all after:content-[''] peer-checked:after:translate-x-full
-      peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4
-      dark:border-gray-600 dark:bg-gray-700`.trim();
-
-  // TODO: Validate reactive from inptus
-  // Reactive form options
-  parentControlContainer = inject(ControlContainer, { skipSelf: true, optional: true });
-  formControl = model<AbstractControl>(new FormControl<boolean>(this.value()));
-  controlName = input<string>(this.controlNameFallback);
+  readonly formControl = model<FormControl<boolean>>(new FormControl<boolean>(false, { nonNullable: true }));
+  readonly controlName = input<string>(this.controlNameFallback);
 
   ngOnInit(): void {
     this.injectControl();

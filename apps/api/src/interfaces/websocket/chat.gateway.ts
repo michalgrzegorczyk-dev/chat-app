@@ -14,7 +14,6 @@ import { Server, Socket } from "socket.io";
 
 import { SendMessageCommand } from "../../application/commands/send-message.command";
 import { CONVERSATION_REPOSITORY, ConversationRepository } from "../../domain/conversation/repositories/conversation.repository";
-import { ConversationId } from "../../domain/conversation/value-objects/conversation-id";
 import { MESSAGE_REPOSITORY, MessageRepository } from "../../domain/messages/repositories/message.repository";
 @WebSocketGateway({
   cors: {

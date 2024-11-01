@@ -172,7 +172,6 @@ export class SupabaseConversationRepository implements ConversationRepository {
   }
 
   async getUserConversations(userId: string): Promise<ConversationListElementDto[]> {
-    console.log("ZZZZ");
     try {
       const { data, error } = await this.supabase.supabase
         .from("conversationuser")

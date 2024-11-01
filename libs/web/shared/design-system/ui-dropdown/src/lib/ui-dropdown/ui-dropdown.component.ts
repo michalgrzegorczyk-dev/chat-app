@@ -38,7 +38,6 @@ export class UiDropdownComponent {
   //todo not optimal? :)
   @HostListener("document:click", ["$event"])
   onDocumentClick(event: MouseEvent) {
-    console.log("xxx");
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isOpen = false;
     }

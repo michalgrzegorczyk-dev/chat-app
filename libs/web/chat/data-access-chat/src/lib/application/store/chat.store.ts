@@ -25,218 +25,185 @@ export const initialState: ChatState = {
 
 export const ChatStore = signalStore(
   withState<ChatState>(initialState),
-  withMethods(
-    (
-      store,
-      serviceRest = inject(ChatInfrastructureRest),
-      router = inject(Router),
-      serviceWS = inject(ChatInfrastructureWebSockets),
-      network = inject(NetworkService),
-    ) => ({
-      loadConversationList: async () => {
-        patchState(store, { conversationListLoading: true });
+  withMethods((store, serviceRest = inject(ChatInfrastructureRest), router = inject(Router), serviceWS = inject(ChatInfrastructureWebSockets)) => ({
+    loadConversationList: async () => {
+      patchState(store, { conversationListLoading: true });
 
-        try {
-          const conversationListDto = await serviceRest.fetchConversations();
-          console.log("dto", conversationListDto);
+      try {
+        const conversationListDto = await serviceRest.fetchConversations();
+        console.log("dto", conversationListDto);
 
-          const conversationList: ConversationListElementDto[] = conversationListDto.map((conversationDto: ConversationListElementDto) => {
-            return {
-              conversationId: conversationDto.conversationId,
-              name: conversationDto.name,
-              avatarUrl: conversationDto.avatarUrl,
-              lastMessageContent: conversationDto.lastMessageContent,
-              lastMessageTimestamp: conversationDto.lastMessageTimestamp,
-              lastMessageSenderId: conversationDto.lastMessageSenderId,
-            };
-          });
+        const conversationList: ConversationListElementDto[] = conversationListDto.map((conversationDto: ConversationListElementDto) => {
+          return {
+            conversationId: conversationDto.conversationId,
+            name: conversationDto.name,
+            avatarUrl: conversationDto.avatarUrl,
+            lastMessageContent: conversationDto.lastMessageContent,
+            lastMessageTimestamp: conversationDto.lastMessageTimestamp,
+            lastMessageSenderId: conversationDto.lastMessageSenderId,
+          };
+        });
 
-          patchState(store, { conversationList });
-        } catch (e) {
-          console.error("Failed to load conversation list:", e);
-        } finally {
-          patchState(store, { conversationListLoading: false });
-        }
-      },
+        patchState(store, { conversationList });
+      } catch (e) {
+        console.error("Failed to load conversation list:", e);
+      } finally {
+        patchState(store, { conversationListLoading: false });
+      }
+    },
 
-      selectConversation: rxMethod<Conversation | null>(
-        pipe(
-          switchMap((conversation) => {
-            if (!conversation) {
-              patchState(store, {
-                selectedConversation: null,
-                selectedConversationLoading: false,
-                messageList: [],
-                memberIdMap: new Map(),
-              });
-
-              return EMPTY;
-            }
-
+    selectConversation: rxMethod<Conversation | null>(
+      pipe(
+        switchMap((conversation) => {
+          if (!conversation) {
             patchState(store, {
-              selectedConversationLoading: true,
-              messageListLoading: true,
+              selectedConversation: null,
+              selectedConversationLoading: false,
               messageList: [],
               memberIdMap: new Map(),
             });
 
-            return from(router.navigate([`${routes.chat.url()}`, conversation.conversationId])).pipe(
-              switchMap(() => serviceRest.getConversationContent(conversation)),
-              tapResponse({
-                next: (details: ConversationDetails) =>
-                  patchState(store, {
-                    selectedConversation: conversation,
-                    messageList: details.messageList,
-                    memberIdMap: new Map(
-                      details.memberList.map((member) => {
-                        return [
-                          member.id,
-                          {
-                            id: member.id,
-                            name: member.name,
-                            avatarUrl: member.avatarUrl,
-                          },
-                        ];
-                      }),
-                    ),
-                    messageListLoading: false,
-                    selectedConversationLoading: false,
-                  }),
-                error: (error) => {
-                  console.error("Failed to load conversation details:", error);
-                  patchState(store, {
-                    messageListLoading: false,
-                    selectedConversationLoading: false,
-                    messageList: [],
-                    memberIdMap: new Map(),
-                  });
-                },
-              }),
-            );
-          }),
-        ),
-      ),
-
-      sendMessage: rxMethod<MessageSendDto>(
-        pipe(
-          switchMap((message) => {
-            const optimisticMessage: Message = {
-              createdAt: new Date().toISOString(),
-              localMessageId: message.localMessageId,
-              messageId: "",
-              content: message.content,
-              status: "sending" as MessageStatus,
-              senderId: message.userId,
-            };
-
-            patchState(store, {
-              messageList: [...store.messageList(), optimisticMessage],
-            });
-
-            if (network.isOnline()) {
-              serviceWS.sendMessageWebSocket(message);
-            } else {
-              const offlineMessages = JSON.parse(localStorage.getItem("offlineMessages") ?? "[]");
-              offlineMessages.push(message);
-              localStorage.setItem("offlineMessages", JSON.stringify(offlineMessages));
-            }
-
             return EMPTY;
-          }),
-        ),
+          }
+
+          patchState(store, {
+            selectedConversationLoading: true,
+            messageListLoading: true,
+            messageList: [],
+            memberIdMap: new Map(),
+          });
+
+          return from(router.navigate([`${routes.chat.url()}`, conversation.conversationId])).pipe(
+            switchMap(() => serviceRest.getConversationContent(conversation)),
+            tapResponse({
+              next: (details: ConversationDetails) =>
+                patchState(store, {
+                  selectedConversation: conversation,
+                  messageList: details.messageList,
+                  memberIdMap: new Map(
+                    details.memberList.map((member) => {
+                      return [
+                        member.id,
+                        {
+                          id: member.id,
+                          name: member.name,
+                          avatarUrl: member.avatarUrl,
+                        },
+                      ];
+                    }),
+                  ),
+                  messageListLoading: false,
+                  selectedConversationLoading: false,
+                }),
+              error: (error) => {
+                console.error("Failed to load conversation details:", error);
+                patchState(store, {
+                  messageListLoading: false,
+                  selectedConversationLoading: false,
+                  messageList: [],
+                  memberIdMap: new Map(),
+                });
+              },
+            }),
+          );
+        }),
       ),
+    ),
 
-      initializeMessageReceiving: rxMethod<void>(
-        pipe(
-          switchMap(() => {
-            return serviceWS.messageReceived$.pipe(
-              tap((message: ReceivedMessage) => {
-                console.log("in store", message);
-                const currentConversationId = store.selectedConversation()?.conversationId;
+    sendMessage: rxMethod<MessageSendDto>(
+      pipe(
+        switchMap((message) => {
+          const optimisticMessage: Message = {
+            createdAt: new Date().toISOString(),
+            localMessageId: message.localMessageId,
+            messageId: "",
+            content: message.content,
+            status: "sending" as MessageStatus,
+            senderId: message.userId,
+          };
 
-                if (currentConversationId === message.conversationId) {
-                  const currentMessages = store.messageList();
+          patchState(store, {
+            messageList: [...store.messageList(), optimisticMessage],
+          });
+          serviceWS.sendMessageWebSocket(message);
+          return EMPTY;
+        }),
+      ),
+    ),
 
-                  // todo, not performant, skip  for now
-                  const updatedMessages = currentMessages.map((currentMessage: Message) => {
-                    if (currentMessage.localMessageId === message.localMessageId) {
-                      console.log("Updating message", message);
-                      return {
-                        ...currentMessage,
-                        // status: "sent" as MessageStatus,
-                        createdAt: message.createdAt,
-                        messageId: message.messageId,
-                      };
-                    }
-                    return currentMessage;
-                  });
+    initializeMessageReceiving: rxMethod<void>(
+      pipe(
+        switchMap(() => {
+          return serviceWS.messageReceived$.pipe(
+            tap((message: ReceivedMessage) => {
+              console.log("in store", message);
+              const currentConversationId = store.selectedConversation()?.conversationId;
 
-                  const messageExists = currentMessages.some((msg) => msg.localMessageId === message.localMessageId);
+              if (currentConversationId === message.conversationId) {
+                const currentMessages = store.messageList();
 
-                  if (!messageExists) {
-                    updatedMessages.push(message);
+                // todo, not performant, skip  for now
+                const updatedMessages = currentMessages.map((currentMessage: Message) => {
+                  if (currentMessage.localMessageId === message.localMessageId) {
+                    console.log("Updating message", message);
+                    return {
+                      ...currentMessage,
+                      status: "sent" as MessageStatus,
+                      createdAt: message.createdAt,
+                      messageId: message.messageId,
+                    };
                   }
+                  return currentMessage;
+                });
 
-                  patchState(store, {
-                    messageList: updatedMessages,
-                  });
+                const messageExists = currentMessages.some((msg) => msg.localMessageId === message.localMessageId);
+
+                if (!messageExists) {
+                  updatedMessages.push(message);
                 }
-              }),
-            );
-          }),
-        ),
+
+                patchState(store, {
+                  messageList: updatedMessages,
+                });
+              }
+            }),
+          );
+        }),
       ),
+    ),
 
-      syncOfflineMessages: rxMethod<void>(
-        pipe(
-          switchMap(() => {
-            const offlineMessages: MessageSendDto[] = JSON.parse(localStorage.getItem("offlineMessages") ?? "[]");
+    updateConversationName: rxMethod<string>(
+      pipe(
+        switchMap((name) => {
+          const conversation = store.selectedConversation();
+          const conversationList = store.conversationList();
 
-            if (offlineMessages.length > 0) {
-              offlineMessages.forEach((message) => {
-                serviceWS.sendMessageWebSocket(message);
-              });
-              localStorage.setItem("offlineMessages", "[]");
-            }
-
+          if (!conversation || !conversationList) {
             return EMPTY;
-          }),
-        ),
+          }
+
+          return from(serviceRest.updateConversationName(conversation.conversationId, name)).pipe(
+            tapResponse({
+              next: () => {
+                // Update selected conversation
+                const updatedConversation = { ...conversation, name };
+
+                // Update conversation in the list
+                const updatedList = conversationList.map((conv) => (conv.conversationId === conversation.conversationId ? { ...conv, name } : conv));
+
+                // Update both states
+                patchState(store, {
+                  selectedConversation: updatedConversation,
+                  conversationList: updatedList,
+                });
+              },
+              error: (error) => {
+                console.error("Failed to update conversation name:", error);
+              },
+            }),
+          );
+        }),
       ),
-
-      updateConversationName: rxMethod<string>(
-        pipe(
-          switchMap((name) => {
-            const conversation = store.selectedConversation();
-            const conversationList = store.conversationList();
-
-            if (!conversation || !conversationList) {
-              return EMPTY;
-            }
-
-            return from(serviceRest.updateConversationName(conversation.conversationId, name)).pipe(
-              tapResponse({
-                next: () => {
-                  // Update selected conversation
-                  const updatedConversation = { ...conversation, name };
-
-                  // Update conversation in the list
-                  const updatedList = conversationList.map((conv) => (conv.conversationId === conversation.conversationId ? { ...conv, name } : conv));
-
-                  // Update both states
-                  patchState(store, {
-                    selectedConversation: updatedConversation,
-                    conversationList: updatedList,
-                  });
-                },
-                error: (error) => {
-                  console.error("Failed to update conversation name:", error);
-                },
-              }),
-            );
-          }),
-        ),
-      ),
-    }),
-  ),
+    ),
+  })),
 );

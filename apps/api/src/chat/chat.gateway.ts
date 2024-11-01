@@ -45,8 +45,15 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
       // Create and execute command
       const command = new SendMessageCommand(dto.content, dto.userId, dto.conversationId, new Date(), dto.localMessageId);
 
-      // Execute command which will trigger MessageSentEvent
-      await this.commandBus.execute(command);
+      try {
+        await this.commandBus.execute(command);
+        client.emit("sendMessageSuccess", { messageId: dto.localMessageId });
+      } catch (error) {
+        client.emit("sendMessageError", {
+          error: error.message,
+          messageId: dto.localMessageId,
+        });
+      }
 
       // Get conversation participants
       const participants = await this.conversationRepository.getParticipants(dto.conversationId);
@@ -120,21 +127,6 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage("typing")
-  async handleTyping(@MessageBody() data: { userId: string; conversationId: string; isTyping: boolean }, @ConnectedSocket() client: Socket): Promise<void> {
-    const participants = await this.conversationRepository.getParticipants(data.conversationId);
-
-    for (const participantId of participants) {
-      if (participantId !== data.userId) {
-        this.emitToUser(participantId, "userTyping", {
-          userId: data.userId,
-          conversationId: data.conversationId,
-          isTyping: data.isTyping,
-        });
-      }
-    }
-  }
-
   private async handleUserConnection(client: Socket, userId: string): Promise<void> {
     client.join(`user:${userId}`);
     this.connectedUsers.set(userId, client);
@@ -151,11 +143,5 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
 
   private isUserConnected(userId: string): boolean {
     return this.connectedUsers.has(userId);
-  }
-
-  async updateMessagesFromQueue(userId: string, conversationId: string, messages: SendMessageRequestDto[]): Promise<void> {
-    for (const message of messages) {
-      await this.handleSendMessage(message, this.connectedUsers.get(userId));
-    }
   }
 }

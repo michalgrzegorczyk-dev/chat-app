@@ -13,7 +13,6 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   async getConversations(@Request() req): Promise<ConversationListElementDto[]> {
     const userId = req.user.id;
-    console.log("XXX");
     return await this.conversationService.getUserConversations(userId);
   }
 

@@ -13,7 +13,6 @@ export class ConversationService {
   ) {}
 
   async getUserConversations(userId: string): Promise<ConversationListElementDto[]> {
-    console.log("YYYYYYY");
     return await this.conversationRepository.getUserConversations(userId);
   }
 

@@ -2,7 +2,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { MessageRepository } from "../../../domain/messages/repositories/message.repository";
 import { Message } from "../../../domain/messages/entities/message.entity";
-import { SupabaseService } from "../../../chat/supabase.service";
 import { ConversationId } from "../../../domain/conversation/value-objects/conversation-id";
 import { MessageId } from "../../../domain/messages/value-objects/message-id";
 import { MessageStatus } from "../../../domain/messages/value-objects/message-status";
@@ -10,6 +9,7 @@ import { MessageContent } from "../../../domain/messages/value-objects/message-c
 import { User } from "../../../domain/user/entities/user.entity";
 import { UserId } from "../../../domain/user/value-objects/user-id";
 import { Email } from "../../../domain/user/value-objects/email";
+import { SupabaseService } from "./supabase.service";
 
 interface MessageData {
   id: string;

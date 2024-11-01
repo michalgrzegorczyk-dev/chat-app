@@ -1,23 +1,25 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
+import { CqrsModule, QueryBus } from "@nestjs/cqrs";
 import { JwtModule } from "@nestjs/jwt";
 
-import { ConversationService } from "./application/services/conversation.service";
-import { AuthController } from "./auth/auth.controller";
-import { AuthService } from "./auth/auth.service";
-import { JwtStrategy } from "./auth/jwt.strategy";
-import { SupabaseService } from "./chat/supabase.service";
-import { CONVERSATION_REPOSITORY } from "./domain/conversation/repositories/conversation.repository";
-import { SupabaseConversationRepository } from "./infrastructure/database/supabase/conversation.repository";
-import { ChatController } from "./interfaces/http/chat.controller";
-import { ChatGateway } from "./interfaces/websocket/chat.gateway";
-import { CqrsModule, QueryBus } from "@nestjs/cqrs";
-import { USER_REPOSITORY } from "./domain/user/repositiories/user.repository";
-import { MESSAGE_REPOSITORY } from "./domain/messages/repositories/message.repository";
-import { SupabaseMessageRepository } from "./infrastructure/database/supabase/message.repository";
-import { SupabaseUserRepository } from "./infrastructure/database/supabase/user.repository";
+import { AuthService } from "./application/auth/auth.service";
 import { SendMessageHandler } from "./application/commands/handlers/send-message.handler";
 import { MessageSentHandler } from "./application/events/handlers/message-sent.handler";
+import { ConversationService } from "./application/services/conversation.service";
+import { AUTH_REPOSITORY } from "./domain/auth/interfaces/auth.repository";
+import { CONVERSATION_REPOSITORY } from "./domain/conversation/repositories/conversation.repository";
+import { MESSAGE_REPOSITORY } from "./domain/messages/repositories/message.repository";
+import { USER_REPOSITORY } from "./domain/user/repositiories/user.repository";
+import { JwtStrategy } from "./infrastructure/auth/strategies/jwt.strategy";
+import { SupabaseConversationRepository } from "./infrastructure/database/supabase/conversation.repository";
+import { SupabaseMessageRepository } from "./infrastructure/database/supabase/message.repository";
+import { SupabaseUserRepository } from "./infrastructure/database/supabase/user.repository";
+import { AuthController } from "./interfaces/http/auth.controller";
+import { ChatController } from "./interfaces/http/chat.controller";
+import { ChatGateway } from "./interfaces/websocket/chat.gateway";
+import { SupabaseService } from "./infrastructure/database/supabase/supabase.service";
+import { SupabaseAuthRepository } from "./infrastructure/database/supabase/auth.repository";
 
 const CommandHandlers = [SendMessageHandler];
 const EventHandlers = [MessageSentHandler];
@@ -27,7 +29,7 @@ const EventHandlers = [MessageSentHandler];
     CqrsModule,
     JwtModule.register({
       secret: "your-secret-key",
-      signOptions: { expiresIn: "1h" },
+      signOptions: { expiresIn: "30s" },
     }),
     ConfigModule.forRoot({
       isGlobal: true,
@@ -35,16 +37,16 @@ const EventHandlers = [MessageSentHandler];
   ],
   controllers: [AuthController, ChatController],
   providers: [
+    AuthService,
     ...CommandHandlers,
     ...EventHandlers,
     ConversationService,
     ChatGateway,
-    AuthService,
     JwtStrategy,
-    SupabaseService,
     SupabaseConversationRepository,
     SupabaseMessageRepository,
     SupabaseUserRepository,
+    SupabaseService,
     QueryBus,
     {
       provide: CONVERSATION_REPOSITORY,
@@ -57,6 +59,10 @@ const EventHandlers = [MessageSentHandler];
     {
       provide: MESSAGE_REPOSITORY,
       useClass: SupabaseMessageRepository,
+    },
+    {
+      provide: AUTH_REPOSITORY,
+      useClass: SupabaseAuthRepository,
     },
   ],
 })

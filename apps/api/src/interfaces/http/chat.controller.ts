@@ -4,6 +4,14 @@ import { Controller, Get, Param, Request, UseGuards, Post, Body } from "@nestjs/
 import { ConversationService } from "../../application/services/conversation.service";
 import { JwtAuthGuard } from "../../infrastructure/auth/jwt-auth.guard";
 
+function delayResponse<T>(response: T): Promise<T> {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(response);
+    }, 0);
+  });
+}
+
 @Controller("chat")
 @UseGuards(JwtAuthGuard)
 export class ChatController {
@@ -13,14 +21,14 @@ export class ChatController {
   @UseGuards(JwtAuthGuard)
   async getConversations(@Request() req): Promise<ConversationListElementDto[]> {
     const userId = req.user.id;
-    return await this.conversationService.getUserConversations(userId);
+    return await delayResponse(this.conversationService.getUserConversations(userId));
   }
 
   @Get("conversations/:conversationId")
   @UseGuards(JwtAuthGuard)
   async getConversation(@Request() req, @Param("conversationId") conversationId: string): Promise<ConversationDetailsDto> {
     const userId = req.user.id;
-    return await this.conversationService.getConversationDetails(userId, conversationId);
+    return await delayResponse(this.conversationService.getConversationDetails(userId, conversationId));
   }
 
   // @Post("conversations")

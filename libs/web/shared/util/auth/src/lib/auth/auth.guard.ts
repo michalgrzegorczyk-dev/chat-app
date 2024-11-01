@@ -1,3 +1,4 @@
+// auth.guard.ts
 import { inject, Injectable } from "@angular/core";
 import { CanActivate, Router, UrlTree } from "@angular/router";
 import { routes } from "@chat-app/util-routing";

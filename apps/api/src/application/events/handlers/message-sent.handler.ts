@@ -10,7 +10,7 @@ import { MessageSentEvent } from "../message-sent.event";
 @Injectable()
 @EventsHandler(MessageSentEvent)
 export class MessageSentHandler implements IEventHandler<MessageSentEvent> {
-  private readonly logger = new Logger(MessageSentHandler.name);
+  readonly #logger = new Logger(MessageSentHandler.name);
 
   constructor(
     @Inject(CONVERSATION_REPOSITORY)
@@ -21,48 +21,29 @@ export class MessageSentHandler implements IEventHandler<MessageSentEvent> {
   ) {}
 
   async handle(event: MessageSentEvent): Promise<void> {
-    try {
-      this.logger.debug(`Handling MessageSentEvent: ${JSON.stringify(event)}`);
+    this.#logger.debug(`Handling MessageSentEvent (publish)`);
 
-      // Update last message in conversation
-      await this.conversationRepository.updateLastMessage(new ConversationId(event.message.conversationId), {
-        messageId: event.message.id,
+    await this.conversationRepository.updateLastMessage(new ConversationId(event.message.conversationId), {
+      messageId: event.message.id,
+      content: event.message.content,
+      senderId: event.message.senderId,
+      timestamp: event.message.createdAt,
+    });
+
+    const messagePayload = {
+      message: {
+        message_id: event.message.id,
         content: event.message.content,
-        senderId: event.message.senderId,
-        timestamp: event.message.createdAt,
-      });
+        created_at: event.message.createdAt,
+        sender_id: event.message.senderId,
+        status: event.message.status,
+        local_message_id: event.message.localMessageId,
+      },
+      sender: event.sender,
+      conversationId: event.message.conversationId,
+    };
 
-      // Get participants and update their chat state
-      const participants = await this.conversationRepository.getParticipants(event.message.conversationId);
-
-      for (const userId of participants) {
-        // Get updated conversation list for sidebar
-        const conversations = await this.conversationRepository.getUserConversations(userId);
-
-        // Get full conversation details
-        const conversationDetails = await this.conversationRepository.findById(new ConversationId(event.message.conversationId));
-
-        // Emit updates to the participant
-        this.chatGateway.emitToUser(userId, "loadConversationListSuccess", conversations);
-        this.chatGateway.emitToUser(userId, "sendMessageSuccess", {
-          message: {
-            message_id: event.message.id,
-            content: event.message.content,
-            created_at: event.message.createdAt,
-            sender_id: event.message.senderId,
-            status: event.message.status,
-            local_message_id: event.message.localMessageId,
-          },
-          sender: event.sender,
-          messageList: conversationDetails.messageList,
-          conversationId: event.message.conversationId,
-        });
-      }
-
-      this.logger.debug("Message sent event handled successfully");
-    } catch (error) {
-      this.logger.error(`Failed to handle message sent event: ${error.message}`);
-      throw error;
-    }
+    this.chatGateway.emitToConversation(event.message.conversationId, "sendMessageSuccess", messagePayload);
+    this.#logger.debug("Message sent event handled successfully");
   }
 }

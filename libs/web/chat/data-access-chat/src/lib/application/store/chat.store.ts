@@ -96,7 +96,7 @@ export const ChatStore = signalStore(
                   selectedConversationLoading: false,
                 }),
               error: (error) => {
-                console.error("Failed to load conversation details:", error);
+                // console.error("Failed to load conversation details:", error);
                 patchState(store, {
                   messageListLoading: false,
                   selectedConversationLoading: false,

@@ -1,4 +1,3 @@
-// src/application/commands/handlers/send-message.handler.ts
 import { Injectable, Logger, Inject } from "@nestjs/common";
 import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
 
@@ -17,7 +16,7 @@ import { MessageSentEvent } from "../../events/message-sent.event";
 @Injectable()
 @CommandHandler(SendMessageCommand)
 export class SendMessageHandler implements ICommandHandler<SendMessageCommand> {
-  private readonly logger = new Logger(SendMessageHandler.name);
+  readonly #logger = new Logger(SendMessageHandler.name);
 
   constructor(
     @Inject(MESSAGE_REPOSITORY)
@@ -29,60 +28,47 @@ export class SendMessageHandler implements ICommandHandler<SendMessageCommand> {
     private readonly eventBus: EventBus,
   ) {}
 
-  async execute(command: SendMessageCommand): Promise<void> {
-    try {
-      this.logger.debug(`Processing SendMessageCommand: ${JSON.stringify(command)}`);
+  async execute(command: SendMessageCommand) {
+    this.#logger.debug(`Processing SendMessageCommand`);
+    const sender = await this.userRepository.findById(new UserId(command.senderId));
 
-      const sender = await this.userRepository.findById(new UserId(command.senderId));
-      if (!sender) {
-        throw new Error("Sender not found");
-      }
+    const message = new Message(
+      MessageId.generate(),
+      sender,
+      new ConversationId(command.conversationId),
+      new MessageContent(command.content),
+      MessageStatus.create("SENT"),
+      command.timestamp instanceof Date ? command.timestamp : new Date(command.timestamp),
+      command.localMessageId,
+    );
 
-      // Ensure timestamp is a Date object
-      const timestamp = command.timestamp instanceof Date ? command.timestamp : new Date(command.timestamp);
+    const savedMessage = await this.messageRepository.save(message);
 
-      const message = new Message(
-        MessageId.generate(),
-        sender,
-        new ConversationId(command.conversationId),
-        new MessageContent(command.content),
-        MessageStatus.create("SENT"),
-        timestamp,
-        command.localMessageId,
-      );
+    await this.conversationRepository.updateLastMessage(new ConversationId(command.conversationId), {
+      messageId: savedMessage.getId().toString(),
+      content: savedMessage.getContent(),
+      senderId: sender.getId(),
+      timestamp: savedMessage.getCreatedAt(),
+    });
 
-      const savedMessage = await this.messageRepository.save(message);
+    const eventData = {
+      id: savedMessage.getId().toString(),
+      content: savedMessage.getContent(),
+      senderId: sender.getId(),
+      conversationId: command.conversationId,
+      createdAt: savedMessage.getCreatedAt(),
+      status: savedMessage.getStatus().getValue(),
+      localMessageId: command.localMessageId,
+    };
 
-      await this.conversationRepository.updateLastMessage(new ConversationId(command.conversationId), {
-        messageId: savedMessage.getId().toString(),
-        content: savedMessage.getContent(),
-        senderId: sender.getId(),
-        timestamp: savedMessage.getCreatedAt(),
-      });
+    await this.eventBus.publish(
+      new MessageSentEvent(eventData, {
+        id: sender.getId(),
+        name: sender.getName(),
+        profilePhotoUrl: sender.getProfilePhotoUrl(),
+      }),
+    );
 
-      // Update the event shape
-      const eventData = {
-        id: savedMessage.getId().toString(),
-        content: savedMessage.getContent(),
-        senderId: sender.getId(),
-        conversationId: command.conversationId,
-        createdAt: savedMessage.getCreatedAt(),
-        status: savedMessage.getStatus().getValue(),
-        localMessageId: command.localMessageId,
-      };
-
-      await this.eventBus.publish(
-        new MessageSentEvent(eventData, {
-          id: sender.getId(),
-          name: sender.getName(),
-          profilePhotoUrl: sender.getProfilePhotoUrl(),
-        }),
-      );
-
-      this.logger.debug("Message sent and event published successfully");
-    } catch (error) {
-      this.logger.error(`Failed to process send message command: ${error.message}`);
-      throw error;
-    }
+    this.#logger.debug("Message sent and event published successfully");
   }
 }

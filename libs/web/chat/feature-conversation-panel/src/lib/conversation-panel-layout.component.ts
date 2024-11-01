@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, signal } from "@angular/core";
-import { ChatStore } from "@chat-app/domain";
+import { ChatStore, ChatInfrastructureWebSockets } from "@chat-app/domain";
 
 import { ConversationComponent } from "./conversation/conversation.component";
 import { ConversationDetailsComponent } from "./conversation/details/conversation-details.component";
@@ -36,6 +36,15 @@ export class ConversationPanelLayoutComponent {
   readonly #store = inject(ChatStore);
   readonly messageListLoading = this.#store.messageListLoading;
   readonly selectedConversation = this.#store.selectedConversation;
+
+  constructor() {
+    const socket = inject(ChatInfrastructureWebSockets).socket;
+    effect(() => {
+      if (this.selectedConversation()) {
+        socket.emit("joinConversation", this.selectedConversation()?.conversationId);
+      }
+    });
+  }
 
   closeConversationDetails() {
     this.showDetails.set(false);

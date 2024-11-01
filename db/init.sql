@@ -12,7 +12,8 @@ CREATE TABLE IF NOT EXISTS public.users (
     name TEXT NOT NULL,
     email TEXT NOT NULL UNIQUE,
     password TEXT NOT NULL,
-    profile_photo_url TEXT
+    profile_photo_url TEXT,
+    refresh_token TEXT,
 );
 
 CREATE TABLE IF NOT EXISTS public.conversation (

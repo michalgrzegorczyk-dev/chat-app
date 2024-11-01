@@ -1,10 +1,11 @@
 import { Injectable } from "@nestjs/common";
 
-import { SupabaseService } from "../../../chat/supabase.service";
 import { User } from "../../../domain/user/entities/user.entity";
 import { UserRepository } from "../../../domain/user/repositiories/user.repository";
 import { Email } from "../../../domain/user/value-objects/email";
 import { UserId } from "../../../domain/user/value-objects/user-id";
+
+import { SupabaseService } from "./supabase.service";
 
 @Injectable()
 export class SupabaseUserRepository implements UserRepository {

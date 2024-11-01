@@ -2,7 +2,6 @@
 import { ConversationDetailsDto, ConversationListElementDto, MemberDto } from "@chat-app/dtos";
 import { Injectable, Logger } from "@nestjs/common";
 
-import { SupabaseService } from "../../../chat/supabase.service";
 import { Conversation } from "../../../domain/conversation/entities/conversation.entity";
 import { ConversationRepository } from "../../../domain/conversation/repositories/conversation.repository";
 import { ConversationId } from "../../../domain/conversation/value-objects/conversation-id";
@@ -14,6 +13,7 @@ import { MessageStatus } from "../../../domain/messages/value-objects/message-st
 import { User } from "../../../domain/user/entities/user.entity";
 import { Email } from "../../../domain/user/value-objects/email";
 import { UserId } from "../../../domain/user/value-objects/user-id";
+import { SupabaseService } from "./supabase.service";
 
 @Injectable()
 export class SupabaseConversationRepository implements ConversationRepository {

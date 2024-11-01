@@ -7,7 +7,7 @@ import { MessageDbModel } from "./model/conversation.model";
 
 @Injectable()
 export class SupabaseService {
-  private supabase: SupabaseClient;
+  supabase: SupabaseClient;
 
   constructor(private jwtService: JwtService) {
     this.supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);

@@ -5,7 +5,7 @@ import { Conversation } from "@chat-app/domain";
 import { ConversationDetailsDto, ConversationListElementDto } from "@chat-app/dtos";
 import { ENVIRONMENT } from "@chat-app/environment";
 import { ROUTE_PARAMS, routes } from "@chat-app/util-routing";
-import { firstValueFrom, map, of } from "rxjs";
+import { firstValueFrom, map, of, tap } from "rxjs";
 
 @Injectable()
 export class ChatInfrastructureRest {
@@ -42,7 +42,7 @@ export class ChatInfrastructureRest {
   }
 
   fetchConversations() {
-    return firstValueFrom(this.#http.get<ConversationListElementDto[]>(`${this.#environment.apiUrl}${routes.chat.conversations.url()}`));
+    return firstValueFrom(this.#http.get<ConversationListElementDto[]>(`${this.#environment.apiUrl}${routes.chat.conversations.url()}`).pipe(tap(console.log)));
   }
 
   updateConversationName(conversationId: any, name: string) {

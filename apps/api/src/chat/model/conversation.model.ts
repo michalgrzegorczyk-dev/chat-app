@@ -9,5 +9,8 @@ export type MessageDbModel = {
   };
   conversation: {
     id: number;
+    name: string;
+    avatar_url: string;
+    chat_type: string;
   };
 };

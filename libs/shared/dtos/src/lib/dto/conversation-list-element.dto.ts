@@ -6,6 +6,7 @@ export interface ConversationListElementDto {
   lastMessageContent: string;
   lastMessageSenderId: string;
 }
+//todo rename to converastion only?
 
 //todo conversationListElementDto
 // todo conversation type

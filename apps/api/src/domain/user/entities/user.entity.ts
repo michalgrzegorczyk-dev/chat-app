@@ -4,9 +4,9 @@ import { UserId } from "../value-objects/user-id";
 export class User {
   constructor(
     private readonly id: UserId,
-    private name: string,
-    private email: Email,
-    private profilePhotoUrl?: string,
+    private readonly name: string,
+    private readonly email: Email,
+    private readonly profilePhotoUrl?: string,
   ) {}
 
   getId(): string {

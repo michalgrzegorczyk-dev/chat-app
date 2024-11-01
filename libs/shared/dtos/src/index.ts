@@ -7,3 +7,5 @@ export * from "./lib/dto/message-send.dto";
 export * from "./lib/dto/message-send.type";
 
 export * from "./lib/dto/shared-types";
+
+export * from "./lib/dto/send-message.dto";

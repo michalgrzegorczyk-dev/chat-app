@@ -1,14 +1,14 @@
-import { Message } from "../../message/entities/message.entity";
+import { Message } from "../../messages/entities/message.entity";
 import { User } from "../../user/entities/user.entity";
-import { ConversationType } from "../value-objects/conversation-type";
 import { ConversationId } from "../value-objects/conversation-id";
+import { ConversationType } from "../value-objects/conversation-type";
 
 export class Conversation {
   private readonly id: ConversationId;
-  private name: string;
+  private readonly name: string;
   private avatarUrl?: string;
-  private type: ConversationType;
-  private members: User[];
+  private readonly type: ConversationType;
+  private readonly members: User[];
   private messages: Message[];
   private lastMessage?: Message;
 
@@ -36,6 +36,18 @@ export class Conversation {
 
   public getLastMessage(): Message | undefined {
     return this.lastMessage;
+  }
+
+  public getAvatarUrl(): string | undefined {
+    return this.avatarUrl;
+  }
+
+  public getLastMessageTimestamp(): Date | undefined {
+    return this.lastMessage?.getCreatedAt();
+  }
+
+  public getLastMessageSenderId(): string | undefined {
+    return this.lastMessage?.getSender().getId();
   }
 
   public getName(): string {

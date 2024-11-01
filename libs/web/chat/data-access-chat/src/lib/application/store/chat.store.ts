@@ -1,6 +1,6 @@
 import { inject } from "@angular/core";
 import { Router } from "@angular/router";
-import { MessageSendDto, MessageStatus } from "@chat-app/dtos";
+import { MessageSendDto, MessageStatus, ConversationListElementDto } from "@chat-app/dtos";
 import { NetworkService } from "@chat-app/network";
 import { routes } from "@chat-app/util-routing";
 import { tapResponse } from "@ngrx/operators";
@@ -37,8 +37,21 @@ export const ChatStore = signalStore(
         patchState(store, { conversationListLoading: true });
 
         try {
-          const conversations = await serviceRest.fetchConversations();
-          patchState(store, { conversationList: conversations });
+          const conversationListDto = await serviceRest.fetchConversations();
+          console.log("dto", conversationListDto);
+
+          const conversationList: ConversationListElementDto[] = conversationListDto.map((conversationDto: ConversationListElementDto) => {
+            return {
+              conversationId: conversationDto.conversationId,
+              name: conversationDto.name,
+              avatarUrl: conversationDto.avatarUrl,
+              lastMessageContent: conversationDto.lastMessageContent,
+              lastMessageTimestamp: conversationDto.lastMessageTimestamp,
+              lastMessageSenderId: conversationDto.lastMessageSenderId,
+            };
+          });
+
+          patchState(store, { conversationList });
         } catch (e) {
           console.error("Failed to load conversation list:", e);
         } finally {

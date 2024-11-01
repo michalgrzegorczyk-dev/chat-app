@@ -14,6 +14,14 @@ export class Message {
     private readonly createdAt: Date,
   ) {}
 
+  public getId(): MessageId {
+    return this.id;
+  }
+
+  getConversationId(): ConversationId {
+    return this.conversationId;
+  }
+
   public getContent(): string {
     return this.content.getValue();
   }
@@ -28,5 +36,9 @@ export class Message {
 
   public setStatus(status: MessageStatus): void {
     this.status = status;
+  }
+
+  getCreatedAt(): Date {
+    return this.createdAt;
   }
 }

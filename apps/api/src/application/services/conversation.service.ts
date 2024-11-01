@@ -1,42 +1,31 @@
-import { Injectable } from "@nestjs/common";
+import { ConversationDetailsDto, ConversationListElementDto } from "@chat-app/dtos";
+import { Inject, Injectable } from "@nestjs/common";
 
-import { ConversationRepository } from "../../domain/conversation/repositories/conversation.repository";
+import { CONVERSATION_REPOSITORY, ConversationRepository } from "../../domain/conversation/repositories/conversation.repository";
 import { ConversationId } from "../../domain/conversation/value-objects/conversation-id";
+import { MESSAGE_REPOSITORY, MessageRepository } from "../../domain/messages/repositories/message.repository";
 
 @Injectable()
 export class ConversationService {
-  constructor(private conversationRepository: ConversationRepository) {}
+  constructor(
+    @Inject(CONVERSATION_REPOSITORY) private conversationRepository: ConversationRepository,
+    @Inject(MESSAGE_REPOSITORY) private messageRepository: MessageRepository,
+  ) {}
 
-  async getUserConversations(userId: string) {
-    const conversations = await this.conversationRepository.findByUserId(userId);
-
-    return conversations.map((conv) => ({
-      id: conv.getId().getValue(),
-      name: conv.getName(),
-      lastMessage: conv.getLastMessage()?.getContent(),
-      members: conv.getMembers().map((m) => ({
-        id: m.getId(),
-        name: m.getName(),
-        avatarUrl: m.getAvatarUrl(),
-      })),
-    }));
+  async getUserConversations(userId: string): Promise<ConversationListElementDto[]> {
+    console.log("YYYYYYY");
+    return await this.conversationRepository.getUserConversations(userId);
   }
 
-  async getConversationDetails(conversationId: string) {
-    const conversation = await this.conversationRepository.findById(new ConversationId(conversationId));
-
-    if (!conversation) {
-      throw new Error("Conversation not found");
-    }
+  async getConversationDetails(userId: string, conversationId: string): Promise<ConversationDetailsDto> {
+    const conversationIdVO = new ConversationId(conversationId);
+    // todo it should be more clear like return conversation then get messages etc now it is dirty
+    const conversationDetails = await this.conversationRepository.findById(conversationIdVO);
 
     return {
-      id: conversation.getId().getValue(),
-      name: conversation.getName(),
-      members: conversation.getMembers().map((m) => ({
-        id: m.getId(),
-        name: m.getName(),
-        avatarUrl: m.getAvatarUrl(),
-      })),
+      conversationId: conversationDetails.conversationId,
+      messageList: conversationDetails.messageList,
+      memberList: conversationDetails.memberList,
     };
   }
 }

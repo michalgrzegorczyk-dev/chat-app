@@ -1,3 +1,4 @@
+// src/application/services/message.service.ts
 import { Injectable, Logger } from "@nestjs/common";
 import { CommandBus } from "@nestjs/cqrs";
 
@@ -18,6 +19,7 @@ export interface SendMessageDto {
   senderId: string;
   conversationId: string;
   timestamp?: Date;
+  localMessageId: string;
 }
 
 export interface GetMessagesDto {
@@ -39,13 +41,11 @@ export class MessageService {
 
   async sendMessage(dto: SendMessageDto): Promise<Message> {
     try {
-      // Validate sender exists
       const sender = await this.userRepository.findById(new UserId(dto.senderId));
       if (!sender) {
         throw new Error("Sender not found");
       }
 
-      // Create message entity with proper value objects
       const message = new Message(
         dto.messageId ? new MessageId(dto.messageId) : MessageId.generate(),
         sender,
@@ -53,20 +53,10 @@ export class MessageService {
         new MessageContent(dto.content),
         MessageStatus.create(MessageStatusType.SENT),
         dto.timestamp || new Date(),
+        dto.localMessageId,
       );
 
-      // Save message through repository
-      const savedMessage = await this.messageRepository.save(message);
-
-      // Update conversation's last message
-      await this.conversationRepository.updateLastMessage(new ConversationId(dto.conversationId), {
-        messageId: savedMessage.getId().toString(),
-        content: savedMessage.getContent(),
-        senderId: sender.getId(),
-        timestamp: savedMessage.getCreatedAt(),
-      });
-
-      return savedMessage;
+      return await this.messageRepository.save(message);
     } catch (error) {
       this.logger.error(`Failed to send message: ${error.message}`);
       throw error;
@@ -76,17 +66,11 @@ export class MessageService {
   async getConversationMessages(dto: GetMessagesDto): Promise<Message[]> {
     try {
       const conversationId = new ConversationId(dto.conversationId);
-
-      // Verify conversation exists
       const conversation = await this.conversationRepository.findById(conversationId);
       if (!conversation) {
         throw new Error("Conversation not found");
       }
-
-      // Get messages from repository
-      const messages = await this.messageRepository.findByConversationId(conversationId);
-
-      return messages;
+      return await this.messageRepository.findByConversationId(conversationId);
     } catch (error) {
       this.logger.error(`Failed to get conversation messages: ${error.message}`);
       throw error;

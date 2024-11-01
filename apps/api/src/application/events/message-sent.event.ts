@@ -1,3 +1,4 @@
+// src/application/events/message-sent.event.ts
 export class MessageSentEvent {
   constructor(
     public readonly message: {
@@ -7,6 +8,7 @@ export class MessageSentEvent {
       conversationId: string;
       createdAt: Date;
       status: string;
+      localMessageId?: string;
     },
     public readonly sender: {
       id: string;

@@ -3,7 +3,7 @@ import { MessageStatus } from "./shared-types";
 export interface ConversationDetailsDto {
   conversationId: string;
   messageList: MessageDto[];
-  memberList: any;
+  memberList: MemberDto[];
 }
 
 export interface MemberDto {
@@ -13,11 +13,17 @@ export interface MemberDto {
 }
 
 export interface MessageDto {
+  // message_id: string;
+  // content: string;
+  // sender_id: string;
+  // created_at: string;
+  // status: MessageStatus;
   message_id: string;
+  local_message_id: string;
   content: string;
-  sender_id: string;
   created_at: string;
-  status: MessageStatus;
+  sender_id: string;
+  status: string;
 }
 
 export interface ReceiveMessageDto extends MessageDto {

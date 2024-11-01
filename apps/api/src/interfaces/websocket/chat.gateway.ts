@@ -15,6 +15,7 @@ import { Server, Socket } from "socket.io";
 import { SendMessageCommand } from "../../application/commands/send-message.command";
 import { CONVERSATION_REPOSITORY, ConversationRepository } from "../../domain/conversation/repositories/conversation.repository";
 import { ConversationId } from "../../domain/conversation/value-objects/conversation-id";
+import { MESSAGE_REPOSITORY, MessageRepository } from "../../domain/messages/repositories/message.repository";
 
 @WebSocketGateway({
   cors: {
@@ -31,6 +32,8 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly commandBus: CommandBus,
     @Inject(CONVERSATION_REPOSITORY)
     private readonly conversationRepository: ConversationRepository,
+    @Inject(MESSAGE_REPOSITORY)
+    private readonly messageRepository: MessageRepository,
   ) {}
 
   async handleConnection(client: Socket) {
@@ -65,21 +68,21 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     this.logger.log(`Handling sendMessage: ${JSON.stringify(dto)}`);
 
     try {
-      // Create and execute the SendMessage command
-      const command = new SendMessageCommand(dto.content, dto.userId, dto.conversationId, new Date());
+      if (!dto.localMessageId) {
+        throw new Error("localMessageId is required");
+      }
+
+      const command = new SendMessageCommand(dto.content, dto.userId, dto.conversationId, dto.timestamp || new Date(), dto.localMessageId);
 
       await this.commandBus.execute(command);
 
-      // Get conversation participants
+      // Get participants and update them
       const participants = await this.conversationRepository.getParticipants(dto.conversationId);
-
-      // Update all participants
       await this.updateParticipants(participants, dto.conversationId);
 
       this.logger.log("Message sent and participants updated successfully");
     } catch (error) {
       this.logger.error(`Failed to handle sendMessage: ${error.message}`);
-      // Emit error to the sender
       this.emitToUser(dto.userId, "sendMessageError", {
         error: "Failed to send message",
         originalMessage: dto,
@@ -106,15 +109,18 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private async updateParticipants(participants: string[], conversationId: string): Promise<void> {
     for (const userId of participants) {
       try {
-        // Get updated conversation list for the user
+        // Get updated conversation list
         const conversations = await this.conversationRepository.getUserConversations(userId);
 
-        // Get updated conversation details
+        // Get conversation details with messages
         const conversationDetails = await this.conversationRepository.findById(new ConversationId(conversationId));
 
-        // Emit updates to the user
+        // Emit updates
         this.emitToUser(userId, "loadConversationListSuccess", conversations);
-        this.emitToUser(userId, "sendMessageSuccess", conversationDetails);
+        this.emitToUser(userId, "sendMessageSuccess", {
+          ...conversationDetails,
+          messages: conversationDetails.messageList,
+        });
       } catch (error) {
         this.logger.error(`Failed to update participant ${userId}: ${error.message}`);
       }

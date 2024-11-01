@@ -138,39 +138,6 @@ export class SupabaseService {
     return data;
   }
 
-  async getConversation(userId: string, conversationId: string): Promise<ConversationDetailsDto> {
-    const data = await this.supabase
-      .from("message")
-      .select(
-        `
-              id,
-              content,
-              created_at,
-              sender:users(name, id, profile_photo_url),
-              conversation:conversation!inner(id)
-            `,
-      )
-      .eq("conversation_id", conversationId)
-      .order("created_at", { ascending: true });
-
-    //TODO: check how to type objects from supabase etc.
-    // const conversationListDb: ConversationDbModel[] = data as any;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const messageListDb: MessageDbModel[] = data.data as any;
-
-    return {
-      conversationId: conversationId,
-      messageList: messageListDb.map((msg) => ({
-        message_id: String(msg.id),
-        content: msg.content,
-        created_at: msg.created_at,
-        sender_id: String(msg.sender.id),
-        status: "sent", //todo
-      })),
-      memberList: this.getUniqueSenders(messageListDb),
-    };
-  }
-
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getUniqueSenders(data: any): MemberDto[] {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -1,10 +1,9 @@
 export type SendMessageRequestDto = {
-  conversationId: string;
-  userId: string;
   content: string;
-  timestamp: string;
-
+  userId: string;
+  conversationId: string;
   localMessageId: string;
+  timestamp?: Date;
 };
 
 // export interface MessageSend {

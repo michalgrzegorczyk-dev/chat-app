@@ -13,7 +13,7 @@ import { CONVERSATION_REPOSITORY } from "./domain/conversation/repositories/conv
 import { SupabaseConversationRepository } from "./infrastructure/database/supabase/conversation.repository";
 import { ChatController } from "./interfaces/http/chat.controller";
 import { ChatGateway } from "./interfaces/websocket/chat.gateway";
-import { CqrsModule } from "@nestjs/cqrs";
+import { CqrsModule, QueryBus } from "@nestjs/cqrs";
 import { USER_REPOSITORY } from "./domain/user/repositiories/user.repository";
 import { MESSAGE_REPOSITORY } from "./domain/messages/repositories/message.repository";
 import { SupabaseMessageRepository } from "./infrastructure/database/supabase/message.repository";
@@ -47,6 +47,7 @@ const EventHandlers = [MessageSentHandler];
     SupabaseConversationRepository,
     SupabaseMessageRepository,
     SupabaseUserRepository,
+    QueryBus,
     {
       provide: CONVERSATION_REPOSITORY,
       useClass: SupabaseConversationRepository,
@@ -93,7 +94,6 @@ export class SendMessageHandler implements ICommandHandler<SendMessageCommand> {
     @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
     private readonly eventBus: EventBus,
-    private readonly chatGateway: ChatGateway,
   ) {}
 
   async execute(command: SendMessageCommand): Promise<void> {
@@ -112,27 +112,38 @@ export class SendMessageHandler implements ICommandHandler<SendMessageCommand> {
         new MessageContent(command.content),
         MessageStatus.create("SENT"),
         command.timestamp,
+        command.localMessageId, // Pass as optional parameter
       );
 
       const savedMessage = await this.messageRepository.save(message);
 
-      // Publish MessageSentEvent
+      await this.conversationRepository.updateLastMessage(new ConversationId(command.conversationId), {
+        messageId: savedMessage.getId().toString(),
+        content: savedMessage.getContent(),
+        senderId: sender.getId(),
+        timestamp: savedMessage.getCreatedAt(),
+      });
+
+      // Update the event shape
+      const eventData = {
+        id: savedMessage.getId().toString(),
+        content: savedMessage.getContent(),
+        senderId: sender.getId(),
+        conversationId: command.conversationId,
+        createdAt: savedMessage.getCreatedAt(),
+        status: savedMessage.getStatus().getValue(),
+      };
+
+      if (command.localMessageId) {
+        Object.assign(eventData, { localMessageId: command.localMessageId });
+      }
+
       await this.eventBus.publish(
-        new MessageSentEvent(
-          {
-            id: savedMessage.getId().toString(),
-            content: savedMessage.getContent(),
-            senderId: sender.getId(),
-            conversationId: command.conversationId,
-            createdAt: savedMessage.getCreatedAt(),
-            status: savedMessage.getStatus().getValue(),
-          },
-          {
-            id: sender.getId(),
-            name: sender.getName(),
-            profilePhotoUrl: sender.getProfilePhotoUrl(),
-          },
-        ),
+        new MessageSentEvent(eventData, {
+          id: sender.getId(),
+          name: sender.getName(),
+          profilePhotoUrl: sender.getProfilePhotoUrl(),
+        }),
       );
 
       this.logger.debug("Message sent and event published successfully");
@@ -151,6 +162,7 @@ export class SendMessageCommand {
     public readonly senderId: string,
     public readonly conversationId: string,
     public readonly timestamp: Date = new Date(),
+    public readonly localMessageId: string,
   ) {}
 }
 
@@ -208,6 +220,7 @@ export class MessageSentHandler implements IEventHandler<MessageSentEvent> {
 
 
 // File: /apps/api/src/application/events/message-sent.event.ts
+// src/application/events/message-sent.event.ts
 export class MessageSentEvent {
   constructor(
     public readonly message: {
@@ -217,6 +230,7 @@ export class MessageSentEvent {
       conversationId: string;
       createdAt: Date;
       status: string;
+      localMessageId?: string;
     },
     public readonly sender: {
       id: string;
@@ -224,6 +238,37 @@ export class MessageSentEvent {
       profilePhotoUrl?: string;
     },
   ) {}
+}
+
+
+// File: /apps/api/src/application/queries/get-conversation.query.ts
+export class GetConversationQuery {
+  constructor(
+    public readonly userId: string,
+    public readonly conversationId: string,
+  ) {}
+}
+
+
+// File: /apps/api/src/application/queries/handlers/get-conversation.handler.ts
+import { ConversationDetailsDto } from "@chat-app/dtos";
+import { Inject } from "@nestjs/common";
+import { IQueryHandler, QueryHandler } from "@nestjs/cqrs";
+
+import { CONVERSATION_REPOSITORY, ConversationRepository } from "../../../domain/conversation/repositories/conversation.repository";
+import { GetConversationQuery } from "../get-conversation.query";
+import { ConversationId } from "../../../domain/conversation/value-objects/conversation-id";
+
+@QueryHandler(GetConversationQuery)
+export class GetConversationHandler implements IQueryHandler<GetConversationQuery> {
+  constructor(
+    @Inject(CONVERSATION_REPOSITORY)
+    private readonly conversationRepository: ConversationRepository,
+  ) {}
+
+  async execute(query: GetConversationQuery): Promise<ConversationDetailsDto> {
+    return await this.conversationRepository.findById(new ConversationId(query.conversationId));
+  }
 }
 
 
@@ -303,13 +348,11 @@ export class MessageService {
 
   async sendMessage(dto: SendMessageDto): Promise<Message> {
     try {
-      // Validate sender exists
       const sender = await this.userRepository.findById(new UserId(dto.senderId));
       if (!sender) {
         throw new Error("Sender not found");
       }
 
-      // Create message entity with proper value objects
       const message = new Message(
         dto.messageId ? new MessageId(dto.messageId) : MessageId.generate(),
         sender,
@@ -317,20 +360,10 @@ export class MessageService {
         new MessageContent(dto.content),
         MessageStatus.create(MessageStatusType.SENT),
         dto.timestamp || new Date(),
+        dto.localMessageId, // Pass as optional parameter
       );
 
-      // Save message through repository
-      const savedMessage = await this.messageRepository.save(message);
-
-      // Update conversation's last message
-      await this.conversationRepository.updateLastMessage(new ConversationId(dto.conversationId), {
-        messageId: savedMessage.getId().toString(),
-        content: savedMessage.getContent(),
-        senderId: sender.getId(),
-        timestamp: savedMessage.getCreatedAt(),
-      });
-
-      return savedMessage;
+      return await this.messageRepository.save(message);
     } catch (error) {
       this.logger.error(`Failed to send message: ${error.message}`);
       throw error;
@@ -870,10 +903,14 @@ export class Message {
     private content: MessageContent,
     private status: MessageStatus,
     private readonly createdAt: Date,
+    private readonly localMessageId?: string, // Make localMessageId optional
   ) {}
 
   public getId(): MessageId {
     return this.id;
+  }
+  getLocalMessageId(): string | undefined {
+    return this.localMessageId;
   }
 
   getConversationId(): ConversationId {
@@ -1221,6 +1258,18 @@ export class SupabaseConversationRepository implements ConversationRepository {
 
   constructor(private readonly supabase: SupabaseService) {}
 
+  private constructMessage(lastMessageData: any, sender: User, conversationId: string): Message {
+    return new Message(
+      new MessageId(lastMessageData.id),
+      sender,
+      new ConversationId(conversationId),
+      new MessageContent(lastMessageData.content),
+      MessageStatus.create(lastMessageData.status || "SENT"),
+      new Date(lastMessageData.created_at),
+      lastMessageData.local_message_id, // Pass as optional parameter
+    );
+  }
+
   async findByUserId(userId: string): Promise<Conversation[]> {
     // Fixed return type
     try {
@@ -1509,55 +1558,114 @@ export class SupabaseConversationRepository implements ConversationRepository {
 
 
 // File: /apps/api/src/infrastructure/database/supabase/message.repository.ts
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { MessageRepository } from "../../../domain/messages/repositories/message.repository";
 import { Message } from "../../../domain/messages/entities/message.entity";
 import { SupabaseService } from "../../../chat/supabase.service";
 import { ConversationId } from "../../../domain/conversation/value-objects/conversation-id";
 import { MessageId } from "../../../domain/messages/value-objects/message-id";
 import { MessageStatus } from "../../../domain/messages/value-objects/message-status";
+import { MessageContent } from "../../../domain/messages/value-objects/message-content";
+import { User } from "../../../domain/user/entities/user.entity";
+import { UserId } from "../../../domain/user/value-objects/user-id";
+import { Email } from "../../../domain/user/value-objects/email";
+
+interface MessageData {
+  id: string;
+  content: string;
+  created_at: string;
+  status: string;
+  sender: {
+    id: string;
+    name: string;
+    email: string;
+    profile_photo_url: string | null;
+  };
+}
 
 @Injectable()
 export class SupabaseMessageRepository implements MessageRepository {
+  private readonly logger = new Logger(SupabaseMessageRepository.name);
+
   constructor(private readonly supabase: SupabaseService) {}
 
   async save(message: Message): Promise<Message> {
-    const { data } = await this.supabase.supabase
-      .from("message")
-      .insert({
+    try {
+      const messageData = {
         id: message.getId().toString(),
+        local_message_id: message.getLocalMessageId(), // This is now required
         conversation_id: message.getConversationId().getValue(),
         sender_id: message.getSender().getId(),
         content: message.getContent(),
         created_at: message.getCreatedAt().toISOString(),
         status: message.getStatus().getValue(),
-      })
-      .select()
-      .single();
+      };
 
-    return message;
+      const { error } = await this.supabase.supabase.from("message").insert(messageData).select().single();
+
+      if (error) {
+        throw new Error(`Failed to save message: ${error.message}`);
+      }
+
+      return message;
+    } catch (error) {
+      this.logger.error(`Error saving message: ${error.message}`);
+      throw error;
+    }
   }
 
   async findByConversationId(conversationId: ConversationId): Promise<Message[]> {
-    const { data } = await this.supabase.supabase
-      .from("message")
-      .select(
-        `
-        id,
-        content,
-        created_at,
-        status,
-        sender:sender_id(id, name, email, profile_photo_url)
-      `,
-      )
-      .eq("conversation_id", conversationId.getValue())
-      .order("created_at", { ascending: true });
+    try {
+      const { data, error } = await this.supabase.supabase
+        .from("message")
+        .select(
+          `
+          id,
+          local_message_id,
+          content,
+          created_at,
+          status,
+          sender:sender_id(id, name, email, profile_photo_url)
+        `,
+        )
+        .eq("conversation_id", conversationId.getValue())
+        .order("created_at", { ascending: true });
 
-    return []; // You'll need to map the data to Message entities
+      if (error) {
+        throw new Error(`Failed to fetch messages: ${error.message}`);
+      }
+
+      return data.map((item) => {
+        const sender = new User(new UserId(item.sender.id), item.sender.name, new Email(item.sender.email), item.sender.profile_photo_url || undefined);
+
+        return new Message(
+          new MessageId(item.id),
+          sender,
+          conversationId,
+          new MessageContent(item.content),
+          MessageStatus.create(item.status),
+          new Date(item.created_at),
+          item.local_message_id, // Pass as optional parameter
+        );
+      });
+    } catch (error) {
+      this.logger.error(`Error fetching messages: ${error.message}`);
+      throw error;
+    }
   }
 
   async updateStatus(messageId: MessageId, status: MessageStatus): Promise<void> {
-    await this.supabase.supabase.from("message").update({ status: status.getValue() }).eq("id", messageId.toString());
+    try {
+      const { error } = await this.supabase.supabase.from("message").update({ status: status.getValue() }).eq("id", messageId.toString());
+
+      if (error) {
+        this.logger.error(`Failed to update message status: ${error.message}`);
+        throw new Error(`Failed to update message status: ${error.message}`);
+      }
+    } catch (error) {
+      this.logger.error(`Error updating message status: ${error.message}`);
+      throw error;
+    }
   }
 }
 
@@ -1635,7 +1743,8 @@ export class ChatController {
 
 // File: /apps/api/src/interfaces/websocket/chat.gateway.ts
 import { SendMessageRequestDto } from "@chat-app/dtos";
-import { Logger } from "@nestjs/common";
+import { Inject, Injectable, Logger } from "@nestjs/common";
+import { CommandBus } from "@nestjs/cqrs";
 import {
   ConnectedSocket,
   MessageBody,
@@ -1648,36 +1757,28 @@ import {
 import { Server, Socket } from "socket.io";
 
 import { SendMessageCommand } from "../../application/commands/send-message.command";
-import { CommandBus } from "@nestjs/cqrs";
+import { CONVERSATION_REPOSITORY, ConversationRepository } from "../../domain/conversation/repositories/conversation.repository";
+import { ConversationId } from "../../domain/conversation/value-objects/conversation-id";
+import { MESSAGE_REPOSITORY, MessageRepository } from "../../domain/messages/repositories/message.repository";
 
 @WebSocketGateway({
   cors: {
     origin: "*",
   },
 })
+@Injectable()
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
   private readonly logger = new Logger(ChatGateway.name);
+  private readonly connectedUsers: Map<string, Socket> = new Map();
 
-  constructor(private readonly commandBus: CommandBus) {}
-
-  @SubscribeMessage("sendMessage")
-  async handleSendMessage(@MessageBody() dto: SendMessageRequestDto, @ConnectedSocket() client: Socket): Promise<void> {
-    this.logger.log(`Handling sendMessage: ${JSON.stringify(dto)}`);
-    try {
-      const command = new SendMessageCommand(dto.content, dto.userId, dto.conversationId, new Date());
-
-      await this.commandBus.execute(command);
-      this.logger.log("Message sent successfully");
-    } catch (error) {
-      this.logger.error(`Failed to send message: ${error.message}`, error.stack);
-      throw error;
-    }
-  }
-
-  emitToUser(userId: string, event: string, data: any): void {
-    this.server.to(`user:${userId}`).emit(event, data);
-  }
+  constructor(
+    private readonly commandBus: CommandBus,
+    @Inject(CONVERSATION_REPOSITORY)
+    private readonly conversationRepository: ConversationRepository,
+    @Inject(MESSAGE_REPOSITORY)
+    private readonly messageRepository: MessageRepository,
+  ) {}
 
   async handleConnection(client: Socket) {
     try {
@@ -1687,14 +1788,88 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.disconnect();
         return;
       }
-      client.join(`user:${userId}`);
-      this.logger.log(`Client connected: ${client.id} for user: ${userId}`);
+
+      await this.handleUserConnection(client, userId);
     } catch (error) {
       this.logger.error(`Error in handleConnection: ${error.message}`);
+      client.disconnect();
     }
   }
 
-  handleDisconnect(client: any): any {}
+  async handleDisconnect(client: Socket) {
+    try {
+      const userId = client.handshake.query.userId as string;
+      if (userId) {
+        this.handleUserDisconnection(client, userId);
+      }
+    } catch (error) {
+      this.logger.error(`Error in handleDisconnect: ${error.message}`);
+    }
+  }
+
+  @SubscribeMessage("sendMessage")
+  async handleSendMessage(@MessageBody() dto: SendMessageRequestDto, @ConnectedSocket() client: Socket): Promise<void> {
+    this.logger.log(`Handling sendMessage: ${JSON.stringify(dto)}`);
+
+    try {
+      if (!dto.localMessageId) {
+        throw new Error("localMessageId is required");
+      }
+
+      const command = new SendMessageCommand(dto.content, dto.userId, dto.conversationId, dto.timestamp || new Date(), dto.localMessageId);
+
+      await this.commandBus.execute(command);
+
+      // Get participants and update them
+      const participants = await this.conversationRepository.getParticipants(dto.conversationId);
+      await this.updateParticipants(participants, dto.conversationId);
+
+      this.logger.log("Message sent and participants updated successfully");
+    } catch (error) {
+      this.logger.error(`Failed to handle sendMessage: ${error.message}`);
+      this.emitToUser(dto.userId, "sendMessageError", {
+        error: "Failed to send message",
+        originalMessage: dto,
+      });
+    }
+  }
+
+  emitToUser(userId: string, event: string, data: any): void {
+    this.server.to(`user:${userId}`).emit(event, data);
+  }
+
+  private async handleUserConnection(client: Socket, userId: string): Promise<void> {
+    client.join(`user:${userId}`);
+    this.connectedUsers.set(userId, client);
+    this.logger.log(`Client connected: ${client.id} for user: ${userId}`);
+  }
+
+  private handleUserDisconnection(client: Socket, userId: string): void {
+    client.leave(`user:${userId}`);
+    this.connectedUsers.delete(userId);
+    this.logger.log(`Client disconnected: ${client.id} for user: ${userId}`);
+  }
+
+  private async updateParticipants(participants: string[], conversationId: string): Promise<void> {
+    for (const userId of participants) {
+      try {
+        // Get updated conversation list
+        const conversations = await this.conversationRepository.getUserConversations(userId);
+
+        // Get conversation details with messages
+        const conversationDetails = await this.conversationRepository.findById(new ConversationId(conversationId));
+
+        // Emit updates
+        this.emitToUser(userId, "loadConversationListSuccess", conversations);
+        this.emitToUser(userId, "sendMessageSuccess", {
+          ...conversationDetails,
+          messages: conversationDetails.messageList,
+        });
+      } catch (error) {
+        this.logger.error(`Failed to update participant ${userId}: ${error.message}`);
+      }
+    }
+  }
 }
 
 

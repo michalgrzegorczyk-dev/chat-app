@@ -1,3 +1,4 @@
+// src/application/commands/handlers/send-message.handler.ts
 import { Injectable, Logger, Inject } from "@nestjs/common";
 import { CommandHandler, EventBus, ICommandHandler } from "@nestjs/cqrs";
 
@@ -10,9 +11,9 @@ import { MessageId } from "../../../domain/messages/value-objects/message-id";
 import { MessageStatus } from "../../../domain/messages/value-objects/message-status";
 import { UserRepository, USER_REPOSITORY } from "../../../domain/user/repositiories/user.repository";
 import { UserId } from "../../../domain/user/value-objects/user-id";
-import { ChatGateway } from "../../../interfaces/websocket/chat.gateway";
 import { SendMessageCommand } from "../send-message.command";
 import { MessageSentEvent } from "../../events/message-sent.event";
+
 @Injectable()
 @CommandHandler(SendMessageCommand)
 export class SendMessageHandler implements ICommandHandler<SendMessageCommand> {
@@ -26,7 +27,6 @@ export class SendMessageHandler implements ICommandHandler<SendMessageCommand> {
     @Inject(USER_REPOSITORY)
     private readonly userRepository: UserRepository,
     private readonly eventBus: EventBus,
-    private readonly chatGateway: ChatGateway,
   ) {}
 
   async execute(command: SendMessageCommand): Promise<void> {
@@ -38,34 +38,45 @@ export class SendMessageHandler implements ICommandHandler<SendMessageCommand> {
         throw new Error("Sender not found");
       }
 
+      // Ensure timestamp is a Date object
+      const timestamp = command.timestamp instanceof Date ? command.timestamp : new Date(command.timestamp);
+
       const message = new Message(
         MessageId.generate(),
         sender,
         new ConversationId(command.conversationId),
         new MessageContent(command.content),
         MessageStatus.create("SENT"),
-        command.timestamp,
+        timestamp,
+        command.localMessageId,
       );
 
       const savedMessage = await this.messageRepository.save(message);
 
-      // Publish MessageSentEvent
+      await this.conversationRepository.updateLastMessage(new ConversationId(command.conversationId), {
+        messageId: savedMessage.getId().toString(),
+        content: savedMessage.getContent(),
+        senderId: sender.getId(),
+        timestamp: savedMessage.getCreatedAt(),
+      });
+
+      // Update the event shape
+      const eventData = {
+        id: savedMessage.getId().toString(),
+        content: savedMessage.getContent(),
+        senderId: sender.getId(),
+        conversationId: command.conversationId,
+        createdAt: savedMessage.getCreatedAt(),
+        status: savedMessage.getStatus().getValue(),
+        localMessageId: command.localMessageId,
+      };
+
       await this.eventBus.publish(
-        new MessageSentEvent(
-          {
-            id: savedMessage.getId().toString(),
-            content: savedMessage.getContent(),
-            senderId: sender.getId(),
-            conversationId: command.conversationId,
-            createdAt: savedMessage.getCreatedAt(),
-            status: savedMessage.getStatus().getValue(),
-          },
-          {
-            id: sender.getId(),
-            name: sender.getName(),
-            profilePhotoUrl: sender.getProfilePhotoUrl(),
-          },
-        ),
+        new MessageSentEvent(eventData, {
+          id: sender.getId(),
+          name: sender.getName(),
+          profilePhotoUrl: sender.getProfilePhotoUrl(),
+        }),
       );
 
       this.logger.debug("Message sent and event published successfully");

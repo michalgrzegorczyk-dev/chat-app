@@ -1,3 +1,4 @@
+// src/domain/messages/entities/message.entity.ts
 import { ConversationId } from "../../conversation/value-objects/conversation-id";
 import { User } from "../../user/entities/user.entity";
 import { MessageContent } from "../value-objects/message-content";
@@ -12,10 +13,18 @@ export class Message {
     private content: MessageContent,
     private status: MessageStatus,
     private readonly createdAt: Date,
-  ) {}
+    private readonly localMessageId: string,
+  ) {
+    // Ensure createdAt is a Date object
+    this.createdAt = createdAt instanceof Date ? createdAt : new Date(createdAt);
+  }
 
   public getId(): MessageId {
     return this.id;
+  }
+
+  getLocalMessageId(): string {
+    return this.localMessageId;
   }
 
   getConversationId(): ConversationId {

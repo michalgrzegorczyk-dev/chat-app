@@ -15,52 +15,23 @@ import { User } from "../../../domain/user/entities/user.entity";
 import { Email } from "../../../domain/user/value-objects/email";
 import { UserId } from "../../../domain/user/value-objects/user-id";
 
-interface SupabaseConversationResponse {
-  conversation_id: string;
-  conversation: {
-    name: string;
-    avatar_url: string;
-    last_message: string;
-    last_message_timestamp: string;
-  };
-  other_user: {
-    users: Array<{
-      id: string;
-      name: string;
-      email: string;
-      profile_photo_url: string;
-    }>;
-  };
-  last_message: {
-    message: Array<{
-      id: string;
-      sender_id: string;
-      content: string;
-      status: string;
-      created_at: string;
-    }>;
-  };
-}
-
-interface SupabaseMessageResponse {
-  id: string;
-  content: string;
-  created_at: string;
-  sender: {
-    id: string;
-    name: string;
-    profile_photo_url: string | null;
-  };
-  conversation: {
-    id: string;
-  };
-}
-
 @Injectable()
 export class SupabaseConversationRepository implements ConversationRepository {
   private readonly logger = new Logger(SupabaseConversationRepository.name);
 
   constructor(private readonly supabase: SupabaseService) {}
+
+  private constructMessage(lastMessageData: any, sender: User, conversationId: string): Message {
+    return new Message(
+      new MessageId(lastMessageData.id),
+      sender,
+      new ConversationId(conversationId),
+      new MessageContent(lastMessageData.content),
+      MessageStatus.create(lastMessageData.status || "SENT"),
+      new Date(lastMessageData.created_at),
+      lastMessageData.local_message_id, // Pass as optional parameter
+    );
+  }
 
   async findByUserId(userId: string): Promise<Conversation[]> {
     // Fixed return type
@@ -99,7 +70,7 @@ export class SupabaseConversationRepository implements ConversationRepository {
       const conversations: Conversation[] = [];
 
       for (const rawItem of data) {
-        const item = rawItem as unknown as SupabaseConversationResponse;
+        const item = rawItem as any;
         try {
           const otherUser = item.other_user.users[0];
           const lastMessageData = item.last_message?.message?.[0];
@@ -126,6 +97,7 @@ export class SupabaseConversationRepository implements ConversationRepository {
               new MessageContent(lastMessageData.content),
               MessageStatus.create(lastMessageData.status || "SENT"),
               new Date(lastMessageData.created_at),
+              lastMessageData.local_message_id,
             );
             conversation.addMessage(message);
           }
@@ -165,7 +137,7 @@ export class SupabaseConversationRepository implements ConversationRepository {
         throw new Error(`Failed to fetch conversation: ${error.message}`);
       }
 
-      const messages = data as unknown as SupabaseMessageResponse[];
+      const messages = data as any;
 
       return {
         conversationId: conversationId.getValue(),
@@ -324,7 +296,7 @@ export class SupabaseConversationRepository implements ConversationRepository {
     }
   }
 
-  private getUniqueSenders(messages: SupabaseMessageResponse[]): MemberDto[] {
+  private getUniqueSenders(messages: any[]): MemberDto[] {
     return Array.from(
       new Map(
         messages.map((msg) => [

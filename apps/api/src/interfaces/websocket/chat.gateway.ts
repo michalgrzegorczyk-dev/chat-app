@@ -16,7 +16,6 @@ import { SendMessageCommand } from "../../application/commands/send-message.comm
 import { CONVERSATION_REPOSITORY, ConversationRepository } from "../../domain/conversation/repositories/conversation.repository";
 import { ConversationId } from "../../domain/conversation/value-objects/conversation-id";
 import { MESSAGE_REPOSITORY, MessageRepository } from "../../domain/messages/repositories/message.repository";
-
 @WebSocketGateway({
   cors: {
     origin: "*",
@@ -36,6 +35,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     private readonly messageRepository: MessageRepository,
   ) {}
 
+  @SubscribeMessage("sendMessage")
+  async handleSendMessage(@MessageBody() dto: SendMessageRequestDto, @ConnectedSocket() client: Socket): Promise<void> {
+    this.logger.log(`Handling sendMessage: ${JSON.stringify(dto)}`);
+
+    const command = new SendMessageCommand(dto.content, dto.userId, dto.conversationId, dto.timestamp || new Date(), dto.localMessageId);
+    // This will trigger the MessageSentEvent through the command handler
+    await this.commandBus.execute(command);
+
+    this.logger.log("Message command executed successfully");
+  }
+
   async handleConnection(client: Socket) {
     try {
       const userId = client.handshake.query.userId as string;
@@ -44,15 +54,14 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
         client.disconnect();
         return;
       }
-
-      await this.handleUserConnection(client, userId);
+      client.join(`user:${userId}`);
+      this.logger.log(`Client connected: ${client.id} for user: ${userId}`);
     } catch (error) {
       this.logger.error(`Error in handleConnection: ${error.message}`);
-      client.disconnect();
     }
   }
 
-  async handleDisconnect(client: Socket) {
+  handleDisconnect(client: Socket) {
     try {
       const userId = client.handshake.query.userId as string;
       if (userId) {
@@ -63,67 +72,13 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
     }
   }
 
-  @SubscribeMessage("sendMessage")
-  async handleSendMessage(@MessageBody() dto: SendMessageRequestDto, @ConnectedSocket() client: Socket): Promise<void> {
-    this.logger.log(`Handling sendMessage: ${JSON.stringify(dto)}`);
-
-    try {
-      if (!dto.localMessageId) {
-        throw new Error("localMessageId is required");
-      }
-
-      const command = new SendMessageCommand(dto.content, dto.userId, dto.conversationId, dto.timestamp || new Date(), dto.localMessageId);
-
-      await this.commandBus.execute(command);
-
-      // Get participants and update them
-      const participants = await this.conversationRepository.getParticipants(dto.conversationId);
-      await this.updateParticipants(participants, dto.conversationId);
-
-      this.logger.log("Message sent and participants updated successfully");
-    } catch (error) {
-      this.logger.error(`Failed to handle sendMessage: ${error.message}`);
-      this.emitToUser(dto.userId, "sendMessageError", {
-        error: "Failed to send message",
-        originalMessage: dto,
-      });
-    }
-  }
-
   emitToUser(userId: string, event: string, data: any): void {
     this.server.to(`user:${userId}`).emit(event, data);
-  }
-
-  private async handleUserConnection(client: Socket, userId: string): Promise<void> {
-    client.join(`user:${userId}`);
-    this.connectedUsers.set(userId, client);
-    this.logger.log(`Client connected: ${client.id} for user: ${userId}`);
   }
 
   private handleUserDisconnection(client: Socket, userId: string): void {
     client.leave(`user:${userId}`);
     this.connectedUsers.delete(userId);
     this.logger.log(`Client disconnected: ${client.id} for user: ${userId}`);
-  }
-
-  private async updateParticipants(participants: string[], conversationId: string): Promise<void> {
-    for (const userId of participants) {
-      try {
-        // Get updated conversation list
-        const conversations = await this.conversationRepository.getUserConversations(userId);
-
-        // Get conversation details with messages
-        const conversationDetails = await this.conversationRepository.findById(new ConversationId(conversationId));
-
-        // Emit updates
-        this.emitToUser(userId, "loadConversationListSuccess", conversations);
-        this.emitToUser(userId, "sendMessageSuccess", {
-          ...conversationDetails,
-          messages: conversationDetails.messageList,
-        });
-      } catch (error) {
-        this.logger.error(`Failed to update participant ${userId}: ${error.message}`);
-      }
-    }
   }
 }

@@ -23,6 +23,7 @@ export class ChatInfrastructureWebSockets {
   }
 
   sendMessageWebSocket(messageSend: MessageSendDto): void {
+    console.log("sending 'sendMessage'");
     this.#socket.emit("sendMessage", messageSend, (error: any) => {
       if (error) {
         console.error("Error sending message:", error);
@@ -32,15 +33,16 @@ export class ChatInfrastructureWebSockets {
 
   private setupSocketListeners(): void {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.#socket.on("sendMessageSuccess", (message: any) => {
+    this.#socket.on("sendMessageSuccess", (dto: any) => {
+      console.log("Received 'sendMessageSuccess'", dto);
       this.messageReceived$.next({
-        conversationId: message.conversation_id,
-        localMessageId: message.local_message_id,
-        content: message.content,
-        createdAt: message.created_at,
-        messageId: message.id,
-        senderId: message.sender_id,
-        status: "sent",
+        conversationId: dto.conversationId,
+        localMessageId: dto.message.local_message_id,
+        content: dto.message.content,
+        createdAt: dto.message.createdAt,
+        messageId: dto.message.message_id,
+        senderId: dto.sender.id,
+        status: dto.message.status,
       });
     });
 

@@ -7,3 +7,4 @@ export * from "./lib/application/store/chat.store";
 
 export * from "./lib/infrastructure/chat.infrastructure-ws";
 export * from "./lib/infrastructure/chat.infrastructure-rest";
+export * from "./lib/models/socket.types";

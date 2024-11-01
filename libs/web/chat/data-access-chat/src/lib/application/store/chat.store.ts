@@ -125,7 +125,7 @@ export const ChatStore = signalStore(
           patchState(store, {
             messageList: [...store.messageList(), optimisticMessage],
           });
-          serviceWS.sendMessageWebSocket(message);
+          serviceWS.sendMessage(message);
           return EMPTY;
         }),
       ),

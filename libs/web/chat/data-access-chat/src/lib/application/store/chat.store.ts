@@ -151,6 +151,7 @@ export const ChatStore = signalStore(
           switchMap(() => {
             return serviceWS.messageReceived$.pipe(
               tap((message: ReceivedMessage) => {
+                console.log("in store", message);
                 const currentConversationId = store.selectedConversation()?.conversationId;
 
                 if (currentConversationId === message.conversationId) {
@@ -159,9 +160,11 @@ export const ChatStore = signalStore(
                   // todo, not performant, skip  for now
                   const updatedMessages = currentMessages.map((currentMessage: Message) => {
                     if (currentMessage.localMessageId === message.localMessageId) {
+                      console.log("Updating message", message);
                       return {
                         ...currentMessage,
-                        status: "sent" as MessageStatus,
+                        // status: "sent" as MessageStatus,
+                        createdAt: message.createdAt,
                         messageId: message.messageId,
                       };
                     }

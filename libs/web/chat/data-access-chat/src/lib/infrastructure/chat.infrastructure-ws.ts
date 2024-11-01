@@ -39,7 +39,7 @@ export class ChatInfrastructureWebSockets {
         conversationId: dto.conversationId,
         localMessageId: dto.message.local_message_id,
         content: dto.message.content,
-        createdAt: dto.message.createdAt,
+        createdAt: dto.message.created_at,
         messageId: dto.message.message_id,
         senderId: dto.sender.id,
         status: dto.message.status,

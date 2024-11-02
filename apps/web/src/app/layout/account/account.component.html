@@ -36,21 +36,20 @@
       <ul class="rounded-md bg-white shadow-sm">
         <li class="border-b border-gray-200 p-4 py-6">
           <div class="flex-1">
-            <mg-input [controlName]="formFields.userName" [value]="''" label="Change Your Name" name="name" [id]="formFields.userName" type="text"
+            <mg-input [control]="userNameControl" label="Change Your Name" name="name" [id]="formFields.userName" type="text"
               placeholder="Enter your name"/>
           </div>
         </li>
 
         <li class="border-b border-gray-200 p-4 py-6">
           <div class="flex-1 flex flex-col">
-            <mg-ui-dropdown [id]="formFields.language" [items]="languageOptions()" [control]="languageControl" label="choose your language"/>
+            <mg-dropdown [id]="formFields.language" [items]="languageOptions()" [control]="languageControl" label="choose your language"/>
           </div>
         </li>
           <li class="p-4">
             <div class="flex items-center justify-between py-4">
               <span class="text-sm font-medium text-gray-700">Dark Theme</span>
-              <!-- <mg-toggle #themeToggle id="theme-toggle" [controlName]="formFields.themeToggleControl" [value]="darkTheme()"></mg-toggle> -->
-              <!-- <mg-toggle #themeToggle id="theme-toggle" [control]="darkThemeControl" ></mg-toggle> -->
+              <mg-toggle id="theme-toggle" [control]="darkThemeControl" ></mg-toggle>
             </div>
           </li>
       </ul>

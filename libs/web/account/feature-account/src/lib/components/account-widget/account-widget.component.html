@@ -12,12 +12,14 @@
   </div>
 
   <div class="flex gap-2">
-    <mg-ui-dropdown
+    <mg-dropdown
+      id="account-widget-dropdown"
+      [controlName]="'dropdownControl'"
       buttonText="Options"
       [items]="dropdownItems"
       (itemClick)="onItemClick($event)"
     >
-    </mg-ui-dropdown>
+    </mg-dropdown>
   </div>
 </div>
 }

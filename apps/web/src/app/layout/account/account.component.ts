@@ -85,6 +85,7 @@ export class AccountComponent {
   get darkThemeControl () {
     return this.accountForm.get(this.formFields.themeToggleControl) as FormControl;
   }
+  darkTheme = signal(false);
 
   submit() {
     console.log(this.accountForm.value);

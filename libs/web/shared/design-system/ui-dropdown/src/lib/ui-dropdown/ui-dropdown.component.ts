@@ -2,12 +2,12 @@ import { CommonModule } from "@angular/common";
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   ElementRef,
-  HostListener,
   inject,
   input,
-  output,
 } from "@angular/core";
+import { CONTROL_COMMON_IMPORTS, CONTROL_VIEW_PROVIDERS, ControlBase } from "../../../../control-base.directive";
 import { RouterLink } from "@angular/router";
 
 type Link = {
@@ -25,26 +25,33 @@ export type DropDownOption = (Link | Button);
 
 @Component({
   // TODO based on rule prefix should be lib here
-  // eslint-disable-next-line @angular-eslint/component-selector
-  selector: "mg-ui-dropdown",
+  selector: "mg-dropdown",
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule, RouterLink, ...CONTROL_COMMON_IMPORTS],
   templateUrl: "./ui-dropdown.component.html",
   styleUrl: "./ui-dropdown.component.scss",
+  host: {
+    "(document:click)": "onDocumentClick($event)",
+  },
+  viewProviders: [...CONTROL_VIEW_PROVIDERS],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class UiDropdownComponent {
-  readonly buttonText = input("Options");
-  readonly value = input("");
-  readonly items = input.required<DropDownOption[]>();
-  readonly itemClick = output();
+export class DropdownComponent extends ControlBase<unknown> {
+  private readonly elementRef = inject(ElementRef);
 
-  private elementRef = inject(ElementRef)
+  readonly label = input<string>();
+  readonly buttonText = input<string>("Options");
+  readonly items = input.required<DropDownOption[]>();
+  get selectLabel () {
+    const controlValue = this.control()?.value;
+    const val = this.value();
+    const def = this.buttonText();
+    const value = controlValue || val || def;
+    return value;
+  };
 
   isOpen = false;
 
-  //todo not optimal? :)
-  @HostListener("document:click", ["$event"])
   onDocumentClick(event: MouseEvent) {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.isOpen = false;
@@ -55,8 +62,11 @@ export class UiDropdownComponent {
     this.isOpen = !this.isOpen;
   }
 
-  onItemClick(item: any) {
-    this.itemClick.emit(item);
+  itemSelect(item: DropDownOption) {
+    if (item.type !== "link") {
+      this.control()?.setValue(item.text);
+    }
+    this.valueChange.emit(item);
     this.isOpen = false;
   }
 }

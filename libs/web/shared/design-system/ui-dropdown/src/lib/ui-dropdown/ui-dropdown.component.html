@@ -1,56 +1,45 @@
+@if (control(); as control) {
+  <select #select class="hidden" [id]="id()" [formControl]="control">
+  </select>
+}
+@if (label(); as label) {
+  <label class="mb-1 block text-sm font-medium text-gray-700" for="language">
+    {{ label | titlecase }}
+  </label>
+}
 <div class="relative inline-block text-left">
-  <button
-    (click)="toggleDropdown()"
-    [attr.aria-expanded]="isOpen"
+  <button (click)="toggleDropdown()" [attr.aria-expanded]="isOpen"
     class="focus:ring-primary-500 inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2"
-    id="options-menu"
-    type="button"
-  >
-    {{ buttonText() }}
-    <svg
-      aria-hidden="true"
-      class="-mr-1 ml-2 h-5 w-5"
-      fill="currentColor"
-      viewBox="0 0 20 20"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <path
-        clip-rule="evenodd"
+    id="options-menu" type="button">
+    {{ selectLabel+'' | titlecase }}
+    <svg aria-hidden="true" class="-mr-1 ml-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20"
+      xmlns="http://www.w3.org/2000/svg">
+      <path clip-rule="evenodd"
         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 011.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-        fill-rule="evenodd"
-      />
+        fill-rule="evenodd" />
     </svg>
   </button>
 
   @if (isOpen) {
-  <div
-    class="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-    role="menu"
-    aria-orientation="vertical"
-    [attr.aria-labelledby]="'options-menu'"
-  >
-    <div class="py-1" role="none">
-      @for (item of items(); track $index) { @if (item.type === 'link' &&
-      item.href) {
-      <a
-        [routerLink]="['/', item.href]"
-        class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-        role="menuitem"
-        (click)="onItemClick(item)"
-      >
-        {{ item.text }}
-      </a>
-      } @if (item.type === 'button') {
-      <button
-        type="button"
-        class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-        role="menuitem"
-        (click)="onItemClick(item)"
-      >
-        {{ item.text }}
-      </button>
-      } }
+    <div
+      class="absolute right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+      role="menu" aria-orientation="vertical" [attr.aria-labelledby]="'options-menu'">
+      <div class="py-1" role="none">
+        @for (item of items(); track $index) {
+          @if (item.type === 'link' && item.href) {
+          <a [routerLink]="['/', item.href]" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem"
+            (click)="itemSelect(item)">
+            {{ item.text | titlecase }}
+          </a>
+          }
+          @if (item.type === 'button') {
+          <button type="button" class="block w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
+            role="menuitem" (click)="itemSelect(item)">
+            {{ item.text | titlecase }}
+          </button>
+          }
+        }
+      </div>
     </div>
-  </div>
   }
 </div>

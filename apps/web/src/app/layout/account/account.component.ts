@@ -36,7 +36,8 @@ export class AccountComponent {
 
   account = signal({
     name: "David",
-    language: 'English'
+    language: 'English',
+    darkTheme: false
   });
 
   languageOptions = signal<DropDownOption[]>([
@@ -69,9 +70,9 @@ export class AccountComponent {
   } as const;
 
   accountForm = this.fb.group({
-    [this.formFields.userName]: ['', { updateOn: 'blur' }],
-    [this.formFields.language]: ['', { updateOn: 'blur' }],
-    [this.formFields.themeToggleControl]: [false, { updateOn: 'blur' }]
+    [this.formFields.userName]: [this.account().name, { updateOn: 'blur' }],
+    [this.formFields.language]: [this.account().language, { updateOn: 'blur' }],
+    [this.formFields.themeToggleControl]: [this.account().darkTheme]
   });
 
   get userNameControl () {

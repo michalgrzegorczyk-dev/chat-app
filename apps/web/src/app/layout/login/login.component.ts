@@ -80,7 +80,6 @@ export class LoginComponent {
   onSubmit(): void {
     const { userName, password } = this.loginForm.value;
     if (userName && password) {
-      // !Q: whats the purpose of this?
       this.error = "";
 
       this.#authService.login(userName, password).subscribe(() => {

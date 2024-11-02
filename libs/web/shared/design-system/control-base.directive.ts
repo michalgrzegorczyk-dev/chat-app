@@ -59,10 +59,6 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
     this.destroyControl();
   }
 
-  changeValue(): void {
-    this.valueChange.emit(this.control()!.value);
-  }
-
   protected validateControlConfig(value?: ControlType | null, controlName?: string, control?: AbstractControl): void {
     const messagePrefix = `Control Component;`;
     const hasControl = !!control;

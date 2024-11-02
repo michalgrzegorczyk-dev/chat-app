@@ -131,7 +131,11 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
       parentControl.removeControl(controlName);
     } else if (parentControl instanceof FormArray) {
       const index = parentControl.controls.indexOf(control);
-      parentControl.removeAt(index);
+      if (index !== -1) {
+        parentControl.removeAt(index);
+      } else {
+        console.warn(`Control Base: Control ${controlName} not found in ControlContainer.`);
+      }
     }
   }
 }

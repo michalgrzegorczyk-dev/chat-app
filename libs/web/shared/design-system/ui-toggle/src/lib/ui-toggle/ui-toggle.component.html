@@ -1,17 +1,7 @@
 <label class="relative inline-flex cursor-pointer items-center">
-  @if (controlName(); as controlName) {
+  @if (control(); as control) {
     <input
-      [formControlName]="controlName"
-      [checked]="value()"
-      [attr.id]="id()"
-      [attr.aria-checked]="value()"
-      type="checkbox"
-      class="peer sr-only"
-      role="switch"
-    />
-  } @else {
-    <input
-      [formControl]="control()!"
+      [formControl]="control"
       [attr.id]="id()"
       [attr.aria-checked]="value()"
       type="checkbox"

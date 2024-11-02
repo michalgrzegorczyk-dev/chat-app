@@ -1,7 +1,7 @@
-import { Message } from "../../messages/entities/message.entity";
+import { Message } from "../../message/entities/message.entity";
 import { User } from "../../user/entities/user.entity";
-import { ConversationId } from "../value-objects/conversation-id";
-import { ConversationType } from "../value-objects/conversation-type";
+import { ConversationId } from "../value-objects/conversation-id.value-object";
+import { ConversationType } from "../value-objects/conversation-type.value-object";
 
 export class Conversation {
   private readonly id: ConversationId;

@@ -1,7 +1,7 @@
-import { ConversationDetailsDto, ConversationListElementDto } from "@chat-app/dtos";
-
 import { Conversation } from "../entities/conversation.entity";
-import { ConversationId } from "../value-objects/conversation-id";
+import { ConversationId } from "../value-objects/conversation-id.value-object";
+import { ConversationDetailsDto } from "../../../shared/dto/conversation/conversation-details.dto";
+import { ConversationListElementDto } from "../../../shared/dto/conversation/conversation-list.dto";
 
 export const CONVERSATION_REPOSITORY = "CONVERSATION_REPOSITORY";
 

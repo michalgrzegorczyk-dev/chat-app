@@ -4,22 +4,22 @@ import { CqrsModule, QueryBus } from "@nestjs/cqrs";
 import { JwtModule } from "@nestjs/jwt";
 
 import { AuthService } from "./application/auth/auth.service";
-import { SendMessageHandler } from "./application/commands/handlers/send-message.handler";
-import { MessageSentHandler } from "./application/events/handlers/message-sent.handler";
-import { ConversationService } from "./application/services/conversation.service";
-import { AUTH_REPOSITORY } from "./domain/auth/interfaces/auth.repository";
+import { SendMessageHandler } from "./application/message/commands/handlers/send-message.command-handler";
+import { MessageSentHandler } from "./application/message/events/handlers/message-sent.event-handler";
+import { ConversationApplicationService } from "./application/conversation/services/conversation-application.service";
+import { AUTH_REPOSITORY } from "./application/auth/interfaces/auth.repository";
 import { CONVERSATION_REPOSITORY } from "./domain/conversation/repositories/conversation.repository";
-import { MESSAGE_REPOSITORY } from "./domain/messages/repositories/message.repository";
-import { USER_REPOSITORY } from "./domain/user/repositiories/user.repository";
-import { JwtStrategy } from "./infrastructure/auth/strategies/jwt.strategy";
-import { SupabaseConversationRepository } from "./infrastructure/database/supabase/conversation.repository";
-import { SupabaseMessageRepository } from "./infrastructure/database/supabase/message.repository";
-import { SupabaseUserRepository } from "./infrastructure/database/supabase/user.repository";
+import { MESSAGE_REPOSITORY } from "./domain/message/repositories/message.repository.interface";
+import { USER_REPOSITORY } from "./domain/user/repositories/user.repository.interface";
+import { JwtStrategy } from "./infrastructure/security/strategies/jwt.strategy";
+import { SupabaseConversationRepository } from "./infrastructure/persistence/supabase/supabase-conversation.repository";
+import { SupabaseMessageRepository } from "./infrastructure/persistence/supabase/supabase-message.repository";
+import { SupabaseUserRepository } from "./infrastructure/persistence/supabase/supabase-user.repository";
 import { AuthController } from "./interfaces/http/auth.controller";
 import { ChatController } from "./interfaces/http/chat.controller";
-import { ChatGateway } from "./interfaces/websocket/chat.gateway";
-import { SupabaseService } from "./infrastructure/database/supabase/supabase.service";
-import { SupabaseAuthRepository } from "./infrastructure/database/supabase/auth.repository";
+import { ChatGateway } from "./infrastructure/websocket/chat.gateway";
+import { SupabaseService } from "./infrastructure/persistence/supabase/supabase.service";
+import { SupabaseAuthRepository } from "./infrastructure/persistence/supabase/supabase-auth.repository";
 
 const CommandHandlers = [SendMessageHandler];
 const EventHandlers = [MessageSentHandler];
@@ -40,7 +40,7 @@ const EventHandlers = [MessageSentHandler];
     AuthService,
     ...CommandHandlers,
     ...EventHandlers,
-    ConversationService,
+    ConversationApplicationService,
     ChatGateway,
     JwtStrategy,
     SupabaseConversationRepository,

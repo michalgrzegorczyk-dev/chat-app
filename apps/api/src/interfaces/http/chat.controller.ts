@@ -1,8 +1,9 @@
-import { ConversationListElementDto, ConversationDetailsDto, MessageSendDto } from "@chat-app/dtos";
-import { Controller, Get, Param, Request, UseGuards, Post, Body } from "@nestjs/common";
+import { Controller, Get, Param, Request, UseGuards } from "@nestjs/common";
 
-import { ConversationService } from "../../application/services/conversation.service";
-import { JwtAuthGuard } from "../../infrastructure/auth/jwt-auth.guard";
+import { ConversationApplicationService } from "../../application/conversation/services/conversation-application.service";
+import { JwtAuthGuard } from "../../infrastructure/security/guards/jwt-auth.guard";
+import { ConversationListElementDto } from "../../shared/dto/conversation/conversation-list.dto";
+import { ConversationDetailsDto } from "../../shared/dto/conversation/conversation-details.dto";
 
 function delayResponse<T>(response: T): Promise<T> {
   return new Promise((resolve) => {
@@ -15,7 +16,7 @@ function delayResponse<T>(response: T): Promise<T> {
 @Controller("chat")
 @UseGuards(JwtAuthGuard)
 export class ChatController {
-  constructor(private conversationService: ConversationService) {}
+  constructor(private conversationService: ConversationApplicationService) {}
 
   @Get("conversations")
   @UseGuards(JwtAuthGuard)

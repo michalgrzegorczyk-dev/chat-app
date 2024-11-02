@@ -42,7 +42,7 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
   * @optional Value for control when providing controlName.
   * @default null
   */
-  readonly value = model<ControlType | null>(null);
+  readonly value = input<ControlType | null>(null);
 
   /**
    * @readonly Output signal, react to value changes.
@@ -60,7 +60,7 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
   }
 
   changeValue(): void {
-    this.valueChange.emit(this.control()!.value || this.value()!);
+    this.valueChange.emit(this.control()!.value);
   }
 
   protected validateControlConfig(value?: ControlType | null, controlName?: string, control?: AbstractControl): void {

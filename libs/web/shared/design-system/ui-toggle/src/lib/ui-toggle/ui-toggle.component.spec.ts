@@ -1,17 +1,28 @@
 import { ComponentFixture, TestBed } from "@angular/core/testing";
-import { UiToggleComponent } from "./ui-toggle.component";
+import { ToggleComponent } from "./ui-toggle.component";
+import { ControlContainer, FormGroup, FormGroupDirective } from "@angular/forms";
 
 describe("UiToggleComponent", () => {
-  let component: UiToggleComponent;
-  let fixture: ComponentFixture<UiToggleComponent>;
+  let component: ToggleComponent;
+  let fixture: ComponentFixture<ToggleComponent>;
+  let formGroupDirective: FormGroupDirective;
 
   beforeEach(async () => {
+    formGroupDirective = new FormGroupDirective([], []);
+    formGroupDirective.form = new FormGroup({});
+
     await TestBed.configureTestingModule({
-      imports: [UiToggleComponent],
+      imports: [ToggleComponent],
+      providers: [
+        { provide: ControlContainer, useValue: formGroupDirective },
+      ]
     }).compileComponents();
 
-    fixture = TestBed.createComponent(UiToggleComponent);
+    fixture = TestBed.createComponent(ToggleComponent);
     component = fixture.componentInstance;
+    fixture.componentRef.setInput('id', 'testId');
+    fixture.componentRef.setInput('value', true);
+    fixture.componentRef.setInput('controlName', 'testControlName');
     fixture.detectChanges();
   });
 
@@ -19,37 +30,10 @@ describe("UiToggleComponent", () => {
     expect(component).toBeTruthy();
   });
 
-  it('should toggle state when clicked', () => {
-    const initialState = component.isChecked; // assuming this property exists
-    component.toggle();
-    expect(component.isChecked).toBe(!initialState);
-  });
+  // it("should inject control in form", ()=> {
+  //   expect(component.has)
+  // })
 
-  it('should emit state change event', () => {
-    spyOn(component.stateChange, 'emit');
-    component.toggle();
-    expect(component.stateChange.emit).toHaveBeenCalled();
-  });
 
-  it('should properly bind toggle text configuration', () => {
-    const config = {
-      enabledText: 'Dark',
-      disabledText: 'Light'
-    };
-    component.toggleConfig = config;
-    fixture.detectChanges();
 
-    const toggleElement = fixture.nativeElement.querySelector('.toggle-text');
-    expect(toggleElement.textContent).toContain(config.disabledText);
-
-    component.toggle();
-    fixture.detectChanges();
-    expect(toggleElement.textContent).toContain(config.enabledText);
-  });
-
-  it('should handle undefined toggle configuration gracefully', () => {
-    component.toggleConfig = undefined;
-    fixture.detectChanges();
-    expect(() => component.toggle()).not.toThrow();
-  });
 });

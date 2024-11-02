@@ -1,7 +1,7 @@
 <label class="relative inline-flex cursor-pointer items-center">
-  @if (parentControlContainer) {
+  @if (controlName(); as controlName) {
     <input
-      [formControlName]="controlName()"
+      [formControlName]="controlName"
       [checked]="value()"
       [attr.id]="id()"
       [attr.aria-checked]="value()"
@@ -11,8 +11,7 @@
     />
   } @else {
     <input
-      [formControl]="formControl()"
-      [checked]="value()"
+      [formControl]="control()!"
       [attr.id]="id()"
       [attr.aria-checked]="value()"
       type="checkbox"
@@ -20,5 +19,5 @@
       role="switch"
     />
   }
-  <div (click)="changeValue()" [class]="toggleTrackClasses"></div>
+  <div [class]="toggleTrackClasses"></div>
 </label>

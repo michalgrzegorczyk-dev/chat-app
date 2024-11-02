@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject, input, model, OnDestroy, OnInit, output } from "@angular/core";
-import { ControlContainer, FormArray, FormControl, FormGroup, ReactiveFormsModule } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, input } from "@angular/core";
+import { CONTROL_COMMON_IMPORTS, CONTROL_VIEW_PROVIDERS, ControlBase } from "../../../../control-base.directive";
 
 const TOGGLE_BASE_CLASSES = 'peer h-6 w-11 rounded-full bg-gray-200';
 const TOGGLE_FOCUS_CLASSES = 'peer-focus:ring-primary-300 peer-focus:outline-none peer-focus:ring-4 dark:peer-focus:ring-primary-800';
@@ -21,78 +21,20 @@ const HOST_CLASSES = "flex items-center justify-between";
 @Component({
   selector: "mg-toggle",
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [...CONTROL_COMMON_IMPORTS],
   templateUrl: "./ui-toggle.component.html",
   host: {
     '[class]': 'hostClasses()',
   },
-  viewProviders: [
-    {
-      provide: ControlContainer,
-      useFactory: () => inject(ControlContainer, { skipSelf: true, optional: true }),
-    },
-  ],
+  viewProviders: [...CONTROL_VIEW_PROVIDERS],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ToggleComponent implements OnInit, OnDestroy {
-  private readonly controlNameFallback = "unknown";
+export class ToggleComponent extends ControlBase<boolean> {
   readonly toggleTrackClasses = TOGGLE_CLASSES;
-
-  readonly parentControlContainer = inject(ControlContainer, { skipSelf: true, optional: true });
-
-  readonly id = input.required<string>();
-  readonly value = model<boolean>(false);
   readonly hostClasses = input<string>(HOST_CLASSES);
 
-  readonly formControl = input<FormControl<boolean>>(new FormControl<boolean>(false, { nonNullable: true }));
-  readonly controlName = input<string>(this.controlNameFallback);
-
-  readonly valueChange = output<boolean>();
-
-  ngOnInit(): void {
-    this.injectControl();
-  }
-
-  ngOnDestroy(): void {
-    this.destroyControl();
-  }
-
-  changeValue(): void {
+ override changeValue(): void {
     this.value.update((value) => !value);
-    this.formControl().setValue(this.value());
-    this.valueChange.emit(this.value());
-  }
-
-  // TODO: move AbstractControl functions to separate class
-  // TODO: add Validators to control
-  // Reactive form fns
-  private shouldInitializeReactiveControl(): boolean {
-    return !!this.parentControlContainer && !!this.controlName();
-  }
-
-  protected injectControl() {
-    if (!this.shouldInitializeReactiveControl()) return;
-
-    const control = this.parentControlContainer!.control;
-    const name = this.controlName() || this.controlNameFallback;
-
-    if (control instanceof FormGroup) {
-      control.addControl(name, this.formControl());
-    } else if (control instanceof FormArray) {
-      control.push(this.formControl());
-    }
-  }
-
-  private destroyControl() {
-    if (!this.shouldInitializeReactiveControl()) return;
-
-    const control = this.parentControlContainer!.control;
-
-    if (control instanceof FormGroup) {
-      control.removeControl(this.controlName() || this.controlNameFallback);
-    } else if (control instanceof FormArray) {
-      const index = control.controls.indexOf(this.formControl()!);
-      control.removeAt(index);
-    }
+    this.valueChange.emit(this.value()!);
   }
 }

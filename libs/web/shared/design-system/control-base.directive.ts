@@ -29,7 +29,7 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
   * @optional Define FormControl object.
   * Can be used inside ControlContainer or directly.
   */
-  readonly control = model<FormControl<ControlType>>();
+  readonly control = model<FormControl<ControlType | null>>();
 
   /**
    * @optional Name for control injection into ControlContainer.
@@ -40,14 +40,14 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
 
   /**
   * @optional Value for control when providing controlName.
-  * **Required while using controlName**
+  * @default null
   */
-  readonly value = model<ControlType>();
+  readonly value = model<ControlType | null>(null);
 
   /**
    * @readonly Output signal, react to value changes.
    */
-  readonly valueChange = output<ControlType>();
+  readonly valueChange = output<ControlType | null>();
 
   ngOnInit(): void {
     this.validateControlConfig(this.value(), this.controlName(), this.control());
@@ -63,7 +63,7 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
     this.valueChange.emit(this.control()!.value || this.value()!);
   }
 
-  protected validateControlConfig(value?: ControlType, controlName?: string, control?: AbstractControl): void {
+  protected validateControlConfig(value?: ControlType | null, controlName?: string, control?: AbstractControl): void {
     const messagePrefix = `Control Component;`;
     const hasControl = !!control;
     const hasValue = (value !== null && value !== undefined);
@@ -73,10 +73,7 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
       throw new Error(`${messagePrefix} Missing properties to build AbstractControl. Provide "control" or "controlName".`);
     }
     if (hasControl && (hasControlName || hasValue)) {
-      throw new Error(`${messagePrefix} "control" can not be used within with "value" or "controlName".`);
-    }
-    if (hasControlName && !hasValue) {
-      throw new Error(`${messagePrefix} Property "value" is required to create instance of Control when using "controlName".`);
+      throw new Error(`${messagePrefix} "control" must not be used within with "value" or "controlName".`);
     }
   }
 
@@ -86,7 +83,8 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
    */
   protected initControl(): void {
     if (!this.control()) {
-      this.control.set(new FormControl<ControlType>(this.value()!, { nonNullable: true }));
+      const value = this.value() || null;
+      this.control.set(new FormControl<ControlType | null>(value, { nonNullable: true }));
     }
   }
 

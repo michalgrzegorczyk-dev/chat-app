@@ -3,7 +3,7 @@
   </select>
 }
 @if (label(); as label) {
-  <label class="mb-1 block text-sm font-medium text-gray-700" for="language">
+  <label class="mb-1 block text-sm font-medium text-gray-700" [attr.for]="id()">
     {{ label | titlecase }}
   </label>
 }

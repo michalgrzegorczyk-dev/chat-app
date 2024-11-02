@@ -29,7 +29,7 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
   * @optional Define FormControl object.
   * Can be used inside ControlContainer or directly.
   */
-  readonly control = model<FormControl<ControlType | null>>();
+  readonly control = model<FormControl<ControlType>>();
 
   /**
    * @optional Name for control injection into ControlContainer.
@@ -40,9 +40,8 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
 
   /**
   * @optional Value for control when providing controlName.
-  * @default null
   */
-  readonly value = input<ControlType | null>(null);
+  readonly value = input<ControlType>();
 
   /**
    * @readonly Output signal, react to value changes.
@@ -80,7 +79,7 @@ export abstract class ControlBase<ControlType> implements OnInit, OnDestroy {
   protected initControl(): void {
     if (!this.control()) {
       const value = this.value() || null;
-      this.control.set(new FormControl<ControlType | null>(value, { nonNullable: true }));
+      this.control.set(new FormControl<ControlType>(value as ControlType, { nonNullable: true }));
     }
   }
 

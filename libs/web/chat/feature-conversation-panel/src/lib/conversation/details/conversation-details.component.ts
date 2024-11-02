@@ -3,13 +3,13 @@ import { ChangeDetectionStrategy, Component, input, OnInit, output } from "@angu
 import { FormsModule } from "@angular/forms";
 import { Conversation } from "@chat-app/domain";
 import { ButtonComponent } from "@chat-app/ui-button";
-import { UiDropdownComponent } from "@chat-app/ui-dropdown";
+import { DropdownComponent } from "@chat-app/ui-dropdown";
 import { InputComponent } from "@chat-app/ui-input";
 
 @Component({
   selector: "mg-conversation-details",
   standalone: true,
-  imports: [CommonModule, FormsModule, UiDropdownComponent, ButtonComponent, InputComponent],
+  imports: [CommonModule, FormsModule, DropdownComponent, ButtonComponent, InputComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: "./conversation-details.component.html",
 })

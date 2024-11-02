@@ -32,46 +32,26 @@
       </p>
     </div>
 
-    <form class="space-y-4">
-      <ul class="overflow-hidden rounded-md bg-white shadow-sm">
+    <form [formGroup]="accountForm" (ngSubmit)="submit()" class="space-y-4">
+      <ul class="rounded-md bg-white shadow-sm">
         <li class="border-b border-gray-200 p-4 py-6">
           <div class="flex-1">
-            <mg-input [value]="account().name" label="Change Your Name" name="name" id="name" [required]="true" type="text"
+            <mg-input [control]="userNameControl" label="Change Your Name" name="name" [id]="formFields.userName" type="text"
               placeholder="Enter your name"/>
           </div>
         </li>
 
         <li class="border-b border-gray-200 p-4 py-6">
-          <div class="flex-1">
-            <label
-              class="mb-1 block text-sm font-medium text-gray-700"
-              for="language"
-              >Choose Language</label
-            >
-            <mg-ui-dropdown [items]="languageOptions()" [value]="account().language"/>
+          <div class="flex-1 flex flex-col">
+            <mg-dropdown [id]="formFields.language" [items]="languageOptions()" [control]="languageControl" label="choose your language"/>
           </div>
         </li>
-
-        <li class="p-4">
-          <div class="flex items-center justify-between py-4">
-            <span class="text-sm font-medium text-gray-700">Change Theme</span>
-            <label class="relative inline-flex cursor-pointer items-center">
-              <input
-                class="peer sr-only"
-                id="theme-toggle"
-                type="checkbox"
-                value=""
-              />
-              <div
-                class="peer-focus:ring-primary-300 dark:peer-focus:ring-primary-800 peer-checked:bg-primary-500 peer h-6 w-11 rounded-full bg-gray-200 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:border after:border-gray-300 after:bg-white after:transition-all after:content-[''] peer-checked:after:translate-x-full peer-checked:after:border-white peer-focus:outline-none peer-focus:ring-4 dark:border-gray-600 dark:bg-gray-700"
-              ></div>
-              <span
-                class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-                >Dark Mode</span
-              >
-            </label>
-          </div>
-        </li>
+          <li class="p-4">
+            <div class="flex items-center justify-between py-4">
+              <span class="text-sm font-medium text-gray-700">Dark Theme</span>
+              <mg-toggle id="theme-toggle" [control]="darkThemeControl" ></mg-toggle>
+            </div>
+          </li>
       </ul>
 
       <mg-button text="Cancel" type="button" variant="secondary" (click)="back()"/>

@@ -1,6 +1,6 @@
 import { NgIf } from "@angular/common";
-import { ChangeDetectionStrategy, Component, computed, contentChild, ElementRef, input, model } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, computed, contentChild, ElementRef, input } from "@angular/core";
+import { CONTROL_COMMON_IMPORTS, CONTROL_VIEW_PROVIDERS, ControlBase } from "../../../../control-base.directive";
 
 const INPUT_CLASSES = [
   "block",
@@ -26,49 +26,24 @@ const INPUT_CLASSES = [
 const LEFT_ICON_PADDING = "pl-10";
 const DEFAULT_PADDING_LEFT = "pl-4";
 
+export type inputControlTypes = "text" | "email" | "password";
+
 @Component({
   selector: "mg-input",
   standalone: true,
-  imports: [FormsModule, NgIf],
+  imports: [...CONTROL_COMMON_IMPORTS],
   host: {
     class: "block",
   },
-  template: `
-    <div class="space-y-2">
-      @if (label()) {
-      <label [for]="id()" class="block text-sm font-medium text-gray-700">
-        {{ label() }}
-      </label>
-      }
-
-      <div class="group relative">
-        <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
-          <ng-content select="svg" />
-        </div>
-
-        <input
-          [id]="id()"
-          [name]="name()"
-          [type]="type()"
-          [required]="required()"
-          [placeholder]="placeholder()"
-          [ngModel]="value()"
-          (ngModelChange)="value.set($event)"
-          [class]="inputClasses()"
-        />
-      </div>
-    </div>
-  `,
+  templateUrl: "./ui-input.component.html",
+  viewProviders: [...CONTROL_VIEW_PROVIDERS],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputComponent {
-  readonly id = input("");
-  readonly name = input("");
-  readonly label = input("");
-  readonly type = input<"text" | "email" | "password">("text");
-  readonly placeholder = input("");
-  readonly required = input(false);
-  readonly value = model("");
+export class InputComponent extends ControlBase<unknown> {
+  readonly name = input.required<string>();
+  readonly label = input<string>();
+  readonly type = input<inputControlTypes>("text");
+  readonly placeholder = input();
 
   private leadingIcon = contentChild<ElementRef | null>("leadingIcon");
 
@@ -78,5 +53,5 @@ export class InputComponent {
       return [INPUT_CLASSES, LEFT_ICON_PADDING].join(" ");
     }
     return [INPUT_CLASSES, DEFAULT_PADDING_LEFT].join(" ");
-  })
+  });
 }

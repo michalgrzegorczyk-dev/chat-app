@@ -1,6 +1,6 @@
-import { AsyncPipe, JsonPipe, NgFor, NgIf } from "@angular/common";
+import { AsyncPipe, JsonPipe } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
-import { FormsModule } from "@angular/forms";
+import { FormControl, NonNullableFormBuilder, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { AccountListComponent, AccountWidgetComponent } from "@chat-app/feature-account";
 import { routes } from "@chat-app/util-routing";
@@ -8,18 +8,43 @@ import { AuthService } from "@chat-app/web/shared/util/auth";
 import { ButtonComponent } from "@chat-app/ui-button";
 import { InputComponent } from "@chat-app/ui-input";
 
+export interface User {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+  profilePhotoUrl: string;
+}
+
 @Component({
   selector: "mg-login",
   standalone: true,
   templateUrl: "./login.component.html",
-  imports: [NgFor, NgIf, FormsModule, AccountWidgetComponent, AccountListComponent, AsyncPipe, JsonPipe, ButtonComponent, InputComponent],
+  imports: [AccountWidgetComponent, AccountListComponent, AsyncPipe, JsonPipe, ButtonComponent, InputComponent, ReactiveFormsModule],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
-  username = "";
-  password = "";
+  readonly fb = inject(NonNullableFormBuilder);
+  readonly #router = inject(Router);
+  readonly #authService = inject(AuthService);
+
+  loginForm = this.fb.group({
+    userName: ["", Validators.required],
+    password: ["", Validators.required],
+  });
+
+  get userName () {
+    return this.loginForm.get("userName") as FormControl;
+  }
+
+  get password () {
+    return this.loginForm.get("password") as FormControl;
+  }
+
   error = "";
-  users = [
+
+  // TODO: move this to a separate file/service
+  users: User[] = [
     {
       id: "1",
       name: "David",
@@ -51,19 +76,20 @@ export class LoginComponent {
   ];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selectedUser: any;
-  readonly #router = inject(Router);
-  readonly #authService = inject(AuthService);
 
   onSubmit(): void {
-    this.error = "";
-    this.#authService.login(this.username, this.password).subscribe(() => {
-      this.#router.navigate([routes.chat.url()]);
-    });
+    const { userName, password } = this.loginForm.value;
+    if (userName && password) {
+      this.error = "";
+
+      this.#authService.login(userName, password).subscribe(() => {
+        this.#router.navigate([routes.chat.url()]);
+      });
+    }
+
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  fillCredentials(user: any) {
-    this.username = user.email;
-    this.password = user.password;
+  fillCredentials(user: User) {
+    this.loginForm.setValue({ userName: user.email, password: user.password });
   }
 }

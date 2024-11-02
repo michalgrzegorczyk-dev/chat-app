@@ -1,0 +1,23 @@
+<div class="space-y-2">
+  @if (label()) {
+  <label [for]="id()" class="block text-sm font-medium text-gray-700">
+    {{ label() }}
+  </label>
+  }
+
+  <div class="group relative">
+    <div class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400">
+      <ng-content select="svg" />
+    </div>
+    @if (control(); as control) {
+      <input
+        [id]="id()"
+        [name]="name()"
+        [type]="type()"
+        [class]="inputClasses()"
+        [formControl]="control"
+        [placeholder]="placeholder()"
+      />
+    }
+  </div>
+</div>

@@ -27,6 +27,7 @@
       "@chat-app/ui-input": ["libs/web/shared/design-system/ui-input/src/index.ts"],
       "@chat-app/ui-modal": ["libs/web/shared/design-system/ui-modal/src/index.ts"],
       "@chat-app/ui-notifier": ["libs/web/shared/design-system/ui-norifier/src/index.ts"],
+      "@chat-app/ui-toggle": ["libs/web/shared/design-system/ui-toggle/src/index.ts"],
       "@chat-app/util-routing": ["libs/web/shared/util/routing/src/index.ts"],
       "@chat-app/web/shared/util/auth": ["libs/web/shared/util/auth/src/index.ts"]
     }

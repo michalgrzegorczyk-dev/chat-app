@@ -1,0 +1,12 @@
+<label class="relative inline-flex cursor-pointer items-center">
+  @if (control(); as control) {
+    <input
+      [formControl]="control"
+      [attr.id]="id()"
+      type="checkbox"
+      class="peer sr-only"
+      role="switch"
+    />
+  }
+  <div [class]="toggleTrackClasses"></div>
+</label>

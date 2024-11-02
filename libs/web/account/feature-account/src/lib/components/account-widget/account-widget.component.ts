@@ -1,7 +1,6 @@
-import { NgClass } from "@angular/common";
 import { ChangeDetectionStrategy, Component, inject } from "@angular/core";
 import { ButtonComponent } from "@chat-app/ui-button";
-import { DropDownOption, UiDropdownComponent } from "@chat-app/ui-dropdown";
+import { DropDownOption, DropdownComponent } from "@chat-app/ui-dropdown";
 import { AuthService } from "@chat-app/web/shared/util/auth";
 
 @Component({
@@ -9,7 +8,7 @@ import { AuthService } from "@chat-app/web/shared/util/auth";
   templateUrl: "./account-widget.component.html",
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [NgClass, ButtonComponent, UiDropdownComponent],
+  imports: [ButtonComponent, DropdownComponent],
 })
 export class AccountWidgetComponent {
   dropdownItems: DropDownOption[] = [

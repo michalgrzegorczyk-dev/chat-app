@@ -32,9 +32,4 @@ const HOST_CLASSES = "flex items-center justify-between";
 export class ToggleComponent extends ControlBase<boolean> {
   readonly toggleTrackClasses = TOGGLE_CLASSES;
   readonly hostClasses = input<string>(HOST_CLASSES);
-
- override changeValue(): void {
-    this.value.update((value) => !value);
-    this.valueChange.emit(this.value()!);
-  }
 }

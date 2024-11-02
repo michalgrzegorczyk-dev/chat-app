@@ -1,13 +1,13 @@
 import { NgFor, NgIf } from "@angular/common";
-import { ChangeDetectionStrategy, Component, inject, signal } from "@angular/core";
-import { FormControl, FormGroup, FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
+import { ChangeDetectionStrategy, Component, inject, signal, viewChild } from "@angular/core";
+import { FormControl, FormsModule, NonNullableFormBuilder, ReactiveFormsModule } from "@angular/forms";
 import { RouterOutlet } from "@angular/router";
 import {
   AccountListComponent,
   AccountWidgetComponent,
 } from "@chat-app/feature-account";
 import { ButtonComponent } from "@chat-app/ui-button";
-import { DropDownOption, UiDropdownComponent } from "@chat-app/ui-dropdown";
+import { DropDownOption, DropdownComponent } from "@chat-app/ui-dropdown";
 import { InputComponent } from "@chat-app/ui-input";
 import { ToggleComponent } from "@chat-app/ui-toggle";
 
@@ -24,7 +24,7 @@ import { ToggleComponent } from "@chat-app/ui-toggle";
     AccountListComponent,
     RouterOutlet,
     InputComponent,
-    UiDropdownComponent,
+    DropdownComponent,
     ButtonComponent,
     ToggleComponent,
   ],
@@ -74,10 +74,17 @@ export class AccountComponent {
     [this.formFields.themeToggleControl]: [false, { updateOn: 'blur' }]
   });
 
-  themeControl = this.accountForm.get(this.formFields.themeToggleControl) as FormControl<boolean>;
+  get userNameControl () {
+    return this.accountForm.get(this.formFields.userName) as FormControl;
+  }
 
-  // initial value for darkTheme
-  darkTheme = signal<boolean>(false);
+  get languageControl () {
+    return this.accountForm.get(this.formFields.language) as FormControl;
+  }
+
+  get darkThemeControl () {
+    return this.accountForm.get(this.formFields.themeToggleControl) as FormControl;
+  }
 
   submit() {
     console.log(this.accountForm.value);

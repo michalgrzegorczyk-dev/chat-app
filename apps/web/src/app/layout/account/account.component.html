@@ -33,28 +33,24 @@
     </div>
 
     <form [formGroup]="accountForm" (ngSubmit)="submit()" class="space-y-4">
-      <ul class="overflow-hidden rounded-md bg-white shadow-sm">
+      <ul class="rounded-md bg-white shadow-sm">
         <li class="border-b border-gray-200 p-4 py-6">
           <div class="flex-1">
-            <mg-input [value]="account().name" label="Change Your Name" name="name" id="name" [required]="true" type="text"
+            <mg-input [controlName]="formFields.userName" [value]="''" label="Change Your Name" name="name" [id]="formFields.userName" type="text"
               placeholder="Enter your name"/>
           </div>
         </li>
 
         <li class="border-b border-gray-200 p-4 py-6">
-          <div class="flex-1">
-            <label
-              class="mb-1 block text-sm font-medium text-gray-700"
-              for="language"
-              >Choose Language</label
-            >
-            <mg-ui-dropdown [items]="languageOptions()" [value]="account().language"/>
+          <div class="flex-1 flex flex-col">
+            <mg-ui-dropdown [id]="formFields.language" [items]="languageOptions()" [control]="languageControl" label="choose your language"/>
           </div>
         </li>
           <li class="p-4">
             <div class="flex items-center justify-between py-4">
               <span class="text-sm font-medium text-gray-700">Dark Theme</span>
-              <mg-toggle id="theme-toggle" [controlName]="formFields.themeToggleControl" [value]="darkTheme()"></mg-toggle>
+              <!-- <mg-toggle #themeToggle id="theme-toggle" [controlName]="formFields.themeToggleControl" [value]="darkTheme()"></mg-toggle> -->
+              <!-- <mg-toggle #themeToggle id="theme-toggle" [control]="darkThemeControl" ></mg-toggle> -->
             </div>
           </li>
       </ul>
